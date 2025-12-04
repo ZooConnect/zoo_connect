@@ -1,38 +1,50 @@
-/**
- * Express app configuration.
- * Responsibilities:
- *  - Base routes (/, /health)
- *  - Auto-mount all routers in src/routes/auto/*.route.js
- *  - Global error handler (consistent JSON for errors)
- */
 import express from "express";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
-import { errorHandler } from "./utils/errorHandler.js";
+import userRoutes from "./routes/user.routes.js";
+import fs from "fs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Skeleton Imports
+import versionRoute from "./routes/auto/version.route.js";
+import infoRoute from "./routes/auto/info.route.js";
+// We don't need the file import for boom if we define it manually below
 
 const app = express();
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
 
-// Simple root + health endpoints
-app.get("/", (_req, res) => res.json({ ok: true, message: "Hello from CI/CD demo 👋" }));
-app.get("/health", (_req, res) => res.status(200).send("OK"));
+app.use(express.json());
 
-// Auto-mount all routers placed under src/routes/auto
-const autoDir = path.join(__dirname, "routes", "auto");
-if (fs.existsSync(autoDir)) {
-  const files = fs.readdirSync(autoDir).filter(f => f.endsWith(".route.js"));
-  for (const f of files) {
-    const full = path.join(autoDir, f);
-    const mod = await import(pathToFileURL(full).href);
-    const router = mod.default;
-    if (router) app.use("/", router);
-  }
-}
+// 1. Your Feature
+app.use("/api/users", userRoutes);
 
-// Global error middleware last
-app.use(errorHandler);
+// 2. MOCK: Version
+app.get("/version", (req, res) => {
+  res.status(200).json({ version: packageJson.version });
+});
+
+// 3. MOCK: Info
+app.get("/info", (req, res) => {
+  res.status(200).json({
+    name: packageJson.name,
+    version: packageJson.version,
+    uptime: process.uptime(),
+    node: process.version
+  });
+});
+
+// 4. MOCK: Boom (Force an error for testing)
+app.get("/boom", (req, res, next) => {
+  // Pass a fake error to the global handler
+  next(new Error("Simulated Crash for Testing"));
+});
+
+// 5. Health Check
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// 6. Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("Error caught:", err.message);
+  res.status(500).json({ error: "Internal Server Error", message: err.message });
+});
 
 export default app;
