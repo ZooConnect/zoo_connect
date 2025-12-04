@@ -32,7 +32,9 @@ jobs:
 
       # 5) Test with coverage
       - name: Test (with coverage)
-        run: npm test -- --coverage
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: npm test
 
       # 6) Upload coverage folder as an artifact (viewable in Actions UI)
       - name: Upload coverage artifact
