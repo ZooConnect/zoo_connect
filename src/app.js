@@ -1,38 +1,42 @@
-/**
- * Express app configuration.
- * Responsibilities:
- *  - Base routes (/, /health)
- *  - Auto-mount all routers in src/routes/auto/*.route.js
- *  - Global error handler (consistent JSON for errors)
- */
 import express from "express";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
 import { errorHandler } from "./utils/errorHandler.js";
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+
+mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
+  .then(() => console.log('[MongoDB] Connected successfully'))
+  .catch(err => console.error('[MongoDB] Connection error:', err));
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Simple root + health endpoints
-app.get("/", (_req, res) => res.json({ ok: true, message: "Hello from CI/CD demo 👋" }));
-app.get("/health", (_req, res) => res.status(200).send("OK"));
+// Middlewares
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Auto-mount all routers placed under src/routes/auto
+// Auto-mount routers
 const autoDir = path.join(__dirname, "routes", "auto");
 if (fs.existsSync(autoDir)) {
   const files = fs.readdirSync(autoDir).filter(f => f.endsWith(".route.js"));
   for (const f of files) {
     const full = path.join(autoDir, f);
     const mod = await import(pathToFileURL(full).href);
-    const router = mod.default;
-    if (router) app.use("/", router);
+    if (mod.default) app.use("/", mod.default);
   }
 }
 
-// Global error middleware last
+// Login/Register pages
+app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/login.html')));
+app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/register.html')));
+
+// Global error handler
 app.use(errorHandler);
 
 export default app;
