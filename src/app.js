@@ -1,20 +1,25 @@
-import express from 'express';
-import userRoutes from './routes/user.routes.js';
-import animalRoutes from './routes/animal.routes.js'; // <--- NEW: Import Animal Routes
-import fs from 'fs';
+import express from "express";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
+import { errorHandler } from "./utils/errorHandler.js";
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+
+mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
+  .then(() => console.log('[MongoDB] Connected successfully'))
+  .catch(err => console.error('[MongoDB] Connection error:', err));
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Read package.json to get version (keeping existing logic)
-const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
-
+// Middlewares
 app.use(express.json());
-
-// ---------------------------------------------------
-// 1. REAL FEATURES
-// ---------------------------------------------------
-
-// Users (SCRUM-23, SCRUM-24)
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/users', userRoutes);
 
 // Animals (SCRUM-30) <--- NEW: Add the route here
@@ -40,26 +45,23 @@ app.get('/info', (req, res) => {
     });
 });
 
-// Boom (Force error for testing)
-app.get('/boom', (req, res, next) => {
-    next(new Error("Simulated Crash for Testing"));
-});
+// Auto-mount routers
+const autoDir = path.join(__dirname, "routes", "auto");
+if (fs.existsSync(autoDir)) {
+  const files = fs.readdirSync(autoDir).filter(f => f.endsWith(".route.js"));
+  for (const f of files) {
+    const full = path.join(autoDir, f);
+    const mod = await import(pathToFileURL(full).href);
+    if (mod.default) app.use("/", mod.default);
+  }
+}
 
-// Health Check
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: "ok" });
-});
+// Login/Register pages
+app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/login.html')));
+app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/register.html')));
 
-// ---------------------------------------------------
-// 3. GLOBAL ERROR HANDLER
-// ---------------------------------------------------
-app.use((err, req, res, next) => {
-    console.error("Error caught:", err.message);
-    // If headers sent, delegate to default handler
-    if (res.headersSent) {
-        return next(err);
-    }
-    res.status(500).json({ error: "Internal Server Error", message: err.message });
-});
+// Global error handler
+app.use(errorHandler);
 
 export default app;
+
