@@ -20,6 +20,30 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use('/api/users', userRoutes);
+
+// Animals (SCRUM-30) <--- NEW: Add the route here
+app.use('/api/animals', animalRoutes);
+
+
+// ---------------------------------------------------
+// 2. MOCKS & UTILS (Keeping these for your tests)
+// ---------------------------------------------------
+
+// Version check
+app.get('/version', (req, res) => {
+    res.status(200).json({ version: packageJson.version });
+});
+
+// Info check
+app.get('/info', (req, res) => {
+    res.status(200).json({
+        name: packageJson.name,
+        version: packageJson.version,
+        uptime: process.uptime(),
+        node: process.version
+    });
+});
 
 // Auto-mount routers
 const autoDir = path.join(__dirname, "routes", "auto");
@@ -40,3 +64,4 @@ app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '..', 'pub
 app.use(errorHandler);
 
 export default app;
+
