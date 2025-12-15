@@ -1,65 +1,51 @@
-import express from 'express';
-import userRoutes from './routes/user.routes.js';
-import animalRoutes from './routes/animal.routes.js'; // <--- NEW: Import Animal Routes
-import fs from 'fs';
+// src/app.js
+
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { readdirSync } from "fs";
+
+// Manually import event routes 
+import eventRoutes from "./routes/event.routes.js"; 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-
-// Read package.json to get version (keeping existing logic)
-const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
-
+app.use(cors());
 app.use(express.json());
 
-// ---------------------------------------------------
-// 1. REAL FEATURES
-// ---------------------------------------------------
+// Auto-mount routes from src/routes/auto/*.route.js  
+// We manually import them here to ensure they're loaded before the app is used
+import infoRoute from "./routes/auto/info.route.js";
+import versionRoute from "./routes/auto/version.route.js";
+import boomRoute from "./routes/auto/boom.route.js";
+app.use(infoRoute);
+app.use(versionRoute);
+app.use(boomRoute);
 
-// Users (SCRUM-23, SCRUM-24)
-app.use('/api/users', userRoutes);
+  // Standard Express Middleware and Routes
+  app.use(express.static(path.join(__dirname, "public")));
 
-// Animals (SCRUM-30) <--- NEW: Add the route here
-app.use('/api/animals', animalRoutes);
+  app.get("/health", (req, res) => {
+    res.status(200).json({ ok: true, ts: new Date().toISOString() });
+  });
 
+  app.get("/events", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "events.html"));
+  });
 
-// ---------------------------------------------------
-// 2. MOCKS & UTILS (Keeping these for your tests)
-// ---------------------------------------------------
+  app.use("/api/events", eventRoutes);
 
-// Version check
-app.get('/version', (req, res) => {
-    res.status(200).json({ version: packageJson.version });
-});
+  app.get("/boom", () => {
+    throw new Error("Boom");
+  });
 
-// Info check
-app.get('/info', (req, res) => {
-    res.status(200).json({
-        name: packageJson.name,
-        version: packageJson.version,
-        uptime: process.uptime(),
-        node: process.version
-    });
-});
-
-// Boom (Force error for testing)
-app.get('/boom', (req, res, next) => {
-    next(new Error("Simulated Crash for Testing"));
-});
-
-// Health Check
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: "ok" });
-});
-
-// ---------------------------------------------------
-// 3. GLOBAL ERROR HANDLER
-// ---------------------------------------------------
+// Error Handler Middleware (Crucial for Lab 6)
 app.use((err, req, res, next) => {
-    console.error("Error caught:", err.message);
-    // If headers sent, delegate to default handler
-    if (res.headersSent) {
-        return next(err);
-    }
-    res.status(500).json({ error: "Internal Server Error", message: err.message });
+  console.error(err);
+  res.status(500).json({ error: true, message: "Internal server error" }); 
 });
 
 export default app;
