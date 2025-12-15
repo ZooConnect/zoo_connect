@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import userRoutes from "./routes/user.routes.js";
 import animalRoutes from './routes/animal.routes.js';
-import packageJson from '../package.json' assert { type: "json" };
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
@@ -19,6 +18,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+
 
 // Middlewares
 app.use(express.json());
