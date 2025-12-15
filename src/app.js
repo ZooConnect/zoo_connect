@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import userRoutes from "./routes/user.routes.js";
 import animalRoutes from './routes/animal.routes.js';
+import packageJson from '../package.json' assert { type: "json" };
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
