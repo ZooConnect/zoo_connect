@@ -50,6 +50,12 @@ app.get('/info', (req, res) => {
     });
 });
 
+// Health check
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+
 // Auto-mount routers
 const autoDir = path.join(__dirname, "routes", "auto");
 if (fs.existsSync(autoDir)) {

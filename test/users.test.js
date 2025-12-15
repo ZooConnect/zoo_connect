@@ -24,7 +24,7 @@ describe("PUT /api/users/:id", () => {
     const user = await User.create({
       name: "Original Name",
       email: "test@zoo.com",
-      password: "password123"
+      password_hash: "password123"
     });
     userId = user._id.toString();
   });
@@ -35,7 +35,7 @@ describe("PUT /api/users/:id", () => {
       .send({
         name: "Updated Name",
         email: "newemail@zoo.com",
-        password: "newpassword123"
+        password_hash: "newpassword123"
       });
 
     expect(res.status).toBe(200);
@@ -57,7 +57,7 @@ describe("PUT /api/users/:id", () => {
     await User.create({
       name: "Other User",
       email: "taken@zoo.com",
-      password: "123"
+      password_hash: "123"
     });
 
     const res = await request(app)
