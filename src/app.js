@@ -6,8 +6,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { readdirSync } from "fs";
 
-// Manually import event routes 
+// Manually import routes
 import eventRoutes from "./routes/event.routes.js"; 
+import bookingRoutes from "./routes/booking.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +37,13 @@ app.use(boomRoute);
     res.sendFile(path.join(__dirname, "public", "events.html"));
   });
 
+  app.get("/bookings", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "bookings.html"));
+  });
+
   app.use("/api/events", eventRoutes);
+
+  app.use("/api/bookings", bookingRoutes);
 
   app.get("/boom", () => {
     throw new Error("Boom");
