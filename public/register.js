@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorDisplay.style.display = 'block';
         errorDisplay.style.color = '#D32F2F'; // rouge par défaut
 
+
         if (submitButton.disabled) {
             errorDisplay.textContent = "Please correct the form validation errors.";
             return;
