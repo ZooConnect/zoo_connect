@@ -1,11 +1,17 @@
-/**
- * App entrypoint.
- * We keep the HTTP listener separate from the Express app instance so
- * tests can import `app` without opening a real port.
- */
+// src/index.js
 import app from "./app.js";
+import { connectToDb } from "./db/mongo.js"; // Import the function
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`[server] listening on http://localhost:${PORT}`);
-});
+const port = process.env.PORT || 3000;
+
+async function start() {
+  // 1. Connect to DB first
+  await connectToDb();
+
+  // 2. Then start the server
+  app.listen(port, () => {
+    console.log(`API running at http://localhost:${port}`);
+  });
+}
+
+start();
