@@ -4,9 +4,8 @@ const userSchema = new mongoose.Schema(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true }, 
-        password: { type: String, required: true }, 
+        password_hash: { type: String, required: true }, 
 
-        // --- NEW FIELDS FOR SCRUM-24 ---
         membership_type: { 
             type: String, 
             enum: ['Basic', 'Premium'], 
@@ -21,7 +20,6 @@ const userSchema = new mongoose.Schema(
             enum: ['active', 'expired', 'cancelled'], 
             default: 'active' 
         },
-        // -------------------------------
     },
     { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } } 
 );
