@@ -5,6 +5,9 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { errorHandler } from "./utils/errorHandler.js";
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import userRoutes from "./routes/user.routes.js";
+import animalRoutes from './routes/animal.routes.js';
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
   .then(() => console.log('[MongoDB] Connected successfully'))
@@ -21,8 +24,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/users', userRoutes);
-
-// Animals (SCRUM-30) <--- NEW: Add the route here
 app.use('/api/animals', animalRoutes);
 
 
