@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   const errorDisplay = document.getElementById('loginError');
+  const validationDisplay = document.getElementById("loginValidation");
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    errorDisplay.style.display = 'block';
-    errorDisplay.textContent = '';
-
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
@@ -20,19 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       if (res.ok) {
-        errorDisplay.style.color = 'green';
-        errorDisplay.textContent = data.message;
+        validationDisplay.style.display = 'block';
+        validationDisplay.textContent = data.message;
         // Stocke le token dans localStorage et dans cookie si nécessaire
         localStorage.setItem('token', data.token);
-        document.cookie = `token=${data.token}; Path=/; Max-Age=3600`; 
+        document.cookie = `token=${data.token}; Path=/; Max-Age=3600`;
         setTimeout(() => window.location.href = '/home.html', 1500);
       } else {
-        errorDisplay.style.color = '#D32F2F';
+        errorDisplay.style.display = 'block';
+        errorDisplay.textContent = '';
+
         errorDisplay.textContent = data.message || "Email or password incorrect";
       }
     } catch (err) {
+      errorDisplay.style.display = 'block';
+      errorDisplay.textContent = '';
+
       console.error(err);
-      errorDisplay.style.color = '#D32F2F';
       errorDisplay.textContent = "Failed to connect to the server.";
     }
   });

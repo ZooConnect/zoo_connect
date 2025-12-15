@@ -3,7 +3,8 @@
 /* --- Mise en page Générale (Centrage) --- */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #E8F5E9; /* Vert clair */
+    background-color: #E8F5E9;
+    /* Vert clair */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,13 +17,15 @@ body {
     background-color: white;
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Ombre plus profonde */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    /* Ombre plus profonde */
     width: 100%;
     max-width: 550px;
 }
 
 h2 {
-    color: #388E3C; /* Vert Forêt */
+    color: #388E3C;
+    /* Vert Forêt */
     text-align: center;
     margin-bottom: 30px;
     font-size: 1.8em;
@@ -42,17 +45,21 @@ label {
     font-size: 0.95em;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     width: 100%;
     padding: 12px 10px;
-    border: 1px solid #CFD8DC; /* Gris clair élégant */
+    border: 1px solid #CFD8DC;
+    /* Gris clair élégant */
     border-radius: 5px;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input:focus {
-    border-color: #66BB6A; /* Vert clair au focus */
+    border-color: #66BB6A;
+    /* Vert clair au focus */
     box-shadow: 0 0 0 2px rgba(102, 187, 106, 0.3);
     outline: none;
 }
@@ -61,7 +68,8 @@ input:focus {
 button {
     width: 100%;
     padding: 14px;
-    background-color: #4CAF50; /* Vert Nature principal */
+    background-color: #4CAF50;
+    /* Vert Nature principal */
     color: white;
     border: none;
     border-radius: 5px;
@@ -72,11 +80,13 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background-color: #388E3C; /* Vert Forêt au survol */
+    background-color: #388E3C;
+    /* Vert Forêt au survol */
 }
 
 button:disabled {
-    background-color: #BDBDBD; /* Gris plus doux pour désactivé */
+    background-color: #BDBDBD;
+    /* Gris plus doux pour désactivé */
     cursor: not-allowed;
 }
 
@@ -111,6 +121,16 @@ button:disabled {
     color: #D32F2F;
     background-color: #FFEBEE;
     border: 1px solid #FFCDD2;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 15px;
+    display: none;
+}
+
+.validation-message {
+    color: #42d32f;
+    background-color: #eafcdb;
+    border: 1px solid #e3ffcd;
     padding: 10px;
     border-radius: 4px;
     margin-top: 15px;
