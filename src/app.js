@@ -5,8 +5,12 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { errorHandler } from "./utils/errorHandler.js";
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+
 import userRoutes from "./routes/user.routes.js";
 import animalRoutes from './routes/animal.routes.js';
+import infoRoute from "./routes/auto/info.route.js";
+import versionRoute from "./routes/auto/version.route.js";
+import boomRoute from "./routes/auto/boom.route.js";
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/zoo_connect')
@@ -31,28 +35,33 @@ app.use('/api/users', userRoutes);
 app.use('/api/animals', animalRoutes);
 
 
-// ---------------------------------------------------
-// 2. MOCKS & UTILS (Keeping these for your tests)
-// ---------------------------------------------------
-
-// Version check
 app.get('/version', (req, res) => {
-    res.status(200).json({ version: packageJson.version });
+  res.status(200).json({ version: packageJson.version });
 });
 
 // Info check
 app.get('/info', (req, res) => {
-    res.status(200).json({
-        name: packageJson.name,
-        version: packageJson.version,
-        uptime: process.uptime(),
-        node: process.version
-    });
+  res.status(200).json({
+    name: packageJson.name,
+    version: packageJson.version,
+    uptime: process.uptime(),
+    node: process.version
+  });
 });
 
-// Health check
-app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'ok' });
+app.use(infoRoute);
+app.use(versionRoute);
+app.use(boomRoute);
+
+// Standard Express Middleware and Routes
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true, ts: new Date().toISOString() });
+});
+
+app.get("/events", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "events.html"));
 });
 
 
