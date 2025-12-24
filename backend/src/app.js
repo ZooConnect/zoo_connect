@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { fileURLToPath, pathToFileURL } from "url";
 
 import connectToDB from "./db/mongoDB.js";
-import { errorHandler } from "./errorHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 connectToDB();
 
