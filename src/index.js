@@ -1,16 +1,15 @@
-// src/index.js
-import app from "./app.js";
-import { connectToDb } from "./db/mongo.js"; // Import the function
+import dotenv from 'dotenv';
+dotenv.config();
 
-const port = process.env.PORT || 3000;
+import app from './app.js';
+import { connectToDb } from './db/mongo.js';
+
+const PORT = process.env.PORT || 3000;
 
 async function start() {
-  // 1. Connect to DB first
   await connectToDb();
-
-  // 2. Then start the server
-  app.listen(port, () => {
-    console.log(`API running at http://localhost:${port}`);
+  app.listen(PORT, () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
   });
 }
 

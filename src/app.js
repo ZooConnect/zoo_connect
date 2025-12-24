@@ -30,24 +30,24 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/users', userRoutes);
 app.use('/api/animals', animalRoutes);
 
+// Auto-mount routes from src/routes/auto/*.route.js  
+// We manually import them here to ensure they're loaded before the app is used
+import infoRoute from "./routes/auto/info.route.js";
+import versionRoute from "./routes/auto/version.route.js";
+import boomRoute from "./routes/auto/boom.route.js";
+app.use(infoRoute);
+app.use(versionRoute);
+app.use(boomRoute);
 
-// ---------------------------------------------------
-// 2. MOCKS & UTILS (Keeping these for your tests)
-// ---------------------------------------------------
+// Standard Express Middleware and Routes
+app.use(express.static(path.join(__dirname, "public")));
 
-// Version check
-app.get('/version', (req, res) => {
-    res.status(200).json({ version: packageJson.version });
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true, ts: new Date().toISOString() });
 });
 
-// Info check
-app.get('/info', (req, res) => {
-    res.status(200).json({
-        name: packageJson.name,
-        version: packageJson.version,
-        uptime: process.uptime(),
-        node: process.version
-    });
+app.get("/events", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "events.html"));
 });
 
 // Health check
