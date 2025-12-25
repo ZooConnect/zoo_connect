@@ -21,7 +21,7 @@ export const signup = async (req, res, next) => {
     const passError = Utils.validatePassword(password);
     if (passError) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
 
-    const existing = await User.findOne({ email });
+    const existing = await User.exists({ email });
     if (existing) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -40,11 +40,21 @@ export const login = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
 
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
 
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ message: MESSAGES.AUTH.LOGIN_SUCCESS, token });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' });
+
+    res.status(200).json({
+      message: MESSAGES.AUTH.LOGIN_SUCCESS,
+      token
+    });
   } catch (err) {
     next(err);
   }
