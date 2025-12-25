@@ -36,7 +36,7 @@ export default class Utils {
 
     static getPackageInfo() {
         const pkg = JSON.parse(
-            fs.readFileSync(path.join(__dirname, "..", "..", "package.json"), "utf-8")
+            fs.readFileSync(path.join(Utils.__dirname, "..", "..", "package.json"), "utf-8")
         );
         return { name: pkg.name, version: pkg.version };
     }

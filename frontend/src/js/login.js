@@ -1,3 +1,5 @@
+import { login } from "./services/api.js";
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   const errorDisplay = document.getElementById('loginError');
@@ -9,26 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('loginPassword').value;
 
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      const [response, result] = await login(email, password);
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (response.ok) {
         validationDisplay.style.display = 'block';
-        validationDisplay.textContent = data.message;
+        validationDisplay.textContent = result.message;
         // Stocke le token dans localStorage et dans cookie si nécessaire
-        localStorage.setItem('token', data.token);
-        document.cookie = `token=${data.token}; Path=/; Max-Age=3600`;
-        setTimeout(() => window.location.href = '/home.html', 1500);
+        localStorage.setItem('token', result.token);
+        document.cookie = `token=${result.token}; Path=/; Max-Age=3600`;
+        setTimeout(() => window.location.href = '../html/home.html', 1500);
       } else {
         errorDisplay.style.display = 'block';
         errorDisplay.textContent = '';
 
-        errorDisplay.textContent = data.message || "Email or password incorrect";
+        errorDisplay.textContent = result.message || "Email or password incorrect";
       }
     } catch (err) {
       errorDisplay.style.display = 'block';

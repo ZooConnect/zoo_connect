@@ -10,6 +10,7 @@ import connectToDB from "./db/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 connectToDB();
+console.log("Base de données bien chargée")
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,10 +43,5 @@ if (fs.existsSync(autoDir)) {
     }
   }
 }
-/*
-app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '.../frontend/login.html')));
-app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '.../frontend/register.html')));
-*/
-
 export default app;
 

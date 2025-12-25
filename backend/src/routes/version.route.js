@@ -1,18 +1,11 @@
 import { Router } from "express";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import Utils from "../utils/Utils.js";
 
 const router = Router();
 
-router.get("/version", (_req, res) => {
-  const pkg = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "..", "..", "..", "package.json"), "utf-8")
-  );
-  res.status(200).json({ version: pkg.version });
+router.get("/", (_req, res) => {
+  res.status(200).json({ version: Utils.getPackageInfo().version });
 });
 
-export default {router, prefix: "/version"};
+export default { router, prefix: "/version" };

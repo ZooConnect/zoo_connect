@@ -1,6 +1,6 @@
-import express from 'express';
+/*import express from 'express';
 
-import { getDB } from '../db.js';
+import { getDB } from '../db/';
 
 import auth from "../middlewares/auth.js";
 
@@ -64,4 +64,4 @@ router.get('/:id', auth, getEventById);
 router.put('/:id', auth, updateEvent);
 router.delete('/:id', auth, deleteEvent);
 
-export default { router, prefix: "/api/events" };
+export default { router, prefix: "/api/events" };*/

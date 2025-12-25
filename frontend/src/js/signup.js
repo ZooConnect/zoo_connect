@@ -1,4 +1,6 @@
-import Utils from "../utils/Utils.js";
+import Utils from "./utils/Utils.js";
+
+import { signup } from "./services/api.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registerForm');
@@ -10,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('errorMessage');
 
     // --- Écouteurs d'événements ---
-    form.addEventListener('input', Utils.checkFormValidity);
+    form.addEventListener('input', Utils.checkFormValidity(nameInput, emailInput, passwordInput));
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
@@ -31,13 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/api/users/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-            });
-
-            const result = await response.json();
+            const [response, result] = await signup(userData);
 
             if (response.ok) {
                 errorDisplay.style.color = 'green';
@@ -55,5 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial check (au cas où le navigateur auto-remplit)
-    Utils.checkFormValidity();
+    Utils.checkFormValidity(nameInput, emailInput, passwordInput);
 });
