@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoo Connect</title>
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/register.js" defer></script>
 </head>
+
 <body>
-    
+
     <div class="auth-container">
         <h2>Create a Zoo Connect Account</h2>
-        
+
         <form id="registerForm">
-            
+
             <div class="input-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" required>
@@ -22,7 +25,7 @@
                 <label for="email">Email Address</label>
                 <input type="email" id="email" required>
             </div>
-            
+
             <div class="input-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" required>
@@ -38,10 +41,8 @@
 
             <button type="submit" id="submitButton" disabled>Sign Up</button>
         </form>
-
         <p class="link-text">Already have an account ? <a href="/login">Login</a></p>
     </div>
-
-    <script src="register.js"></script>
 </body>
+
 </html>

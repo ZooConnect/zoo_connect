@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { getPackageInfo, getRuntimeInfo } from "../utils/appInfo.js";
+
+import Utils from "../utils/Utils.js";
 
 const router = Router();
 
 router.get("/", (_req, res) => {
-  const info = { ...getPackageInfo(), ...getRuntimeInfo() };
+  const info = { ...Utils.getPackageInfo(), ...Utils.getRuntimeInfo() };
   res.status(200).json(info);
 });
 

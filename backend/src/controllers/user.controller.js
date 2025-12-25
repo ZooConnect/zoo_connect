@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 
-import Utils from "../utils/utils.js";
+import Utils from "../utils/Utils.js";
 import MESSAGES from "../constants/messages.js";
 
 import User from "../models/user.model.js";

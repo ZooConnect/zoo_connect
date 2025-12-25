@@ -1,5 +1,5 @@
 {
-  "name": "zoo-connect",
+  "name": "backend",
   "version": "1.0.0",
   "main": "src/server.js",
   "type": "module",

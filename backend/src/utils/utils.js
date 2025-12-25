@@ -3,10 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export class Utils {
+export default class Utils {
     static SECRET = 'RANDOM_TOKEN_SECRET';
     static __filename = fileURLToPath(import.meta.url);
-    static __dirname = path.dirname(__filename);
+    static __dirname = path.dirname(Utils.__filename);
 
     static validatePassword(password) {
         const minLength = 8;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -331,8 +332,13 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     .confirm-message {
@@ -363,7 +369,10 @@
       }
     }
   </style>
+
+  <script src="js/bookings.js" defer></script>
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -405,21 +414,11 @@
         <form id="reprogramForm">
           <div class="form-group">
             <label for="newDate">Nouvelle date</label>
-            <input 
-              type="datetime-local" 
-              id="newDate" 
-              name="newDate"
-              min=""
-            >
+            <input type="datetime-local" id="newDate" name="newDate" min="">
           </div>
           <div class="form-group">
             <label for="reason">Raison (optionnel)</label>
-            <input 
-              type="text" 
-              id="reason" 
-              name="reason"
-              placeholder="Ex: Conflit d'horaire"
-            >
+            <input type="text" id="reason" name="reason" placeholder="Ex: Conflit d'horaire">
           </div>
         </form>
       </div>
@@ -444,12 +443,7 @@
         <form id="cancelForm">
           <div class="form-group">
             <label for="cancelReason">Raison de l'annulation (optionnel)</label>
-            <input 
-              type="text" 
-              id="cancelReason" 
-              name="cancelReason"
-              placeholder="Dites-nous pourquoi vous annulez"
-            >
+            <input type="text" id="cancelReason" name="cancelReason" placeholder="Dites-nous pourquoi vous annulez">
           </div>
         </form>
       </div>
@@ -459,7 +453,6 @@
       </div>
     </div>
   </div>
-
-  <script src="/js/bookings.js"></script>
 </body>
+
 </html>

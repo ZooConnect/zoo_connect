@@ -1,3 +1,5 @@
+import Utils from "../utils/Utils.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registerForm');
     const submitButton = document.getElementById('submitButton');
@@ -7,40 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmInput = document.getElementById('password_confirmation');
     const errorDisplay = document.getElementById('errorMessage');
 
-    // --- Fonctions de Validation ---
-    const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-    const validatePassword = password => {
-        const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasDigit = /[0-9]/.test(password);
-        return password.length >= minLength && hasUpperCase && hasDigit;
-    };
-
-    const checkFormValidity = () => {
-        const passwordMatch = passwordInput.value === confirmInput.value;
-        const passwordValid = validatePassword(passwordInput.value);
-        const emailValid = validateEmail(emailInput.value);
-        const nameNotEmpty = nameInput.value.trim() !== '';
-
-        const isValid = nameNotEmpty && emailValid && passwordValid && passwordMatch;
-        submitButton.disabled = !isValid;
-
-        // Masquer le message d'erreur tant que le formulaire n'est pas soumis
-        if (submitButton.disabled) {
-            errorDisplay.style.display = 'none';
-        }
-    };
-
     // --- Écouteurs d'événements ---
-    form.addEventListener('input', checkFormValidity);
+    form.addEventListener('input', Utils.checkFormValidity);
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
 
         errorDisplay.style.display = 'block';
         errorDisplay.style.color = '#D32F2F'; // rouge par défaut
-
 
         if (submitButton.disabled) {
             errorDisplay.textContent = "Please correct the form validation errors.";
@@ -55,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/api/register', {
+            const response = await fetch('/api/users/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
@@ -79,5 +55,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial check (au cas où le navigateur auto-remplit)
-    checkFormValidity();
+    Utils.checkFormValidity();
 });

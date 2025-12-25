@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import cookieParser from 'cookie-parser';
 import { fileURLToPath, pathToFileURL } from "url";
+import dotenv from 'dotenv';
+dotenv.config();
 
 import connectToDB from "./db/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -19,7 +21,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '..', 'public')));
+//app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use((req, res, next) => { // authorise le cross-plateform
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -27,10 +29,6 @@ app.use((req, res, next) => { // authorise le cross-plateform
   next();
 });
 app.use(errorHandler);
-
-/*app.get("/events", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "events.html"));
-});*/
 
 // Routes
 const autoDir = path.join(__dirname, "routes");
@@ -44,9 +42,10 @@ if (fs.existsSync(autoDir)) {
     }
   }
 }
-
-app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/login.html')));
-app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '..', 'public/register.html')));
+/*
+app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '.../frontend/login.html')));
+app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, '.../frontend/register.html')));
+*/
 
 export default app;
 

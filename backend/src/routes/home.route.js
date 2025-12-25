@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { authMiddleware } from '../../utils/auth.js';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
