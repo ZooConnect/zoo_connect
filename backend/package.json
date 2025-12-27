@@ -8,8 +8,10 @@
     "node": ">=18"
   },
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "dev": "npm run dev:backend",
+    "dev:hot-reload": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "nodemon src/server.js",
+    "dev:frontend": "npx http-server ../frontend/src -p 4200",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint ."
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.0.5",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",

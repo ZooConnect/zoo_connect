@@ -1,15 +1,16 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
-let client;
-let db;
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, /*{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }*/);
+    console.log('✅ MongoDB connected');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1); // stoppe l'app si la DB n'est pas connectée
+  }
+};
 
-export default async function () {
-  if (db) return db;
-  const uri = process.env.MONGO_URI;
-  if (!uri) throw new Error('MONGO_URI is missing. Create a .env file and add MONGO_URI=');
-
-  client = new MongoClient(uri);
-  await client.connect();
-  db = client.db();
-  return db;
-}
+export default connectDB;

@@ -12,20 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('errorMessage');
 
     // --- Écouteurs d'événements ---
-    form.addEventListener('input', async e => {
-        const passwordMatch = passwordInput.value === confirmInput.value;
-        const passwordValid = Utils.validatePassword(passwordInput.value);
-        const emailValid = Utils.validateEmail(emailInput.value);
-        const nameNotEmpty = nameInput.value.trim() !== '';
-
-        const isValid = nameNotEmpty && emailValid && passwordValid && passwordMatch;
-        submitButton.disabled = !isValid;
-
-        // Masquer le message d'erreur tant que le formulaire n'est pas soumis
-        if (submitButton.disabled) {
-            errorDisplay.style.display = 'none';
-        }
-    });
+    form.addEventListener('input', checkFormValidity);
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
@@ -64,5 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial check (au cas où le navigateur auto-remplit)
-    Utils.checkFormValidity(nameInput, emailInput, passwordInput);
+    checkFormValidity(nameInput, emailInput, passwordInput, confirmInput);
 });
+
+function checkFormValidity(nameInput, emailInput, passwordInput, confirmInput) {
+    const passwordMatch = passwordInput.value === confirmInput.value;
+    const passwordValid = Utils.validatePassword(passwordInput.value);
+    const emailValid = Utils.validateEmail(emailInput.value);
+    const nameNotEmpty = nameInput.value.trim() !== '';
+
+    const isValid = nameNotEmpty && emailValid && passwordValid && passwordMatch;
+    submitButton.disabled = !isValid;
+
+    // Masquer le message d'erreur tant que le formulaire n'est pas soumis
+    if (submitButton.disabled) {
+        errorDisplay.style.display = 'none';
+    }
+}

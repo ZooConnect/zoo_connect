@@ -1,4 +1,4 @@
-const route = `/api`;
+const route = "/api";
 
 export const signup = async (userData) => {
     // ici on envoi une requête post au backend, on parse le JS en JSON

@@ -18,8 +18,8 @@ export const signup = async (req, res, next) => {
     if (password !== password_confirmation)
       return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
 
-    const passError = Utils.validatePassword(password);
-    if (passError) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
+    const passwordIsValidate = Utils.validatePassword(password);
+    if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
 
     const existing = await User.exists({ email });
     if (existing) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
@@ -35,7 +35,6 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     if (!email || !password) return res.status(400).json({ message: MESSAGES.AUTH.MISSING_FIELDS });
 
     const user = await User.findOne({ email });
