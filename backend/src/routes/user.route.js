@@ -2,17 +2,13 @@ import express from "express";
 
 import auth from "../middlewares/auth.js";
 
-import userCtrl from "../controllers/user.controller.js";
+import { signup, login } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
-    console.log("ok");
-    res.status(200).json({ message: "ok" });
-});
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
-//router.put("/:id", auth, userCtrl.updateUser);
-//router.get("/:id/membership", auth, userCtrl.getMembership);
+router.post('/signup', signup);
+router.post('/login', login);
+//router.put("/:id", auth, updateUser);
+//router.get("/:id/membership", auth, getMembership);
 
 export default { router, prefix: "/api/users" };

@@ -9,7 +9,7 @@ export const signup = async (userData) => {
     });
 
     // ici on capte la réponse du backend, on parse le JSON en JS
-    const result = response.json();
+    const result = await response.json();
     return [response, result];
 }
 
@@ -20,6 +20,6 @@ export const login = async (email, password) => {
         body: JSON.stringify({ email, password })
     });
 
-    const result = res.json();
+    const result = await response.json();
     return [response, result];
 }

@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const [response, result] = await login(email, password);
+      console.log(email, password);
+      console.log(response, result);
 
       if (response.ok) {
         validationDisplay.style.display = 'block';
@@ -22,14 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => window.location.href = '../html/home.html', 1500);
       } else {
         errorDisplay.style.display = 'block';
-        errorDisplay.textContent = '';
-
         errorDisplay.textContent = result.message || "Email or password incorrect";
       }
     } catch (err) {
       errorDisplay.style.display = 'block';
-      errorDisplay.textContent = '';
-
       console.error(err);
       errorDisplay.textContent = "Failed to connect to the server.";
     }

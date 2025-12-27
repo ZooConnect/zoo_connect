@@ -12,7 +12,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('errorMessage');
 
     // --- Écouteurs d'événements ---
-    form.addEventListener('input', Utils.checkFormValidity(nameInput, emailInput, passwordInput));
+    form.addEventListener('input', async e => {
+        const passwordMatch = passwordInput.value === confirmInput.value;
+        const passwordValid = Utils.validatePassword(passwordInput.value);
+        const emailValid = Utils.validateEmail(emailInput.value);
+        const nameNotEmpty = nameInput.value.trim() !== '';
+
+        const isValid = nameNotEmpty && emailValid && passwordValid && passwordMatch;
+        submitButton.disabled = !isValid;
+
+        // Masquer le message d'erreur tant que le formulaire n'est pas soumis
+        if (submitButton.disabled) {
+            errorDisplay.style.display = 'none';
+        }
+    });
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
