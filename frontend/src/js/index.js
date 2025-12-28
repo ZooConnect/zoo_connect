@@ -2,6 +2,7 @@ import { userLogged, logout } from "./services/api.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const logoutBtn = document.getElementById("logoutBtn");
+
     logoutBtn.addEventListener("click", async () => {
         try {
             const [response, data] = await logout();
@@ -23,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (response.ok) {
             const loginLink = document.getElementById("login-link");
             const signupLink = document.getElementById("signup-link");
-            const logoutBtn = document.getElementById("logoutBtn");
             const welcomeMessage = document.getElementById("welcomeMessage");
 
             // on affiche et cache les éléments
@@ -34,14 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (welcomeMessage) {
                 welcomeMessage.textContent = `You are logged in ${data.name}!`;
-            }
-
-            // gestion de la déconnexion
-            if (logoutBtn) {
-                logoutBtn.addEventListener("click", () => {
-                    localStorage.removeItem("token");
-                    window.location.href = "index.html";
-                })
             }
         }
     } catch (err) {
