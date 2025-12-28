@@ -39,9 +39,9 @@ if (fs.existsSync(autoDir)) {
 }
 
 // Servir frontend
-app.use(express.static(path.join(process.cwd(), '../frontend/src')));
+app.use(express.static(path.join(process.cwd(), '../frontend')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
+  res.sendFile(path.join(process.cwd(), '../frontend/index.html'));
 });
 export default app;
 

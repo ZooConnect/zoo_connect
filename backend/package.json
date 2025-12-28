@@ -11,7 +11,7 @@
     "dev": "npm run dev:backend",
     "dev:hot-reload": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "nodemon src/server.js",
-    "dev:frontend": "npx http-server ../frontend/src -p 4200",
+    "dev:frontend": "npx http-server ../frontend -p 4200",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint ."
