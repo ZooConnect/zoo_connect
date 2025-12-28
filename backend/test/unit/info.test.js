@@ -3,8 +3,9 @@
  * Validates the merged info object from helpers.
  */
 import request from "supertest";
-import app from "../src/app.js";
 import { describe, it, expect } from "vitest";
+
+import app from "../../src/app.js";
 
 describe("GET /info", () => {
   it("returns app info", async () => {

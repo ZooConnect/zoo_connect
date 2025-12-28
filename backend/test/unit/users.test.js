@@ -2,9 +2,9 @@ import request from "supertest";
 import { describe, it, expect, beforeEach, beforeAll, afterAll } from "vitest"; // Added hooks
 import mongoose from "mongoose";
 
-import app from "../src/app.js";
-import User from "../src/models/user.model.js";
-import { connectDB } from "../src/db/mongoDB.js"; // Import connection function
+import app from "../../src/app.js";
+import { connectDB } from "../../src/db/mongoDB.js";
+import User from "../../src/models/user.model.js";
 
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
