@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Stocke le token dans localStorage et dans cookie si nécessaire
         localStorage.setItem('token', result.token);
         document.cookie = `token=${result.token}; Path=/; Max-Age=3600`;
-        setTimeout(() => window.location.href = '../html/home.html', 1500);
+        setTimeout(() => window.location.href = 'index.html', 1500);
       } else {
         errorDisplay.style.display = 'block';
         errorDisplay.textContent = result.message || "Email or password incorrect";
