@@ -10,5 +10,6 @@ export default {
     },
     USER: {
         NOT_FOUND: 'User not found.',
+        VALID_MODIFICATION: 'User updated sucessfully!'
     },
 };

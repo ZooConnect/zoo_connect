@@ -91,13 +91,18 @@ export const updateUser = async (req, res, next) => {
     const userId = req.user.id;
     const updates = req.body;
 
-    if (updates.new_password && updates.password_confirmation) {
-      if (updates.new_password !== updates.password_confirmation)
+    if (updates.email) {
+      const existing = await User.exists({ email: updates.email });
+      if (existing) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
+    }
+
+    if (updates.new_password && updates.new_password_confirmation) {
+      if (updates.new_password !== updates.new_password_confirmation)
         return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
 
-      const passwordIsValidate = Utils.validatePassword(updates.password);
+      const passwordIsValidate = Utils.validatePassword(updates.new_password);
       if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
-      updates.password_hash = await bcrypt.hash(updates.password, SALT_ROUNDS);
+      updates.password_hash = await bcrypt.hash(updates.new_password, SALT_ROUNDS);
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updates, {
@@ -109,7 +114,7 @@ export const updateUser = async (req, res, next) => {
       return res.status(404).json({ error: MESSAGES.USER.NOT_FOUND });
     }
 
-    res.status(200).json({ message: "User updated sucessfully!" });
+    res.status(200).json({ message: MESSAGES.USER.VALID_MODIFICATION });
 
   } catch (error) {
     next(error);
