@@ -86,36 +86,37 @@ export const getMe = (req, res) => {
   });
 }
 
-/*
-export async function updateUser(req, res, next) {
+export const updateUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const updates = req.body;
 
-    if (updates.password) {
-      const salt = await bcrypt.genSalt(10);
-      updates.password = await bcrypt.hash(updates.password, salt);
+    if (updates.new_password && updates.password_confirmation) {
+      if (updates.new_password !== updates.password_confirmation)
+        return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
+
+      const passwordIsValidate = Utils.validatePassword(updates.password);
+      if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
+      updates.password_hash = await bcrypt.hash(updates.password, SALT_ROUNDS);
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,
       runValidators: true,
-    }).select("-password"); // Security: Remove password from response
+    }).select("-password_hash"); // Security: Remove password from response
 
     if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: MESSAGES.USER.NOT_FOUND });
     }
 
-    res.status(200).json(updatedUser);
+    res.status(200).json({ message: "User updated sucessfully!" });
+
   } catch (error) {
-    // Jira: "Rejet des données ... e-mails déjà utilisés"
-    if (error.code === 11000) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
     next(error);
   }
 }
 
+/*
 export async function getMembership(req, res, next) {
   try {
     const { id } = req.params;
