@@ -39,11 +39,14 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="password">Nouveau mot de passe</label>
-                    <input type="password" id="password" name="password">
+                    <label for="new_password">Nouveau mot de passe</label>
+                    <input type="password" id="new_password" name="new_password">
+                    <label for="new_password">Confirmation du nouveau mot de passe</label>
+                    <input type="password" id="new_password_confirmation" name="new_password_confirmation">
                     <p class="hint">Min. 8 caracters, 1 majuscule, 1 chiffre</p>
                 </div>
 
+                <div id="errorMessage" class="error-message"></div>
                 <button type="submit">Update</button>
                 <div id="message" class="message"></div>
             </form>

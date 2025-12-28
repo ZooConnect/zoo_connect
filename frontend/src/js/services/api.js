@@ -45,3 +45,15 @@ export const logout = async () => {
     const data = await response.json();
     return [response, data];
 }
+
+export const updateUser = async (userData) => {
+    const response = await fetch(`${route}/users/${userData.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+    });
+
+    // ici on capte la réponse du backend, on parse le JSON en JS
+    const data = await response.json();
+    return [response, data];
+}
