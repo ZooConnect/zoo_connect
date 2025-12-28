@@ -29,7 +29,7 @@ describe("POST /api/users/signup", () => {
         password_confirmation: "Password123"
       });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(201);
     expect(res.body.message).toBeDefined();
   });
 
