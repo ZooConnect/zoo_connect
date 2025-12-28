@@ -115,7 +115,6 @@ export const updateUser = async (req, res, next) => {
     }
 
     res.status(200).json({ message: MESSAGES.USER.VALID_MODIFICATION });
-
   } catch (error) {
     next(error);
   }

@@ -48,7 +48,7 @@ export const logout = async () => {
 
 export const updateUser = async (userData) => {
     const response = await fetch(`${route}/users/${userData.id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
     });

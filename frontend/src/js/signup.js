@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (submitButton.disabled) {
                 errorDisplay.style.display = 'none';
             }
+        } else {
+            submitButton.disabled = true;
         }
     });
 

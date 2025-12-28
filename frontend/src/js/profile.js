@@ -2,24 +2,33 @@ import { userLogged, logout, updateUser } from "./services/api.js";
 import Utils from "./utils/Utils.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const pName = document.getElementById("displayName");
+    const pEmail = document.getElementById("displayEmail");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const form = document.getElementById('profileForm');
+    const submitButton = document.getElementById('submitButton');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const newPasswordInput = document.getElementById('new_password');
+    const newPasswordConfirmInput = document.getElementById('new_password_confirmation');
+    const errorDisplay = document.getElementById('errorMessage');
+
+
     let userId;
     try {
         const [response, data] = await userLogged();
         // utilisateur authentifié
         if (response.ok) {
-            const pName = document.getElementById("displayName");
-            const pEmail = document.getElementById("displayEmail");
+            userId = data.id;
 
-            pName.textContent = data.user.name;
-            pEmail.textContent = data.user.email;
-
-            userId = data.user.id;
+            pName.textContent = data.name;
+            pEmail.textContent = data.email;
         }
     } catch (err) {
         console.error(err);
     }
-
-    const logoutBtn = document.getElementById("logoutBtn");
 
     logoutBtn.addEventListener("click", async () => {
         try {
@@ -34,13 +43,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
 
-    const form = document.getElementById('registerForm');
-    const submitButton = document.getElementById('profileForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const newPasswordInput = document.getElementById('new_password');
-    const newPasswordConfirmInput = document.getElementById('new_password_confirmation');
-    const errorDisplay = document.getElementById('errorMessage');
+    form.addEventListener('input', () => {
+        if (nameInput.value || emailInput.value || (newPasswordInput.value && newPasswordConfirmInput.value)) {
+            submitButton.disabled = false;
+            // Masquer le message d'erreur tant que le formulaire n'est pas soumis
+            if (submitButton.disabled) {
+                errorDisplay.style.display = 'none';
+            }
+        } else {
+            submitButton.disabled = true;
+        }
+    });
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
@@ -54,11 +67,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const userData = {
-            id: userId,
-            name: nameInput.value,
-            email: emailInput.value
+            id: userId
         };
 
+        if (nameInput.value) userData.name = nameInput.value;
+        if (emailInput.value) userData.email = email.value;
         if (newPasswordInput.value === newPasswordConfirmInput.value && Utils.validatePassword(newPasswordInput.value)) {
             userData.new_password = newPasswordInput.value;
             userData.new_password_confirmation = newPasswordConfirmInput.value;
