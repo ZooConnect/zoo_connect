@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Checkout source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) Setup Node with caching for npm
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      # 3) Install dependencies in backend
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci --legacy-peer-deps
+
+      # 4) Lint backend
+      - name: Lint backend
+        run: |
+          cd backend
+          npm run lint
+
+      # 5) Run backend tests with coverage
+      - name: Test backend (with coverage)
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          PORT: ${{secrets.PORT}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
+        run: |
+          cd backend
+          npm test -- --coverage
+
+      # 6) Upload coverage artifact
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage-report
+          path: backend/coverage

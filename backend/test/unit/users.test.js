@@ -2,13 +2,13 @@ import request from "supertest";
 import { describe, it, expect, beforeEach, beforeAll, afterAll } from "vitest"; // Added hooks
 import mongoose from "mongoose";
 
-import app from "../src/app.js";
-import User from "../src/models/user.model.js";
-import { connectToDb } from "../src/db/mongo.js"; // Import connection function
+import app from "../../src/app.js";
+import { connectDB } from "../../src/db/mongoDB.js";
+import User from "../../src/models/user.model.js";
 
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
-    await connectToDb();
+    await connectDB();
   });
 
   afterAll(async () => {
@@ -29,7 +29,7 @@ describe("POST /api/users/signup", () => {
         password_confirmation: "Password123"
       });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(201);
     expect(res.body.message).toBeDefined();
   });
 

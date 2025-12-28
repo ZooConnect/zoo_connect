@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { fileURLToPath, pathToFileURL } from "url";
 import dotenv from 'dotenv';
 
-import connectToDB from "./db/mongoDB.js";
+import { connectDB } from "./db/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(errorHandler);
 
-connectToDB();
+connectDB();
 console.log("Base de données bien chargée")
 
 // Routes
