@@ -39,6 +39,8 @@ jobs:
       - name: Test backend (with coverage)
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
+          PORT: ${{secrets.PORT}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
         run: |
           cd backend
           npm test -- --coverage
