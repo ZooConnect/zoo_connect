@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: backend/package-lock.json
 
       # 3) Install dependencies in backend
       - name: Install backend dependencies

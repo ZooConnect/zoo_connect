@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 
 import app from "../src/app.js";
 import User from "../src/models/user.model.js";
-import { connectToDb } from "../src/db/mongo.js"; // Import connection function
+import { connectDB } from "../src/db/mongoDB.js"; // Import connection function
 
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
-    await connectToDb();
+    await connectDB();
   });
 
   afterAll(async () => {
