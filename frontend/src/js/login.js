@@ -11,20 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('loginPassword').value;
 
     try {
-      const [response, result] = await login(email, password);
-      console.log(email, password);
-      console.log(response, result);
+      const [response, data] = await login(email, password);
 
       if (response.ok) {
         validationDisplay.style.display = 'block';
-        validationDisplay.textContent = result.message;
-        // Stocke le token dans localStorage et dans cookie si nécessaire
-        localStorage.setItem('token', result.token);
-        document.cookie = `token=${result.token}; Path=/; Max-Age=3600`;
-        setTimeout(() => window.location.href = 'index.html', 1500);
+        validationDisplay.textContent = data.message;
+        setTimeout(() => window.location.href = './index.html', 1500);
       } else {
         errorDisplay.style.display = 'block';
-        errorDisplay.textContent = result.message || "Email or password incorrect";
+        errorDisplay.textContent = data.message;
       }
     } catch (err) {
       errorDisplay.style.display = 'block';

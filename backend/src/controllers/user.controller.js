@@ -7,7 +7,6 @@ import MESSAGES from "../constants/messages.js";
 import User from "../models/user.model.js";
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = 'RANDOM_TOKEN_SECRET';
 
 export const signup = async (req, res, next) => {
   try {
@@ -46,19 +45,47 @@ export const login = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: user._id,
+        name: user.name,
         email: user.email
       },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: '1h' });
+
+    // on met le token dans un http-only
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,//process.env.NODE_ENV === "production", //true only in production mode
+      sameSite: "lax",
+      maxAge: 60 * 60 * 1000 //1h
+    });
 
     res.status(200).json({
       message: MESSAGES.AUTH.LOGIN_SUCCESS,
-      token
+      name: user.name
     });
   } catch (err) {
     next(err);
   }
 };
+
+export const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict"
+  });
+  res.status(200).json({ message: "Logged out sucessfully" });
+}
+
+export const getMe = (req, res) => {
+  // req.user est injecté par authMiddleware
+  res.status(200).json({
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email
+  });
+}
+
 /*
 export async function updateUser(req, res, next) {
   try {

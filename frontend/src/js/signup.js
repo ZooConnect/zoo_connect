@@ -12,7 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('errorMessage');
 
     // --- Écouteurs d'événements ---
-    form.addEventListener('input', checkFormValidity);
+    form.addEventListener('input', () => {
+        if (isFormValid(nameInput, emailInput, passwordInput, confirmInput)) {
+            submitButton.disabled = false;
+            // Masquer le message d'erreur tant que le formulaire n'est pas soumis
+            if (submitButton.disabled) {
+                errorDisplay.style.display = 'none';
+            }
+        }
+    });
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
@@ -33,15 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const [response, result] = await signup(userData);
+            const [response, data] = await signup(userData);
 
             if (response.ok) {
                 errorDisplay.style.color = 'green';
-                errorDisplay.textContent = result.message || "Registration successful! Redirecting...";
-                setTimeout(() => window.location.href = '/login', 2000);
+                errorDisplay.textContent = data.message || "Registration successful! Redirecting...";
+                setTimeout(() => window.location.href = 'login', 2000);
             } else {
                 errorDisplay.style.color = '#D32F2F';
-                errorDisplay.textContent = result.message || "An error occurred during registration.";
+                errorDisplay.textContent = data.message || "An error occurred during registration.";
             }
         } catch (err) {
             console.error(err);
@@ -51,20 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial check (au cas où le navigateur auto-remplit)
-    checkFormValidity(nameInput, emailInput, passwordInput, confirmInput);
+    if (isFormValid(nameInput, emailInput, passwordInput, confirmInput)) {
+        submitButton.disabled = false;
+        // Masquer le message d'erreur tant que le formulaire n'est pas soumis
+        if (submitButton.disabled) {
+            errorDisplay.style.display = 'none';
+        }
+    }
 });
 
-function checkFormValidity(nameInput, emailInput, passwordInput, confirmInput) {
+function isFormValid(nameInput, emailInput, passwordInput, confirmInput) {
     const passwordMatch = passwordInput.value === confirmInput.value;
     const passwordValid = Utils.validatePassword(passwordInput.value);
     const emailValid = Utils.validateEmail(emailInput.value);
     const nameNotEmpty = nameInput.value.trim() !== '';
-
-    const isValid = nameNotEmpty && emailValid && passwordValid && passwordMatch;
-    submitButton.disabled = !isValid;
-
-    // Masquer le message d'erreur tant que le formulaire n'est pas soumis
-    if (submitButton.disabled) {
-        errorDisplay.style.display = 'none';
-    }
+    return nameNotEmpty && emailValid && passwordValid && passwordMatch;
 }
