@@ -1,5 +1,5 @@
-import { userLogged, logout, updateUser } from "./services/api.js";
-import Utils from "./utils/Utils.js";
+import { isLogged, logout, update } from "../services/user.service.js";
+import Utils from "../utils/Utils.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const pName = document.getElementById("displayName");
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let userId;
     try {
-        const [response, data] = await userLogged();
+        const [response, data] = await isLogged();
         // utilisateur authentifié
         if (response.ok) {
             userId = data.id;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            const [response, data] = await updateUser(userData);
+            const [response, data] = await update(userData);
 
             if (response.ok) {
                 errorDisplay.style.color = 'green';

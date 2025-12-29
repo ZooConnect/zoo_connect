@@ -1,4 +1,4 @@
-import { userLogged, logout } from "./services/api.js";
+import { isLogged, logout } from "../services/user.service.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const logoutBtn = document.getElementById("logoutBtn");
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     try {
-        const [response, data] = await userLogged();
+        const [response, data] = await isLogged();
         // utilisateur authentifié
         if (response.ok) {
             // on affiche et cache les éléments
