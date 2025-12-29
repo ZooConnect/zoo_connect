@@ -188,7 +188,7 @@ describe("PUT /api/users/{id}", () => {
         passwordConfirmation: userPassword
       });
 
-    userId = res.body.id;
+    userId = res.body.user.id;
 
     const loginRes = await request(app)
       .post("/api/users/login")
