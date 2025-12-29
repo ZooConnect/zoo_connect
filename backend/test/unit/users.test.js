@@ -12,6 +12,7 @@ const userPassword = "Password123";
 
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
+    await User.deleteOne({ email: userEmail });
     await connectDB();
   });
 
@@ -30,7 +31,7 @@ describe("POST /api/users/signup", () => {
         name: userName,
         email: "invalid-email",
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
 
     expect(res.status).toBe(409);
@@ -41,7 +42,7 @@ describe("POST /api/users/signup", () => {
     await User.create({
       name: userName,
       email: userEmail,
-      password_hash: userPassword
+      passwordHash: userPassword
     });
 
     const res = await request(app)
@@ -50,7 +51,7 @@ describe("POST /api/users/signup", () => {
         name: userName,
         email: userEmail,
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
 
     expect(res.status).toBe(409);
@@ -64,14 +65,14 @@ describe("POST /api/users/signup", () => {
         name: userName,
         email: userEmail,
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
 
     const user = await User.findOne({ email: userEmail });
 
     expect(user).toBeTruthy();
-    expect(user.password_hash).toBeDefined();
-    expect(user.password_hash).not.toBe(userPassword);
+    expect(user.passwordHash).toBeDefined();
+    expect(user.passwordHash).not.toBe(userPassword);
   });
 });
 
@@ -87,7 +88,7 @@ describe("POST /api/users/login", () => {
         name: userName,
         email: userEmail,
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
   });
 
@@ -101,8 +102,8 @@ describe("POST /api/users/login", () => {
     const user = await User.findOne({ email: userEmail });
 
     expect(user).toBeTruthy();
-    expect(user.password_hash).toBeDefined();
-    expect(user.password_hash).not.toBe(userPassword);
+    expect(user.passwordHash).toBeDefined();
+    expect(user.passwordHash).not.toBe(userPassword);
   });
 
   it("should return invalid user or password", async () => {
@@ -132,7 +133,7 @@ describe("GET /api/users/me", () => {
         name: userName,
         email: userEmail,
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
 
     userId = res.body.user.id;
@@ -163,7 +164,7 @@ describe("GET /api/users/me", () => {
     expect(res.body.email).toBe(userEmail);
     expect(res.body.name).toBe(userName);
     expect(res.body).not.toHaveProperty("password");
-    expect(res.body).not.toHaveProperty("password_hash");
+    expect(res.body).not.toHaveProperty("passwordHash");
   });
 });
 
@@ -184,10 +185,10 @@ describe("PUT /api/users/{id}", () => {
         name: userName,
         email: userEmail,
         password: userPassword,
-        password_confirmation: userPassword
+        passwordConfirmation: userPassword
       });
 
-    userId = res.body.user.id;
+    userId = res.body.id;
 
     const loginRes = await request(app)
       .post("/api/users/login")
@@ -223,6 +224,6 @@ describe("PUT /api/users/{id}", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.name).toBe("lol");
-    expect(res.body).not.toHaveProperty("password_hash");
+    expect(res.body).not.toHaveProperty("passwordHash");
   });
 });
