@@ -118,7 +118,6 @@ describe("POST /api/users/login", () => {
   });
 });
 
-/*
 describe("GET /api/users/me", () => {
   let userId;
   let cookie;
@@ -141,8 +140,8 @@ describe("GET /api/users/me", () => {
     const loginRes = await request(app)
       .post("/api/users/login")
       .send({
-        name: userName,
-        email: userEmail
+        email: userEmail,
+        password: userPassword
       });
     cookie = loginRes.headers["set-cookie"];
   });
@@ -154,42 +153,24 @@ describe("GET /api/users/me", () => {
     await User.deleteOne({ email: userEmail });
     await mongoose.connection.close();
   });
-  
-    it("should get user's informations successfully", async () => {
-      const loginRes = await request(app)
-        .post("/api/users/login")
-        .send({
-          email: "john@test.com",
-          password: "Password123"
-        });
-  
-      expect(loginRes.status).toBe(200);
-      expect(loginRes.headers["set-cookie"]).toBeDefined();
-  
-      const cookie = loginRes.headers["set-cookie"];
-  
-      // 2️⃣ Appel de /me avec le cookie
-      const res = await request(app)
-        .get("/api/users/me")
-        .set("Cookie", cookie);
-  
-      expect(res.status).toBe(200);
-      expect(res.body.email).toBe("john@test.com");
-      expect(res.body.name).toBe("John Doe");
-      expect(res.body).not.toHaveProperty("password");
-      expect(res.body).not.toHaveProperty("password_hash");
-    });
-    /*const res = await request(app)
-      .get(`/api/users/me`)
+
+  it("should get user's informations successfully", async () => {
+    const res = await request(app)
+      .get("/api/users/me")
       .set("Cookie", cookie);
-  
+
     expect(res.status).toBe(200);
+    expect(res.body.email).toBe(userEmail);
+    expect(res.body.name).toBe(userName);
+    expect(res.body).not.toHaveProperty("password");
+    expect(res.body).not.toHaveProperty("password_hash");
   });
 });
 
-/*
+
 describe("PUT /api/users/{id}", () => {
   let userId;
+  let cookie;
 
   beforeAll(async () => {
     await connectDB();
@@ -208,18 +189,19 @@ describe("PUT /api/users/{id}", () => {
 
     userId = res.body.user.id;
 
-    await request(app)
+    const loginRes = await request(app)
       .post("/api/users/login")
       .send({
-        name: userName,
-        email: userEmail
+        email: userEmail,
+        password: userPassword
       });
+    cookie = loginRes.headers["set-cookie"];
   });
 
   afterEach(async () => {
     await request(app)
       .put("/api/users/logout")
-      .send({});
+      .set("Cookie", cookie);
     await User.deleteOne({ email: userEmail });
   })
 
@@ -227,15 +209,20 @@ describe("PUT /api/users/{id}", () => {
     await mongoose.connection.close();
   });
 
-  /*it("should update the user profile successfully", async () => {
-    const res = await request(app)
+  it("should update the user profile successfully", async () => {
+    await request(app)
       .put(`/api/users/${userId}`)
       .send({
         name: "lol"
-      });
+      })
+      .set("Cookie", cookie);
+
+    const res = await request(app)
+      .get(`/api/users/me`)
+      .set("Cookie", cookie);
 
     expect(res.status).toBe(200);
     expect(res.body.name).toBe("lol");
     expect(res.body).not.toHaveProperty("password_hash");
   });
-});*/
+});
