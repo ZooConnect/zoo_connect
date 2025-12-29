@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Zoo Connect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="js/profile.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>My profile</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="logout.html" id="logoutBtn">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="profile-display">
+            <h2>Personnals informations</h2>
+            <p><strong>Name :</strong> <span id="displayName"></span></p>
+            <p><strong>Email :</strong> <span id="displayEmail"></span></p>
+        </section>
+
+        <section class="profile-edit">
+            <h2>Update my informations</h2>
+            <form id="profileForm">
+                <div class="input-group">
+                    <label for="name">Nom</label>
+                    <input type="text" id="name" name="name">
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+
+                <div class="input-group">
+                    <label for="newPassword">Nouveau mot de passe</label>
+                    <input type="password" id="newPassword" name="newPassword">
+                    <label for="newPasswordConfirmation">Confirmation du nouveau mot de passe</label>
+                    <input type="password" id="newPasswordConfirmation" name="newPasswordConfirmation">
+                    <p class="hint">Min. 8 caracters, 1 majuscule, 1 chiffre</p>
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                <button type="submit" id="submitButton" disabled>Update</button>
+                <div id="message" class="message"></div>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

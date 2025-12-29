@@ -13,11 +13,11 @@ export const signup = async (userData) => {
     return [response, data];
 }
 
-export const login = async (email, password) => {
+export const login = async (userData) => {
     const response = await fetch(`${route}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(userData),
         credentials: "include"
     });
 
@@ -42,6 +42,18 @@ export const logout = async () => {
         credentials: "include"
     });
 
+    const data = await response.json();
+    return [response, data];
+}
+
+export const updateUser = async (userData) => {
+    const response = await fetch(`${route}/users/${userData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+    });
+
+    // ici on capte la réponse du backend, on parse le JSON en JS
     const data = await response.json();
     return [response, data];
 }

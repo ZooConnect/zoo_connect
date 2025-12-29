@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (submitButton.disabled) {
                 errorDisplay.style.display = 'none';
             }
+        } else {
+            submitButton.disabled = true;
         }
     });
 
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             name: nameInput.value,
             email: emailInput.value,
             password: passwordInput.value,
-            password_confirmation: confirmInput.value,
+            passwordConfirmation: confirmInput.value,
         };
 
         try {
