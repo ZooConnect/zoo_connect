@@ -13,11 +13,11 @@ export const signup = async (userData) => {
     return [response, data];
 }
 
-export const login = async (email, password) => {
+export const login = async (userData) => {
     const response = await fetch(`${route}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(userData),
         credentials: "include"
     });
 

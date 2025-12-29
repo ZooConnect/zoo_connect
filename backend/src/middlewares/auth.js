@@ -10,7 +10,7 @@ export default async (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(payload.id).select("-password_hash");
+    const user = await User.findById(payload.id).select("-passwordHash");
     if (!user) return res.status(401).send();
 
     req.user = user;

@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('loginPassword').value;
 
     try {
-      const [response, data] = await login(email, password);
+      const userData = { email, password };
+      const [response, data] = await login(userData);
 
       if (response.ok) {
         validationDisplay.style.display = 'block';

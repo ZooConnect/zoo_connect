@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const submitButton = document.getElementById('submitButton');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
-    const newPasswordInput = document.getElementById('new_password');
-    const newPasswordConfirmInput = document.getElementById('new_password_confirmation');
+    const newPasswordInput = document.getElementById('newPassword');
+    const newPasswordConfirmInput = document.getElementById('newPasswordConfirmation');
     const errorDisplay = document.getElementById('errorMessage');
 
 
@@ -61,20 +61,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         errorDisplay.style.display = 'block';
         errorDisplay.style.color = '#D32F2F'; // rouge par défaut
 
-        if (submitButton.disabled) {
-            errorDisplay.textContent = "Please correct the form validation errors.";
-            return;
-        }
-
         const userData = {
             id: userId
         };
 
         if (nameInput.value) userData.name = nameInput.value;
         if (emailInput.value) userData.email = email.value;
-        if (newPasswordInput.value === newPasswordConfirmInput.value && Utils.validatePassword(newPasswordInput.value)) {
-            userData.new_password = newPasswordInput.value;
-            userData.new_password_confirmation = newPasswordConfirmInput.value;
+        if (newPasswordInput.value && newPasswordConfirmInput.value) {
+            userData.newPassword = newPasswordInput.value;
+            userData.newPasswordConfirmation = newPasswordConfirmInput.value;
         }
 
         try {
