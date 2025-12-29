@@ -1,6 +1,6 @@
-import Utils from "./utils/Utils.js";
+import Utils from "../utils/Utils.js";
 
-import { signup } from "./services/api.js";
+import { signup } from "../services/user.service.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registerForm');

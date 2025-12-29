@@ -1,4 +1,4 @@
-import { login } from "./services/api.js";
+import { login } from "../services/user.service.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
