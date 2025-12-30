@@ -102,25 +102,18 @@ export const updateUser = async (req, res, next) => {
   }
 }
 
-/*
-export async function getMembership(req, res, next) {
+export const getMembership = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const email = req.params.email;
+    const user = await userService.getUserInfo(email);
+    if (!user) return respond(res, MESSAGES.USER.NOT_FOUND);
 
-    // Find the user by ID
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Return only the membership details
-    res.status(200).json({
-      membership_type: user.membership_type,
-      expiration_date: user.expiration_date,
-      status: user.status,
+    respond(res, MESSAGES.USER.FOUND, {
+      membershipType: user.membershipType,
+      membershipExpirationDate: user.membershipExpirationDate,
+      memberShipStatus: user.memberShipStatus,
     });
   } catch (error) {
     next(error);
   }
-}*/
+}
