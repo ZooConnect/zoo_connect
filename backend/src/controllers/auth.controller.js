@@ -86,7 +86,7 @@ export const updateUser = async (req, res, next) => {
                 return respond(res, MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
 
             const passwordIsValidate = validatePassword(updates.newPassword);
-            if (!passwordIsValidate) respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
+            if (!passwordIsValidate) return respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
             updates.passwordHash = hashPassword(updates.newPassword);
         }
 
