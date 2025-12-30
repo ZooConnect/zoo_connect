@@ -3,6 +3,7 @@ import * as userService from "../services/user.service.js";
 import { createCookie, clearCookie, respond } from "../utils/response.helper.js";
 import { comparePassword, hashPassword, validatePassword } from "../utils/password.helper.js";
 import { createToken } from "../utils/jwt.helper.js";
+import { isOneMonthAway } from "../utils/date.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 
@@ -68,6 +69,7 @@ export const getUser = async (req, res) => {
         membershipType: req.user.membershipType,
         membershipExpirationDate: req.user.membershipExpirationDate,
         membershipStatus: req.user.membershipStatus,
+        isOneMonthAway: isOneMonthAway(req.user.membershipExpirationDate)
     });
 }
 

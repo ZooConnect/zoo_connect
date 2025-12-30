@@ -1,7 +1,5 @@
 import { isLogged, logout, update } from "../services/auth.service.js";
 
-import { isOneMonthAway } from "../utils/date.helper.js";
-
 document.addEventListener("DOMContentLoaded", async () => {
     const pName = document.getElementById("displayName");
     const pEmail = document.getElementById("displayEmail");
@@ -34,9 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             pMembershipExpirationDate.textContent = data.membershipExpirationDate;
             pMembershipStatus.textContent = data.membershipStatus;
 
-            if (data.membershipExpirationDate && isOneMonthAway(data.membershipExpirationDate)) {
+            if (data.isOneMonthAway) {
                 reniewSubscriptionBtn.style.display = "block";
             }
+        } else {
+            window.location.href = "./login.html";
         }
     } catch (err) {
         console.error(err);

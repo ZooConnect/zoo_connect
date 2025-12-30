@@ -1,6 +1,8 @@
 import { DateTime } from "luxon";
 
 export const isOneMonthAway = (date) => {
+    if (!date) return false;
+
     const now = DateTime.local();
 
     const expirationDate = DateTime.fromJSDate(date);
