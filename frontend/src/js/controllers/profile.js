@@ -3,6 +3,9 @@ import { isLogged, logout, update } from "../services/auth.service.js";
 document.addEventListener("DOMContentLoaded", async () => {
     const pName = document.getElementById("displayName");
     const pEmail = document.getElementById("displayEmail");
+    const pMembershipType = document.getElementById("displayMembershipType");
+    const pMembershipExpirationDate = document.getElementById("displayMembershipExpirationDate");
+    const pMembershipStatus = document.getElementById("displayMembershipStatus");
 
     const logoutBtn = document.getElementById("logoutBtn");
 
@@ -24,6 +27,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             pName.textContent = data.name;
             pEmail.textContent = data.email;
+            pMembershipType.textContent = data.membershipType;
+            pMembershipExpirationDate.textContent = data.membershipExpirationDate;
+            pMembershipStatus.textContent = data.membershipStatus;
         }
     } catch (err) {
         console.error(err);

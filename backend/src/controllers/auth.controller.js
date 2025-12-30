@@ -1,9 +1,8 @@
 import * as userService from "../services/user.service.js";
 
-import { respond } from "../utils/response.helper.js";
+import { createCookie, clearCookie, respond } from "../utils/response.helper.js";
 import { comparePassword, hashPassword, validatePassword } from "../utils/password.helper.js";
 import { createToken } from "../utils/jwt.helper.js";
-import { createCookie, clearCookie } from "../utils/cookie.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 
@@ -63,12 +62,17 @@ export const logout = (req, res) => {
     respond(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
 }
 
-export const getUser = (req, res) => {
+export const getUser = async (req, res) => {
     // req.user est injecté par authMiddleware
+    console.log(req);
+
     respond(res, MESSAGES.USER.FOUND, {
         id: req.user.id,
         name: req.user.name,
-        email: req.user.email
+        email: req.user.email,
+        membershipType: req.user.membershipType,
+        membershipExpirationDate: req.user.membershipExpirationDate,
+        membershipStatus: req.user.membershipStatus,
     });
 }
 
@@ -97,22 +101,6 @@ export const updateUser = async (req, res, next) => {
         }
 
         respond(res, MESSAGES.USER.VALID_MODIFICATION);
-    } catch (error) {
-        next(error);
-    }
-}
-
-export const getMembership = async (req, res, next) => {
-    try {
-        const email = req.params.email;
-        const user = await userService.getUserInfo(email);
-        if (!user) return respond(res, MESSAGES.USER.NOT_FOUND);
-
-        respond(res, MESSAGES.USER.FOUND, {
-            membershipType: user.membershipType,
-            membershipExpirationDate: user.membershipExpirationDate,
-            memberShipStatus: user.memberShipStatus,
-        });
     } catch (error) {
         next(error);
     }

@@ -4,10 +4,7 @@ import { hashPassword } from "../utils/password.helper.js";
 
 export const findUserByEmail = async (email) => userRepo.readUserByEmail(email);
 
-export const getUserInfo = async (email) => {
-    const user = await findUserByEmail(email);
-    return { id: user._id, name: user.name, email };
-}
+export const getUserInfo = async (email) => findUserByEmail(email);
 
 export const isUserExisting = async (email) => userRepo.fastReadUserByEmail(email);
 
