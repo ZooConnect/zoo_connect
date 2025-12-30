@@ -1,4 +1,4 @@
-const route = "/api/users";
+const route = "/api/auth";
 
 export const signup = async (userData) => {
     // ici on envoi une requête post au backend, on parse le JS en JSON
@@ -47,7 +47,7 @@ export const logout = async () => {
 }
 
 export const update = async (userData) => {
-    const response = await fetch(`${route}/${userData.id}`, {
+    const response = await fetch(`${route}/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),

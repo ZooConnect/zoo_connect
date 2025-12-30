@@ -11,11 +11,11 @@ const userSchema = new mongoose.Schema(
             enum: ['Basic', 'Premium'],
             default: 'Basic'
         },
-        expirationDate: {
+        membershipExpirationDate: {
             type: Date,
             default: null
         },
-        status: {
+        membershipStatus: {
             type: String,
             enum: ['active', 'expired', 'cancelled'],
             default: 'active'

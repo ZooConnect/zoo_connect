@@ -1,4 +1,4 @@
-import { isLogged, logout } from "../services/user.service.js";
+import { isLogged, logout } from "../services/auth.service.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const logoutBtn = document.getElementById("logoutBtn");

@@ -22,6 +22,7 @@
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.3",
+    "luxon": "^3.7.2",
     "mongoose": "^9.0.0",
     "mongoose-unique-validator": "^4.0.1"
   },

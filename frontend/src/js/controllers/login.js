@@ -1,4 +1,4 @@
-import { login } from "../services/user.service.js";
+import { login } from "../services/auth.service.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     validationDisplay.style.display = 'block';
                     validationDisplay.textContent = data.message || "Connexion réussie !";
-                    
+
                     // Redirection vers l'accueil après 1.5s
                     setTimeout(() => {
                         window.location.href = './index.html';
