@@ -5,13 +5,13 @@ const userSchema = new mongoose.Schema(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
-        password_hash: { type: String, required: [function () { return this.isNew; }, 'Password is required on creation'] },
-        membership_type: {
+        passwordHash: { type: String, required: [function () { return this.isNew; }, 'Password is required on creation'] },
+        membershipType: {
             type: String,
             enum: ['Basic', 'Premium'],
             default: 'Basic'
         },
-        expiration_date: {
+        expirationDate: {
             type: Date,
             default: null
         },
@@ -21,7 +21,10 @@ const userSchema = new mongoose.Schema(
             default: 'active'
         },
     },
-    { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
+    {
+        timestamps: true //created_at and updated_at
+
+    }
 );
 
 userSchema.plugin(uniqueValidator);

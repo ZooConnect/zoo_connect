@@ -1,30 +1,25 @@
-import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken';
+import * as userService from "../services/user.service.js";
 
 import Utils from "../utils/Utils.js";
 import MESSAGES from "../constants/messages.js";
 
-import User from "../models/user.model.js";
-
-const SALT_ROUNDS = 10;
 
 export const signup = async (req, res, next) => {
   try {
-    const { name, email, password, password_confirmation } = req.body;
+    const { name, email, password, passwordConfirmation } = req.body;
 
-    if (!name || !email || !password || !password_confirmation)
+    if (!name || !email || !password || !passwordConfirmation)
       return res.status(400).json({ message: MESSAGES.AUTH.MISSING_FIELDS });
-    if (password !== password_confirmation)
+    if (password !== passwordConfirmation)
       return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
 
     const passwordIsValidate = Utils.validatePassword(password);
     if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
 
-    const existing = await User.exists({ email });
-    if (existing) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
+    const isUserExisting = await userService.isUserExisting(email);
+    if (isUserExisting) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
 
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await User.create({ name, email, password_hash: hash });
+    const user = await userService.registerUser({ name, email, password });
     res.status(201).json({ message: MESSAGES.AUTH.ACCOUNT_CREATED_SUCCESS, user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
     next(err);
@@ -36,31 +31,18 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: MESSAGES.AUTH.MISSING_FIELDS });
 
-    const user = await User.findOne({ email });
+    const user = await userService.findUserByEmail(email);
     if (!user) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
 
-    const valid = await bcrypt.compare(password, user.password_hash);
+    const valid = await userService.comparePassword(password, user.passwordHash);
     if (!valid) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' });
-
-    // on met le token dans un http-only
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,//process.env.NODE_ENV === "production", //true only in production mode
-      sameSite: "lax",
-      maxAge: 60 * 60 * 1000 //1h
-    });
+    const token = userService.createToken(user);
+    userService.createCookie(res, token);
 
     res.status(200).json({
       message: MESSAGES.AUTH.LOGIN_SUCCESS,
+      id: user._id,
       name: user.name
     });
   } catch (err) {
@@ -69,11 +51,7 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict"
-  });
+  userService.clearCookie(res);
   res.status(200).json({ message: "Logged out sucessfully" });
 }
 
@@ -86,36 +64,37 @@ export const getMe = (req, res) => {
   });
 }
 
-/*
-export async function updateUser(req, res, next) {
+export const updateUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const updates = req.body;
 
-    if (updates.password) {
-      const salt = await bcrypt.genSalt(10);
-      updates.password = await bcrypt.hash(updates.password, salt);
+    if (updates.email) {
+      const isUserExisting = await userService.isUserExisting(updates.email);
+      if (isUserExisting) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
-      new: true,
-      runValidators: true,
-    }).select("-password"); // Security: Remove password from response
+    if (updates.newPassword && updates.newPasswordConfirmation) {
+      if (updates.newPassword !== updates.newPasswordConfirmation)
+        return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
 
+      const passwordIsValidate = Utils.validatePassword(updates.newPassword);
+      if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
+      updates.passwordHash = userService.hashPassword(updates.newPassword);
+    }
+
+    const updatedUser = await userService.modifyUser(userId, updates);
     if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: MESSAGES.USER.NOT_FOUND });
     }
 
-    res.status(200).json(updatedUser);
+    res.status(200).json({ message: MESSAGES.USER.VALID_MODIFICATION });
   } catch (error) {
-    // Jira: "Rejet des données ... e-mails déjà utilisés"
-    if (error.code === 11000) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
     next(error);
   }
 }
 
+/*
 export async function getMembership(req, res, next) {
   try {
     const { id } = req.params;

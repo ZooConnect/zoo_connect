@@ -1,8 +1,8 @@
-const route = "/api";
+const route = "/api/users";
 
 export const signup = async (userData) => {
     // ici on envoi une requête post au backend, on parse le JS en JSON
-    const response = await fetch(`${route}/users/signup`, {
+    const response = await fetch(`${route}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
@@ -13,11 +13,11 @@ export const signup = async (userData) => {
     return [response, data];
 }
 
-export const login = async (email, password) => {
-    const response = await fetch(`${route}/users/login`, {
+export const login = async (userData) => {
+    const response = await fetch(`${route}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(userData),
         credentials: "include"
     });
 
@@ -25,8 +25,8 @@ export const login = async (email, password) => {
     return [response, data];
 }
 
-export const userLogged = async () => {
-    const response = await fetch(`${route}/users/me`,
+export const isLogged = async () => {
+    const response = await fetch(`${route}/me`,
         {
             method: 'GET',
             credentials: "include"
@@ -37,11 +37,23 @@ export const userLogged = async () => {
 }
 
 export const logout = async () => {
-    const response = await fetch(`${route}/users/logout`, {
+    const response = await fetch(`${route}/logout`, {
         method: "POST",
         credentials: "include"
     });
 
+    const data = await response.json();
+    return [response, data];
+}
+
+export const update = async (userData) => {
+    const response = await fetch(`${route}/${userData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+    });
+
+    // ici on capte la réponse du backend, on parse le JSON en JS
     const data = await response.json();
     return [response, data];
 }

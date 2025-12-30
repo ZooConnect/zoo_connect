@@ -1,13 +1,18 @@
 import request from "supertest";
-import { describe, it, expect, beforeEach, beforeAll, afterAll } from "vitest"; // Added hooks
+import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from "vitest"; // Added hooks
 import mongoose from "mongoose";
 
 import app from "../../src/app.js";
 import { connectDB } from "../../src/db/mongoDB.js";
 import User from "../../src/models/user.model.js";
 
+const userName = "test";
+const userEmail = "test@gmail.com";
+const userPassword = "Password123";
+
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
+    await User.deleteOne({ email: userEmail });
     await connectDB();
   });
 
@@ -15,39 +20,38 @@ describe("POST /api/users/signup", () => {
     await mongoose.connection.close();
   });
 
-  beforeEach(async () => {
-    await User.deleteMany({});
+  afterEach(async () => {
+    await User.deleteOne({ email: userEmail });
   });
 
   it("should reject invalid email", async () => {
     const res = await request(app)
       .post("/api/users/signup")
       .send({
-        name: "Test User",
+        name: userName,
         email: "invalid-email",
-        password: "Password123",
-        password_confirmation: "Password123"
+        password: userPassword,
+        passwordConfirmation: userPassword
       });
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(409);
     expect(res.body.message).toBeDefined();
   });
 
   it("should reject already used email", async () => {
-    // utilisateur déjà existant
     await User.create({
-      name: "Existing",
-      email: "used@zoo.com",
-      password_hash: "hashedpassword"
+      name: userName,
+      email: userEmail,
+      passwordHash: userPassword
     });
 
     const res = await request(app)
       .post("/api/users/signup")
       .send({
-        name: "New User",
-        email: "used@zoo.com",
-        password: "Password123",
-        password_confirmation: "Password123"
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        passwordConfirmation: userPassword
       });
 
     expect(res.status).toBe(409);
@@ -55,60 +59,171 @@ describe("POST /api/users/signup", () => {
   });
 
   it("should hash password before saving to database", async () => {
-    const plainPassword = "Password123";
-
     await request(app)
       .post("/api/users/signup")
       .send({
-        name: "Hash Test",
-        email: "hash@zoo.com",
-        password: plainPassword,
-        password_confirmation: plainPassword
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        passwordConfirmation: userPassword
       });
 
-    const user = await User.findOne({ email: "hash@zoo.com" });
+    const user = await User.findOne({ email: userEmail });
 
     expect(user).toBeTruthy();
-    expect(user.password_hash).toBeDefined();
-    expect(user.password_hash).not.toBe(plainPassword);
+    expect(user.passwordHash).toBeDefined();
+    expect(user.passwordHash).not.toBe(userPassword);
+  });
+});
+
+
+describe("POST /api/users/login", () => {
+  beforeAll(async () => {
+    await connectDB();
+
+    // on créer un seul utilisateur pour tous les tests
+    await request(app)
+      .post("/api/users/signup")
+      .send({
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        passwordConfirmation: userPassword
+      });
   });
 
-  /*
-    it("should update the user profile successfully", async () => {
-      const res = await request(app)
-        .put(`/api/users/${userId}`)
-        .send({
-          name: "Updated Name",
-          email: "newemail@zoo.com",
-          password_hash: "newpassword123"
-        });
-  
-      expect(res.status).toBe(200);
-      expect(res.body.name).toBe("Updated Name");
-      expect(res.body.email).toBe("newemail@zoo.com");
-      expect(res.body).not.toHaveProperty("password");
-    });
-  
-    it("should return 404 if user does not exist", async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-      const res = await request(app)
-        .put(`/api/users/${fakeId}`)
-        .send({ name: "Ghost" });
-  
-      expect(res.status).toBe(404);
-    });
-  
-    it("should return 400 if email is already taken", async () => {
-      await User.create({
-        name: "Other User",
-        email: "taken@zoo.com",
-        password_hash: "123"
+  afterAll(async () => {
+    await User.deleteOne({ email: userEmail });
+
+    await mongoose.connection.close();
+  });
+
+  it("password is correctly hashed", async () => {
+    const user = await User.findOne({ email: userEmail });
+
+    expect(user).toBeTruthy();
+    expect(user.passwordHash).toBeDefined();
+    expect(user.passwordHash).not.toBe(userPassword);
+  });
+
+  it("should return invalid user or password", async () => {
+
+    const res = await request(app)
+      .post("/api/users/login")
+      .send({
+        name: userName,
+        email: "haha@gmail.com",
       });
-  
-      const res = await request(app)
-        .put(`/api/users/${userId}`)
-        .send({ email: "taken@zoo.com" });
-  
-      expect(res.status).toBe(400);
-    });*/
+
+    expect(res.status).toBe(400);
+  });
+});
+
+describe("GET /api/users/me", () => {
+  let userId;
+  let cookie;
+
+  beforeAll(async () => {
+    await connectDB();
+
+    // on créer un seul utilisateur pour tous les tests
+    const res = await request(app)
+      .post("/api/users/signup")
+      .send({
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        passwordConfirmation: userPassword
+      });
+
+    userId = res.body.user.id;
+
+    const loginRes = await request(app)
+      .post("/api/users/login")
+      .send({
+        email: userEmail,
+        password: userPassword
+      });
+    cookie = loginRes.headers["set-cookie"];
+  });
+
+  afterAll(async () => {
+    await request(app)
+      .put("/api/users/logout")
+      .send({});
+    await User.deleteOne({ email: userEmail });
+    await mongoose.connection.close();
+  });
+
+  it("should get user's informations successfully", async () => {
+    const res = await request(app)
+      .get("/api/users/me")
+      .set("Cookie", cookie);
+
+    expect(res.status).toBe(200);
+    expect(res.body.email).toBe(userEmail);
+    expect(res.body.name).toBe(userName);
+    expect(res.body).not.toHaveProperty("password");
+    expect(res.body).not.toHaveProperty("passwordHash");
+  });
+});
+
+
+describe("PUT /api/users/{id}", () => {
+  let userId;
+  let cookie;
+
+  beforeAll(async () => {
+    await connectDB();
+  });
+
+  beforeEach(async () => {
+    // on créer un seul utilisateur pour tous les tests
+    const res = await request(app)
+      .post("/api/users/signup")
+      .send({
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        passwordConfirmation: userPassword
+      });
+
+    userId = res.body.user.id;
+
+    const loginRes = await request(app)
+      .post("/api/users/login")
+      .send({
+        email: userEmail,
+        password: userPassword
+      });
+    cookie = loginRes.headers["set-cookie"];
+  });
+
+  afterEach(async () => {
+    await request(app)
+      .put("/api/users/logout")
+      .set("Cookie", cookie);
+    await User.deleteOne({ email: userEmail });
+  })
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
+
+  it("should update the user profile successfully", async () => {
+    await request(app)
+      .put(`/api/users/${userId}`)
+      .send({
+        name: "lol"
+      })
+      .set("Cookie", cookie);
+
+    const res = await request(app)
+      .get(`/api/users/me`)
+      .set("Cookie", cookie);
+
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe("lol");
+    expect(res.body).not.toHaveProperty("passwordHash");
+  });
 });
