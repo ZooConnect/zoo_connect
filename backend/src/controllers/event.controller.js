@@ -1,5 +1,5 @@
 import Event from "../models/event.model.js";
-import { buildEventFilter, validateEventQueryParams, validateEventData } from "../utils/events.js";
+import { buildEventFilter, validateEventQueryParams, validateEventData } from "../utils/event.helper.js";
 
 export async function listEvents(req, res, next) {
   try {
