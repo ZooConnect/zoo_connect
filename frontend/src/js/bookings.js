@@ -1,5 +1,3 @@
-// src/public/js/bookings.js
-
 let currentBookingId = null;
 let bookings = [];
 
@@ -253,10 +251,8 @@ function showAlert(message, type = 'error') {
   }, 5000);
 }
 
-// Get auth token (stub - implement based on your auth system)
 function getAuthToken() {
-  // In production, get token from localStorage, sessionStorage, or auth service
-  return localStorage.getItem('authToken') || '';
+  return localStorage.getItem('token') || '';
 }
 
 // Close modals when clicking outside

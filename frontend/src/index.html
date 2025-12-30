@@ -11,20 +11,44 @@
 
 <body>
     <header class="top-bar">
-        <div class="logo">Zoo Connect</div>
+    <div class="logo">Zoo Connect 🌿</div>
+    <nav class="auth-links">
+        <a href="login.html" class="login-link">Login</a>
+        <a href="signup.html" class="signup-link">Sign Up</a>
+    </nav>
+</header>
 
-        <nav class="auth-links">
-            <a href="login.html" id="login-link">Login</a>
-            <a href="signup.html" id="signup-link">Sign up</a>
-            <button class="btn" id="logoutBtn" style="display:none">Logout</button>
-        </nav>
-    </header>
+<main>
+    <section class="hero-section">
+        <div class="hero-overlay">
+            <h1>Experience the Wild 🦁</h1>
+            <p>Join our community and dive into the heart of nature.</p>
+            <a href="explore.html" class="btn-explore">Explore Now</a>
+        </div>
+    </section>
 
-    <div class="auth-container">
-        <h1>Welcome to Zoo Connect 🦁🐼🐒</h1>
-        <p>This will be the main page of the site.</p>
-        <p id="welcomeMessage"></p>
-    </div>
+    <section id="explore" class="services-container">
+        <div class="services-grid">
+            <a href="events.html" class="service-card">
+                <span class="card-icon">📅</span>
+                <h3>Events</h3>
+                <p>Daily feedings and live animal shows schedule.</p>
+            </a>
+
+            <a href="bookings.html" class="service-card">
+                <span class="card-icon">🎟️</span>
+                <h3>Ticketing</h3>
+                <p>Quick booking to skip the lines at the entrance.</p>
+            </a>
+
+            <a href="profile.html" class="service-card">
+                <span class="card-icon">👤</span>
+                <h3>My Profile</h3>
+                <p>Your badges, rewards and personal settings.</p>
+            </a>
+        </div>
+    </section>
+</main>
 </body>
 
 </html>
