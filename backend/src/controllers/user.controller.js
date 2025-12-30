@@ -1,6 +1,10 @@
 import * as userService from "../services/user.service.js";
 
-import Utils from "../utils/Utils.js";
+import { respond } from "../utils/response.helper.js";
+import { comparePassword, hashPassword, validatePassword } from "../utils/password.helper.js";
+import { createToken } from "../utils/jwt.helper.js";
+import { createCookie, clearCookie } from "../utils/cookie.helper.js";
+
 import MESSAGES from "../constants/messages.js";
 
 
@@ -9,18 +13,18 @@ export const signup = async (req, res, next) => {
     const { name, email, password, passwordConfirmation } = req.body;
 
     if (!name || !email || !password || !passwordConfirmation)
-      return res.status(400).json({ message: MESSAGES.AUTH.MISSING_FIELDS });
+      return respond(res, MESSAGES.AUTH.MISSING_FIELDS);
     if (password !== passwordConfirmation)
-      return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
+      return respond(res, MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
 
-    const passwordIsValidate = Utils.validatePassword(password);
-    if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
+    const passwordIsValidate = validatePassword(password);
+    if (!passwordIsValidate) return respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
 
     const isUserExisting = await userService.isUserExisting(email);
-    if (isUserExisting) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
+    if (isUserExisting) return respond(res, MESSAGES.AUTH.EMAIL_ALREADY_USED);
 
     const user = await userService.registerUser({ name, email, password });
-    res.status(201).json({ message: MESSAGES.AUTH.ACCOUNT_CREATED_SUCCESS, user: { id: user._id, name: user.name, email: user.email } });
+    respond(res, MESSAGES.AUTH.ACCOUNT_CREATED_SUCCESS, { user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
     next(err);
   }
@@ -29,19 +33,23 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: MESSAGES.AUTH.MISSING_FIELDS });
+    if (!email || !password) return respond(res, MESSAGES.AUTH.MISSING_FIELDS);
 
     const user = await userService.findUserByEmail(email);
-    if (!user) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
+    if (!user) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
 
-    const valid = await userService.comparePassword(password, user.passwordHash);
-    if (!valid) return res.status(401).json({ message: MESSAGES.AUTH.INVALID_CREDENTIALS });
+    const valid = await comparePassword(password, user.passwordHash);
+    if (!valid) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
 
-    const token = userService.createToken(user);
-    userService.createCookie(res, token);
+    const payload = {
+      id: user._id || user.id,
+      email: user.email,
+      name: user.name
+    };
+    const token = createToken(payload);
+    createCookie(res, token);
 
-    res.status(200).json({
-      message: MESSAGES.AUTH.LOGIN_SUCCESS,
+    respond(res, MESSAGES.AUTH.LOGIN_SUCCESS, {
       id: user._id,
       name: user.name
     });
@@ -51,13 +59,13 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  userService.clearCookie(res);
-  res.status(200).json({ message: "Logged out sucessfully" });
+  clearCookie(res);
+  respond(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
 }
 
 export const getMe = (req, res) => {
   // req.user est injecté par authMiddleware
-  res.status(200).json({
+  respond(res, MESSAGES.USER.FOUND, {
     id: req.user.id,
     name: req.user.name,
     email: req.user.email
@@ -71,24 +79,24 @@ export const updateUser = async (req, res, next) => {
 
     if (updates.email) {
       const isUserExisting = await userService.isUserExisting(updates.email);
-      if (isUserExisting) return res.status(409).json({ message: MESSAGES.AUTH.EMAIL_ALREADY_USED });
+      if (isUserExisting) return respond(res, MESSAGES.AUTH.EMAIL_ALREADY_USED);
     }
 
     if (updates.newPassword && updates.newPasswordConfirmation) {
       if (updates.newPassword !== updates.newPasswordConfirmation)
-        return res.status(400).json({ message: MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH });
+        return respond(res, MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
 
-      const passwordIsValidate = Utils.validatePassword(updates.newPassword);
-      if (!passwordIsValidate) return res.status(400).json({ message: MESSAGES.AUTH.PASSWORD_INVALID });
-      updates.passwordHash = userService.hashPassword(updates.newPassword);
+      const passwordIsValidate = validatePassword(updates.newPassword);
+      if (!passwordIsValidate) respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
+      updates.passwordHash = hashPassword(updates.newPassword);
     }
 
     const updatedUser = await userService.modifyUser(userId, updates);
     if (!updatedUser) {
-      return res.status(404).json({ error: MESSAGES.USER.NOT_FOUND });
+      return respond(res, MESSAGES.USER.NOT_FOUND);
     }
 
-    res.status(200).json({ message: MESSAGES.USER.VALID_MODIFICATION });
+    respond(res, MESSAGES.USER.VALID_MODIFICATION);
   } catch (error) {
     next(error);
   }

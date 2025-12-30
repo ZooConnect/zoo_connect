@@ -12,8 +12,8 @@ const userPassword = "Password123";
 
 describe("POST /api/users/signup", () => {
   beforeAll(async () => {
-    await User.deleteOne({ email: userEmail });
-    await connectDB();
+    await
+      await connectDB();
   });
 
   afterAll(async () => {
