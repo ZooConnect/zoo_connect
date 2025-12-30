@@ -1,5 +1,7 @@
 import { isLogged, logout, update } from "../services/auth.service.js";
 
+import { isOneMonthAway } from "../utils/date.helper.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
     const pName = document.getElementById("displayName");
     const pEmail = document.getElementById("displayEmail");
@@ -8,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const pMembershipStatus = document.getElementById("displayMembershipStatus");
 
     const logoutBtn = document.getElementById("logoutBtn");
+    const reniewSubscriptionBtn = document.getElementById("reniewSubscriptionBtn");
 
     const form = document.getElementById('profileForm');
     const submitButton = document.getElementById('submitButton');
@@ -30,6 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             pMembershipType.textContent = data.membershipType;
             pMembershipExpirationDate.textContent = data.membershipExpirationDate;
             pMembershipStatus.textContent = data.membershipStatus;
+
+            if (data.membershipExpirationDate && isOneMonthAway(data.membershipExpirationDate)) {
+                reniewSubscriptionBtn.style.display = "block";
+            }
         }
     } catch (err) {
         console.error(err);
