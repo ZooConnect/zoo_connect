@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from "vitest";
-import { buildEventFilter, validateEventQueryParams, validateEventData } from "../../src/utils/events.js";
+import { buildEventFilter, validateEventQueryParams, validateEventData } from "../../src/utils/event.helper.js";
 
 describe("buildEventFilter", () => {
   it("default includes active events with end_date >= now", () => {
