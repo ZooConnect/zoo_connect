@@ -1,4 +1,4 @@
-import { DateTime, Interval } from "luxon";
+import { DateTime } from "luxon";
 
 export const isOneMonthAway = (date) => {
     const now = DateTime.local();
@@ -7,7 +7,7 @@ export const isOneMonthAway = (date) => {
     const diffMonths = expirationDate.diff(now, "months").months; // peut être 0.98, 1.02 etc.
     return Math.floor(diffMonths) === 1;
 }
-
+/*
 // Date d'un événement
 const eventDate = DateTime.fromISO("2026-01-30T20:00:00", { zone: "Europe/Paris" });
 

@@ -8,8 +8,5 @@
   "type": "module",
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "luxon": "^3.7.2"
-  }
+  "description": ""
 }
