@@ -6,6 +6,6 @@ import { getAnimals } from "../controllers/animal.controller.js";
 
 const router = express.Router();
 
-router.get("/", auth, getAnimals);
+router.get("/", getAnimals);
 
 export default { router, prefix: "/api/animals" };

@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Our Animals - Zoo Connect</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Styles rapides pour s'assurer que la grille est jolie */
+        .animal-grid-large {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        .animal-detailed-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .animal-detailed-card:hover { transform: translateY(-5px); }
+        .animal-detailed-card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 15px; }
+        .region-section { margin-bottom: 40px; border-bottom: 1px solid #eee; }
+        .loading-text { text-align: center; color: #666; font-style: italic; }
+    </style>
 </head>
 <body>
     <header class="top-bar">
@@ -18,11 +39,11 @@
     </header>
 
     <main class="explore-page">
-        <header class="explore-header">
+        <header class="explore-header" style="text-align: center; padding: 40px 20px;">
             <h1>Our Wildlife Family</h1>
             <p>Select a region to discover our residents</p>
             
-            <nav class="region-nav">
+            <nav class="region-nav" style="margin-top: 20px;">
                 <a href="#savanna" class="region-link">🦁 Savanna</a>
                 <a href="#forest" class="region-link">🌲 Forest & Mountains</a>
                 <a href="#jungle" class="region-link">🦜 Jungle</a>
@@ -32,103 +53,82 @@
 
         <section id="savanna" class="region-section">
             <h2 class="region-title">African Savanna</h2>
-            <div class="animal-grid-large">
-                <div class="animal-detailed-card">
-                    <img src="images/lion.jpg" alt="Lion"><div class="card-content"><h3>African Lion</h3><p>The king of the plains.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/giraffe.jpg" alt="Giraffe"><div class="card-content"><h3>Reticulated Giraffe</h3><p>The tallest residents.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/elephants.jpg" alt="Elephant"><div class="card-content"><h3>African Elephant</h3><p>Majestic giants.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/ostrich.jpg" alt="Ostrich"><div class="card-content"><h3>African Ostrich</h3><p>The fastest bird.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/zebra.jpg" alt="Zebra"><div class="card-content"><h3>Plains Zebra</h3><p>Unique black and white stripes.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/rhino.jpg" alt="Rhino"><div class="card-content"><h3>White Rhino</h3><p>Tough skin and powerful horns.</p></div>
-                </div>
-            </div>
+            <div class="animal-grid-large"><p class="loading-text">Loading savanna animals...</p></div>
         </section>
 
         <section id="forest" class="region-section">
             <h2 class="region-title">Forest & Mountains</h2>
-            <div class="animal-grid-large">
-                <div class="animal-detailed-card">
-                    <img src="images/panda.jpg" alt="Panda"><div class="card-content"><h3>Giant Panda</h3><p>Bamboo lovers.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/tiger.jpg" alt="Tiger"><div class="card-content"><h3>Bengal Tiger</h3><p>Master of stealth.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/wolf.jpg" alt="Wolf"><div class="card-content"><h3>Gray Wolf</h3><p>Leader of the pack.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/lynx.jpg" alt="Lynx"><div class="card-content"><h3>Iberian Lynx</h3><p>Rare mountain hunter.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/deers.jpg" alt="Deers"><div class="card-content"><h3>Fallow Deer</h3><p>Gentle forest dwellers.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/bear.jpg" alt="Bear"><div class="card-content"><h3>Grizzly Bear</h3><p>Powerful forest guardian.</p></div>
-                </div>
-            </div>
+            <div class="animal-grid-large"><p class="loading-text">Loading forest animals...</p></div>
         </section>
 
         <section id="jungle" class="region-section">
             <h2 class="region-title">Tropical Jungle</h2>
-            <div class="animal-grid-large">
-                <div class="animal-detailed-card">
-                    <img src="images/monkeys.jpg" alt="Monkeys"><div class="card-content"><h3>Chimpanzees</h3><p>Our smartest cousins.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/parrots.jpg" alt="Parrots"><div class="card-content"><h3>Macaw Parrots</h3><p>Colors of the tropics.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/boa.jpg" alt="Boa"><div class="card-content"><h3>Boa Constrictor</h3><p>Fascinating predator.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/gorilla.jpg" alt="Gorilla"><div class="card-content"><h3>Mountain Gorilla</h3><p>Gentle jungle giant.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/toucan.jpg" alt="Toucan"><div class="card-content"><h3>Toco Toucan</h3><p>Iconic colorful beak.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/panther.jpg" alt="Leopard"><div class="card-content"><h3>Black Panther</h3><p>Shadow of the jungle.</p></div>
-                </div>
-            </div>
+            <div class="animal-grid-large"><p class="loading-text">Loading jungle animals...</p></div>
         </section>
 
         <section id="aquatic" class="region-section">
             <h2 class="region-title">Aquatic & Rivers</h2>
-            <div class="animal-grid-large">
-                <div class="animal-detailed-card">
-                    <img src="images/penguins.jpg" alt="Penguins"><div class="card-content"><h3>Gentoo Penguins</h3><p>Arctic swimmers.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/hippo.jpg" alt="Hippo"><div class="card-content"><h3>Hippopotamus</h3><p>The river horse.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/seals.jpg" alt="Sea Lions"><div class="card-content"><h3>Sea Lions</h3><p>Stars of the coast.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/crocodile.jpg" alt="Crocodile"><div class="card-content"><h3>Nile Crocodile</h3><p>Prehistoric river hunter.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/otter.jpg" alt="Otter"><div class="card-content"><h3>Giant Otter</h3><p>Playful river resident.</p></div>
-                </div>
-                <div class="animal-detailed-card">
-                    <img src="images/flamingo.jpg" alt="Flamingo"><div class="card-content"><h3>Pink Flamingo</h3><p>Elegant lagoon bird.</p></div>
-                </div>
-            </div>
+            <div class="animal-grid-large"><p class="loading-text">Loading aquatic animals...</p></div>
         </section>
 
-        <div class="back-home">
+        <div class="back-home" style="text-align: center; padding: 40px;">
             <a href="index.html" class="btn-secondary">← Back to Home</a>
         </div>
     </main>
+
+    <script>
+        async function loadAnimals() {
+            try {
+                // On récupère les animaux via l'API
+                const response = await fetch('/api/animals');
+                if (!response.ok) throw new Error('Erreur réseau');
+                
+                const animals = await response.json();
+
+                // Liste des habitats correspondant aux IDs des sections HTML
+                const habitats = ['savanna', 'forest', 'jungle', 'aquatic'];
+
+                habitats.forEach(habitat => {
+                    const container = document.querySelector(`#${habitat} .animal-grid-large`);
+                    
+                    // On filtre les animaux actifs pour cet habitat précis
+                    const filteredAnimals = animals.filter(a => a.habitat.toLowerCase() === habitat);
+
+                    if (filteredAnimals.length === 0) {
+                        container.innerHTML = '<p>No animals currently visible in this area.</p>';
+                    } else {
+                        container.innerHTML = filteredAnimals.map(animal => `
+                            <div class="animal-detailed-card">
+                                <img src="images/${animal.species.toLowerCase()}.jpg" alt="${animal.name}" onerror="this.src='images/default.jpg'">
+                                <div class="card-content">
+                                    <h3>${escapeHtml(animal.name)}</h3>
+                                    <p style="color: #667eea; font-weight: bold; margin-bottom: 5px;">
+                                        ${escapeHtml(animal.species)} | ${animal.age} years old</p>
+                                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">
+                                    <b>Habitat :</b> ${escapeHtml(animal.habitat.charAt(0).toUpperCase() + animal.habitat.slice(1))}</p>
+                                    <p class="description">${escapeHtml(animal.description || 'A wonderful resident of our zoo.')}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                });
+            } catch (error) {
+                console.error("Erreur:", error);
+                document.querySelectorAll('.animal-grid-large').forEach(el => {
+                    el.innerHTML = '<p style="color: red;">Error loading animals. Please try again later.</p>';
+                });
+            }
+        }
+
+        // Sécurité pour éviter l'injection de code (XSS)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Lancer le chargement
+        window.onload = loadAnimals;
+    </script>
 </body>
 </html>
