@@ -242,3 +242,13 @@ html {
     background: #4CAF50;
     margin: 10px auto;
 }
+
+.event-location {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.event-footer a:hover {
+    text-decoration: underline !important;
+}
