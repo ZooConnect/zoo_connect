@@ -1,5 +1,4 @@
-import { isLogged, logout, update } from "../services/user.service.js";
-import Utils from "../utils/Utils.js";
+import { isLogged, logout, update } from "../services/auth.service.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const pName = document.getElementById("displayName");
