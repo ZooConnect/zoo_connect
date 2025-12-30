@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-/* --- Base --- */
+/* --- 1. BASE --- */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -11,18 +11,12 @@ body {
     min-height: 100vh;
 }
 
-/* --- Centrage Login/Signup --- */
-body:has(.auth-container) {
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- Navigation --- */
+/* --- 2. NAVIGATION --- */
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 5%;
+    padding: 8px 5%; 
     background: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: sticky;
@@ -30,19 +24,20 @@ body:has(.auth-container) {
     z-index: 1000;
 }
 
-.logo { font-size: 1.4rem; font-weight: 700; color: #2d6a4f; text-decoration: none; }
+.logo { font-size: 1.1rem; font-weight: 700; color: #2d6a4f; text-decoration: none; }
 .auth-links { display: flex; gap: 20px; align-items: center; }
-.auth-links a { text-decoration: none; color: #333; font-weight: 500; }
-.login-link { padding: 8px 16px; border-radius: 6px; background: #f0f0f0; }
-.signup-link { background: #2d6a4f !important; color: white !important; padding: 8px 16px; border-radius: 6px; }
+.auth-links a { text-decoration: none; color: #333; font-weight: 500; font-size: 0.9rem; }
+.login-link { padding: 3px 12px; border-radius: 6px; background: #f0f0f0; }
+.signup-link { background: #2d6a4f !important; color: white !important; padding: 3px 12px; border-radius: 6px; }
 
-/* --- HERO SECTION (L'image de fond) --- */
+/* --- 3. ACCUEIL --- */
 .hero-section {
-    height: 50vh;
-    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&q=80&w=1400');
+    height: 62vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), 
+                url('../images/background.jpg'); 
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,65 +55,49 @@ body:has(.auth-container) {
     border-radius: 50px; 
     font-weight: 600;
     transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
 }
-.btn-explore:hover { background: #388E3C; transform: scale(1.05); }
+.btn-explore:hover {
+    background: #2E7D32;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+}
 
-/* --- GRILLE DE SERVICES --- */
-.services-container { padding: 50px 5%; }
+/* --- 4. ACCUEIL - GRILLE DE SERVICES --- */
+.services-container { 
+    padding: 30px 5%; 
+    margin-top: 20px;
+}
+
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    max-width: 1100px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+    gap: 20px;
+    max-width: 900px;
     margin: 0 auto;
+    justify-content: center;
 }
 
 .service-card {
     background: white;
-    padding: 35px 25px;
-    border-radius: 20px;
+    padding: 15px 10px;
+    border-radius: 15px;
     text-align: center;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     border: 1px solid #eee;
     transition: 0.3s;
 }
 
-.service-card:hover { transform: translateY(-10px); border-color: #4CAF50; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-.card-icon { font-size: 3rem; display: block; margin-bottom: 15px; }
-.service-card h3 { color: #2d6a4f; margin: 10px 0; font-size: 1.4rem; }
-.service-card p { color: #666; font-size: 0.9rem; line-height: 1.5; }
+.service-card:hover { transform: translateY(-5px); border-color: #4CAF50; }
+.card-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+.service-card h3 { color: #2d6a4f; margin: 5px 0; font-size: 1rem; }
+.service-card p { color: #666; font-size: 0.8rem; line-height: 1.4; }
 
-/* --- TON AUTH CONTAINER (LOGIN) --- */
-.auth-container {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 400px;
-}
-.input-group { margin-bottom: 20px; }
-.input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-button { width: 100%; padding: 14px; background: #2d6a4f; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
-/* --- Explore Page Styles --- */
-.explore-page {
-    padding-bottom: 50px;
-}
-
-.explore-header {
-    text-align: center;
-    padding: 60px 20px;
-    background-color: #f0f7f4;
-}
-
-.explore-header h1 {
-    font-size: 3rem;
-    color: #2d6a4f;
-    margin-bottom: 10px;
-}
+/* --- 5. STYLE EXPLORE --- */
+.explore-page { padding-bottom: 50px; }
+.explore-header { text-align: center; padding: 60px 20px; background-color: #f0f7f4; }
+.explore-header h1 { font-size: 3rem; color: #2d6a4f; margin-bottom: 10px; }
 
 .animal-grid-large {
     display: grid;
@@ -137,118 +116,45 @@ button { width: 100%; padding: 14px; background: #2d6a4f; color: white; border: 
     transition: 0.3s;
 }
 
-.animal-detailed-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-}
+.animal-detailed-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+.animal-detailed-card img { width: 100%; height: 250px; object-fit: cover; }
+.card-content { padding: 25px; }
+.card-content h3 { margin: 10px 0; color: #1b4332; font-size: 1.5rem; }
+.card-content p { color: #666; line-height: 1.6; font-size: 0.95rem; }
 
-.animal-detailed-card img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-}
-
-.card-content {
-    padding: 25px;
-}
-
-.category {
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #4CAF50;
-    letter-spacing: 1px;
-}
-
-.card-content h3 {
-    margin: 10px 0;
-    color: #1b4332;
-    font-size: 1.5rem;
-}
-
-.card-content p {
-    color: #666;
-    line-height: 1.6;
-    font-size: 0.95rem;
-}
-
-.back-home {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.btn-secondary {
-    text-decoration: none;
-    color: #2d6a4f;
-    font-weight: 600;
-    border: 2px solid #2d6a4f;
-    padding: 10px 25px;
-    border-radius: 50px;
-    transition: 0.3s;
-}
-
-.btn-secondary:hover {
-    background: #2d6a4f;
-    color: white;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-.region-nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 25px;
-    flex-wrap: wrap;
-}
-
-.region-link {
-    text-decoration: none;
-    color: #1b4332;
+/* --- 6. AUTH / LOGIN --- */
+body:has(.auth-container) { justify-content: center; align-items: center; }
+.auth-container {
     background: white;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: 0.3s;
-    border: 1px solid #e0eadd;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 400px;
 }
+.input-group { margin-bottom: 20px; }
+.input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+button { width: 100%; padding: 14px; background: #2d6a4f; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-.region-link:hover {
-    background: #2d6a4f;
-    color: white;
-    transform: translateY(-3px);
-}
+/* --- AUTRES --- */
+.back-home { text-align: center; margin-top: 40px; }
+.btn-secondary { text-decoration: none; color: #2d6a4f; font-weight: 600; border: 2px solid #2d6a4f; padding: 10px 25px; border-radius: 50px; transition: 0.3s; }
+.btn-secondary:hover { background: #2d6a4f; color: white; }
+html { scroll-behavior: smooth; }
+.region-nav { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+.region-link { text-decoration: none; color: #1b4332; background: white; padding: 10px 20px; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #e0eadd; }
+.region-link:hover { background: #2d6a4f; color: white; transform: translateY(-3px); }
+.region-section { padding-top: 40px; }
+.region-title { text-align: center; color: #2d6a4f; font-size: 2rem; margin: 40px 0 20px; position: relative; }
+.region-title::after { content: ''; display: block; width: 50px; height: 3px; background: #4CAF50; margin: 10px auto; }
 
-.region-section {
-    padding-top: 40px;
-}
-
-.region-title {
-    text-align: center;
-    color: #2d6a4f;
-    font-size: 2rem;
-    margin: 40px 0 20px;
-    position: relative;
-}
-
-.region-title::after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 3px;
+.event-footer .btn-primary {
+    padding: 6px 15px;
+    font-size: 0.85rem;
     background: #4CAF50;
-    margin: 10px auto;
+    transition: 0.3s;
 }
-
-.event-location {
-    margin-top: 10px;
-    font-size: 0.95rem;
-    color: #444;
-}
-
-.event-footer a:hover {
-    text-decoration: underline !important;
+.event-footer .btn-primary:hover {
+    background: #388E3C;
+    transform: scale(1.05);
 }
