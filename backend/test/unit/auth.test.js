@@ -205,19 +205,15 @@ describe("PUT /api/auth/me", () => {
     });
 
     it("should update the user profile successfully", async () => {
-        await request(app)
+        const res = await request(app)
             .put(`/api/auth/me`)
             .send({
                 name: "lol"
             })
             .set("Cookie", cookie);
 
-        const res = await request(app)
-            .get(`/api/auth/me`)
-            .set("Cookie", cookie);
-
         expect(res.status).toBe(200);
-        expect(res.body.name).toBe("lol");
-        expect(res.body).not.toHaveProperty("passwordHash");
+        expect(res.body._doc.name).toBe("lol");
+        expect(res.body._doc).not.toHaveProperty("passwordHash");
     });
 });

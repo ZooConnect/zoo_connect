@@ -1,4 +1,4 @@
-export const createCookie = async (res, token) => {
+export const createCookie = (res, token) => {
     // on met le token dans un http-only
     res.cookie("token", token, {
         httpOnly: true,

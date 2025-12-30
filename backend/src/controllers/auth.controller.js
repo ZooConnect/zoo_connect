@@ -40,11 +40,8 @@ export const login = async (req, res, next) => {
         const valid = await comparePassword(password, user.passwordHash);
         if (!valid) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
 
-        const payload = {
-            id: user._id || user.id,
-            email: user.email,
-            name: user.name
-        };
+        const payload = user.toObject();
+        delete payload.passwordHash;
         const token = createToken(payload);
         createCookie(res, token);
 
@@ -64,10 +61,8 @@ export const logout = (req, res) => {
 
 export const getUser = async (req, res) => {
     // req.user est injecté par authMiddleware
-    console.log(req);
-
     respond(res, MESSAGES.USER.FOUND, {
-        id: req.user.id,
+        id: req.user._id,
         name: req.user.name,
         email: req.user.email,
         membershipType: req.user.membershipType,
@@ -78,7 +73,7 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user._id;
         const updates = req.body;
 
         if (updates.email) {
@@ -99,8 +94,10 @@ export const updateUser = async (req, res, next) => {
         if (!updatedUser) {
             return respond(res, MESSAGES.USER.NOT_FOUND);
         }
-
-        respond(res, MESSAGES.USER.VALID_MODIFICATION);
+        const payload = updatedUser.toObject();
+        const token = createToken(payload);
+        createCookie(res, token);
+        respond(res, MESSAGES.USER.VALID_MODIFICATION, updatedUser);
     } catch (error) {
         next(error);
     }
