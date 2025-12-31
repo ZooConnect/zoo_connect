@@ -68,7 +68,7 @@ function renderBookings(bookingsData) {
   containerEl.innerHTML = bookingsData.map(booking => `
     <div class="booking-card ${booking.status === 'cancelled' ? 'cancelled' : ''}">
       <div class="booking-details">
-        <div class="event-title">${booking.eventId?.title || 'Événement'}</div>
+        <div class="event-title">${booking.eventId?.title || 'Event'}</div>
         <div class="event-info">
           <div class="info-item">
             <span class="info-label">Date</span>
@@ -79,7 +79,7 @@ function renderBookings(bookingsData) {
             <span class="info-value">${booking.eventId?.type || 'N/A'}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Billets</span>
+            <span class="info-label">Tickets</span>
             <span class="info-value">${booking.quantity}</span>
           </div>
           <div class="info-item">
@@ -91,7 +91,7 @@ function renderBookings(bookingsData) {
         </div>
         ${booking.cancelledAt ? `
           <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
-            Annulée le ${formatDate(booking.cancelledAt)}
+            Cancel the ${formatDate(booking.cancelledAt)}
           </div>
         ` : ''}
         ${booking.description ? `
@@ -103,14 +103,14 @@ function renderBookings(bookingsData) {
       <div class="actions">
         ${booking.status === 'active' ? `
           <button class="btn-reprogram" onclick="openReprogramModal('${booking._id}')">
-            Reprogrammer
+            Reschedule
           </button>
           <button class="btn-cancel" onclick="openCancelModal('${booking._id}')">
-            Annuler
+            Cancel
           </button>
         ` : `
           <button class="btn-secondary" disabled style="opacity: 0.5;">
-            Réservation annulée
+            Reservation cancelled
           </button>
         `}
       </div>
@@ -153,12 +153,12 @@ async function submitReprogramForm() {
   const reason = document.getElementById('reason').value;
 
   if (!newDate && !reason) {
-    showAlert('Veuillez entrer une nouvelle date', 'error');
+    showAlert('Please enter a new date', 'error');
     return;
   }
 
   if (!newDate) {
-    showAlert('Veuillez entrer une nouvelle date', 'error');
+    showAlert('Please enter a new date', 'error');
     return;
   }
 
@@ -185,7 +185,7 @@ async function submitReprogramForm() {
       throw new Error(error.message || 'Failed to reprogram booking');
     }
 
-    showAlert('Réservation reprogrammée avec succès', 'success');
+    showAlert('Reservation rescheduled successfully', 'success');
     closeReprogramModal();
     loadBookings();
   } catch (error) {
@@ -215,7 +215,7 @@ async function submitCancelForm() {
       throw new Error(error.message || 'Failed to cancel booking');
     }
 
-    showAlert('Réservation annulée avec succès', 'success');
+    showAlert('Reservation cancelled', 'success');
     closeCancelModal();
     loadBookings();
   } catch (error) {

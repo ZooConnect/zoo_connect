@@ -44,4 +44,3 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
 });
 export default app;
-
