@@ -12,36 +12,51 @@ dotenv.config();
 
 const app = express();
 
-// Middlewares
+// --- 1. Middlewares ---
 app.use(express.json());
 app.use(cookieParser());
-app.use(errorHandler);
 
+// --- 2. Connexion DB ---
 connectDB();
-console.log("Base de données bien chargée")
+console.log("Base de données bien chargée");
 
-// Routes
-/*
-const packageJsonPath = path.join(__dirname, '..', 'package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));*/
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// --- 3. Routes (Chargement AUTOMATIQUE) ---
+// Note: On place les routes AVANT le serveur statique pour éviter les conflits
 const autoDir = path.join(__dirname, "routes");
-if (fs.existsSync(autoDir)) {
-  const files = fs.readdirSync(autoDir).filter(f => f.endsWith(".route.js"));
-  for (const f of files) {
-    const full = path.join(autoDir, f);
-    const mod = await import(pathToFileURL(full).href);
-    if (mod.default?.router && mod.default?.prefix) {
-      app.use(mod.default.prefix, mod.default.router);
+
+// Fonction pour charger les routes même dans les sous-dossiers (ex: routes/admin/)
+const loadRoutes = async (dir) => {
+    if (!fs.existsSync(dir)) return;
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            await loadRoutes(fullPath); // Explore les sous-dossiers
+        } else if (entry.name.endsWith(".route.js")) {
+            const mod = await import(pathToFileURL(fullPath).href);
+            if (mod.default?.router && mod.default?.prefix) {
+                app.use(mod.default.prefix, mod.default.router);
+            }
+        }
     }
-  }
-}
+};
 
-// Servir frontend
+await loadRoutes(autoDir);
+
+// --- 4. Servir frontend (Fichiers statiques) ---
 app.use(express.static(path.join(process.cwd(), '../frontend/src')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
-});
-export default app;
 
+// --- 5. Catch-all (POUR LE FRONTEND UNIQUEMENT) ---
+// Changement crucial : on exclut les chemins commençant par /api
+app.get(/^(?!\/api).+/, (req, res) => {
+    res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
+});
+
+// --- 6. Error Handler (DOIT ÊTRE EN DERNIER) ---
+app.use(errorHandler);
+
+export default app;

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Zoo Connect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* --- Dashboard Layout --- */
+        .dashboard-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-intro {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- Tasks Grid --- */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-left: 6px solid #2d6a4f;
+            transition: 0.3s;
+        }
+
+        .task-card:hover { transform: translateY(-5px); }
+
+        .time-tag {
+            background: #d8f3dc;
+            color: #1b4332;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* --- Modal & Anti-Overflow Fix --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(27, 67, 50, 0.8);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            /* Critical Fix: scroll if content is too long */
+            max-height: 85vh; 
+            overflow-y: auto; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #2d6a4f; }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+        }
+
+        .btn-save { background: #2d6a4f; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; }
+        .btn-cancel { background: #f4f4f4; color: #666; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <a href="index.html" class="logo">Zoo Connect 🌿</a>
+        <nav class="auth-links">
+            <a href="index.html">Home</a>
+            <button onclick="logout()" class="login-link" style="border:none; background:none; cursor:pointer;">Logout</button>
+        </nav>
+    </header>
+
+    <div class="dashboard-wrapper">
+        <div class="page-intro">
+            <div>
+                <h1>Feeding Schedule</h1>
+                <p style="color: #666;">Manage daily nutrition tasks for the zoo residents.</p>
+            </div>
+            <button class="btn-explore" style="border:none; cursor:pointer;" onclick="openModal()">+ New Task</button>
+        </div>
+
+        <div id="tasksContainer" class="tasks-grid">
+            </div>
+    </div>
+
+    <div id="addScheduleModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; color: #1b4332;">Create New Task</h2>
+            <form id="scheduleForm">
+                <div class="input-group">
+                    <label>Resident Animal</label>
+                    <select id="animalSelect" required>
+                        <option value="">Loading animals...</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Assigned Staff</label>
+                    <select id="staffSelect" required>
+                        <option value="">Loading staff...</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>Time</label>
+                        <input type="time" id="feedingTime" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Food Type</label>
+                        <input type="text" id="foodType" placeholder="e.g. Meat" required>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn-save">Save Schedule</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. Load the grid of schedules
+        async function loadPlanning() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('/api/feeding-schedules', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const container = document.getElementById('tasksContainer');
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;">No tasks scheduled for today.</p>';
+                    return;
+                }
+
+                container.innerHTML = data.map(item => `
+                    <div class="task-card">
+                        <span class="time-tag">🕒 ${item.feeding_time}</span>
+                        <h3 style="color:#1b4332;">${item.animal_id?.name || 'Unknown'}</h3>
+                        <p style="font-size:0.8rem; font-weight:bold; color:#2d6a4f;">${item.animal_id?.species || '-'}</p>
+                        <p style="margin: 10px 0;">🍴 <strong>Food:</strong> ${item.food_type}</p>
+                        <div style="border-top:1px solid #eee; padding-top:10px; font-size:0.85rem; color:#777;">
+                            👤 Staff: ${item.staff_id?.name || 'Unassigned'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Failed to load schedules", err);
+            }
+        }
+
+        // 2. Open Modal and fill Dropdowns
+        async function openModal() {
+            document.getElementById('addScheduleModal').classList.add('modal-active');
+            const token = localStorage.getItem('token');
+
+            try {
+                // Fetch Animals
+                const resAnim = await fetch('/api/animals');
+                const animals = await resAnim.json();
+                document.getElementById('animalSelect').innerHTML = animals.map(a => 
+                    `<option value="${a._id}">${a.name} (${a.species})</option>`).join('');
+
+                // Fetch Staff members
+                const resStaff = await fetch('/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const staff = await resStaff.json();
+                document.getElementById('staffSelect').innerHTML = staff.map(s => 
+                    `<option value="${s._id}">${s.name}</option>`).join('');
+
+            } catch (err) {
+                console.error("Error loading modal data", err);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('addScheduleModal').classList.remove('modal-active');
+        }
+
+        // 3. Handle Save
+        document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            const payload = {
+                animal_id: document.getElementById('animalSelect').value,
+                staff_id: document.getElementById('staffSelect').value,
+                feeding_time: document.getElementById('feedingTime').value,
+                food_type: document.getElementById('foodType').value
+            };
+
+            const res = await fetch('/api/feeding-schedules', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                closeModal();
+                loadPlanning();
+            } else {
+                alert("Error saving task. Make sure you are logged in as admin/staff.");
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        window.onload = loadPlanning;
+    </script>
+</body>
+</html>
