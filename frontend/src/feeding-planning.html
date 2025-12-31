@@ -6,7 +6,10 @@
     <title>Staff Dashboard - Zoo Connect</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+<<<<<<< HEAD
         /* --- Dashboard Layout --- */
+=======
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
         .dashboard-wrapper {
             max-width: 1200px;
             margin: 40px auto;
@@ -24,7 +27,10 @@
             align-items: center;
         }
 
+<<<<<<< HEAD
         /* --- Tasks Grid --- */
+=======
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
         .tasks-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -37,6 +43,7 @@
             padding: 25px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border-left: 6px solid #2d6a4f;
+<<<<<<< HEAD
             transition: 0.3s;
         }
 
@@ -54,6 +61,12 @@
         }
 
         /* --- Modal & Anti-Overflow Fix --- */
+=======
+            position: relative;
+        }
+
+        /* --- MODAL FIXES --- */
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
         .modal {
             display: none;
             position: fixed;
@@ -69,16 +82,25 @@
 
         .modal-content {
             background: white;
+<<<<<<< HEAD
             padding: 35px;
             border-radius: 25px;
             width: 90%;
             max-width: 500px;
             /* Critical Fix: scroll if content is too long */
+=======
+            padding: 40px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 480px;
+            /* Prevents overflowing the screen */
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
             max-height: 85vh; 
             overflow-y: auto; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
 
+<<<<<<< HEAD
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #2d6a4f; }
         
@@ -92,6 +114,15 @@
 
         .btn-save { background: #2d6a4f; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; }
         .btn-cancel { background: #f4f4f4; color: #666; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 10px; }
+=======
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
     </style>
 </head>
 <body>
@@ -99,8 +130,13 @@
     <header class="top-bar">
         <a href="index.html" class="logo">Zoo Connect 🌿</a>
         <nav class="auth-links">
+<<<<<<< HEAD
             <a href="index.html">Home</a>
             <button onclick="logout()" class="login-link" style="border:none; background:none; cursor:pointer;">Logout</button>
+=======
+            <a href="index.html">Main Page</a>
+            <button onclick="logout()" class="login-link" style="border:none; cursor:pointer;">Logout</button>
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
         </nav>
     </header>
 
@@ -108,6 +144,7 @@
         <div class="page-intro">
             <div>
                 <h1>Feeding Schedule</h1>
+<<<<<<< HEAD
                 <p style="color: #666;">Manage daily nutrition tasks for the zoo residents.</p>
             </div>
             <button class="btn-explore" style="border:none; cursor:pointer;" onclick="openModal()">+ New Task</button>
@@ -115,11 +152,22 @@
 
         <div id="tasksContainer" class="tasks-grid">
             </div>
+=======
+                <p style="color: #666;">Track and manage daily nutrition.</p>
+            </div>
+            <button class="btn-explore" onclick="openModal()">+ New Task</button>
+        </div>
+        <div id="tasksContainer" class="tasks-grid"></div>
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
     </div>
 
     <div id="addScheduleModal" class="modal">
         <div class="modal-content">
+<<<<<<< HEAD
             <h2 style="margin-bottom: 20px; color: #1b4332;">Create New Task</h2>
+=======
+            <h2 style="margin-bottom: 25px; color: #2d6a4f;">Add Feeding Task</h2>
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
             <form id="scheduleForm">
                 <div class="input-group">
                     <label>Resident Animal</label>
@@ -127,15 +175,24 @@
                         <option value="">Loading animals...</option>
                     </select>
                 </div>
+<<<<<<< HEAD
 
                 <div class="input-group">
                     <label>Assigned Staff</label>
+=======
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Assigned Staff Member</label>
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                     <select id="staffSelect" required>
                         <option value="">Loading staff...</option>
                     </select>
                 </div>
+<<<<<<< HEAD
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+=======
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                     <div class="input-group">
                         <label>Time</label>
                         <input type="time" id="feedingTime" required>
@@ -145,20 +202,32 @@
                         <input type="text" id="foodType" placeholder="e.g. Meat" required>
                     </div>
                 </div>
+<<<<<<< HEAD
 
                 <div style="margin-top: 20px;">
                     <button type="submit" class="btn-save">Save Schedule</button>
                     <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+=======
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="submit" style="flex:2; background:#2d6a4f; color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-weight:bold;">Save</button>
+                    <button type="button" onclick="closeModal()" style="flex:1; background:#f4f4f4; color:#666; border:none; padding:14px; border-radius:12px; cursor:pointer;">Cancel</button>
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+<<<<<<< HEAD
         // 1. Load the grid of schedules
         async function loadPlanning() {
             const token = localStorage.getItem('token');
             try {
+=======
+        async function loadPlanning() {
+            try {
+                const token = localStorage.getItem('token');
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                 const res = await fetch('/api/feeding-schedules', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -166,12 +235,17 @@
                 const container = document.getElementById('tasksContainer');
 
                 if (!data || data.length === 0) {
+<<<<<<< HEAD
                     container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;">No tasks scheduled for today.</p>';
+=======
+                    container.innerHTML = '<p>No tasks found.</p>';
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                     return;
                 }
 
                 container.innerHTML = data.map(item => `
                     <div class="task-card">
+<<<<<<< HEAD
                         <span class="time-tag">🕒 ${item.feeding_time}</span>
                         <h3 style="color:#1b4332;">${item.animal_id?.name || 'Unknown'}</h3>
                         <p style="font-size:0.8rem; font-weight:bold; color:#2d6a4f;">${item.animal_id?.species || '-'}</p>
@@ -199,10 +273,33 @@
                     `<option value="${a._id}">${a.name} (${a.species})</option>`).join('');
 
                 // Fetch Staff members
+=======
+                        <h3 class="animal-name">${item.animal_id?.name || 'Unknown'}</h3>
+                        <p>Time: ${item.feeding_time}</p>
+                        <p>Staff: ${item.staff_id?.name || 'Unassigned'}</p>
+                    </div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function openModal() {
+            document.getElementById('addScheduleModal').classList.add('modal-active');
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Fetch Animals
+                const resAnimals = await fetch('/api/animals');
+                const animals = await resAnimals.json();
+                document.getElementById('animalSelect').innerHTML = animals.map(a => 
+                    `<option value="${a._id}">${a.name} (${a.species})</option>`).join('');
+
+                // Fetch Staff
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
                 const resStaff = await fetch('/api/admin/users', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const staff = await resStaff.json();
+<<<<<<< HEAD
                 document.getElementById('staffSelect').innerHTML = staff.map(s => 
                     `<option value="${s._id}">${s.name}</option>`).join('');
 
@@ -242,6 +339,23 @@
                 alert("Error saving task. Make sure you are logged in as admin/staff.");
             }
         });
+=======
+                
+                const staffSelect = document.getElementById('staffSelect');
+                if (staff && staff.length > 0) {
+                    staffSelect.innerHTML = staff.map(s => 
+                        `<option value="${s._id}">${s.name}</option>`).join('');
+                } else {
+                    staffSelect.innerHTML = '<option value="">No staff found</option>';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('staffSelect').innerHTML = '<option value="">Error loading staff</option>';
+            }
+        }
+
+        function closeModal() { document.getElementById('addScheduleModal').classList.remove('modal-active'); }
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
 
         function logout() {
             localStorage.removeItem('token');

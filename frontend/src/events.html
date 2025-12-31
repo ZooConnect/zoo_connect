@@ -45,8 +45,8 @@
 
     <div class="container">
         <header>
-            <h1>🦁 Zoo Events</h1>
-            <p>Activités du jour et événements à venir</p>
+            <h1>Discover the Zoo differently 🦁</h1>
+            <p>Activities of the day and events to come</p>
         </header>
 
         <div class="filters-section">
@@ -57,13 +57,13 @@
             <div class="filter-group">
                 <label>Type</label>
                 <select id="typeFilter">
-                    <option value="">Toutes les activités</option>
-                    <option value="feeding">Nourrissage</option>
-                    <option value="show">Spectacle</option>
-                    <option value="tour">Visite Guidée</option>
+                    <option value="">All activities</option>
+                    <option value="feeding">Feeding</option>
+                    <option value="show">Show</option>
+                    <option value="tour">Guided Tour</option>
                 </select>
             </div>
-            <button class="btn" style="background: #764ba2; color: white;" onclick="loadEventsFromUI()">Filtrer</button>
+            <button class="btn" style="background: #764ba2; color: white;" onclick="loadEventsFromUI()">Filter</button>
         </div>
 
         <div id="eventsContainer" class="events-grid">
@@ -98,17 +98,17 @@
                             <div class="event-body">
                                 <div class="event-date">🕒 ${time} | 📅 ${date}</div>
                                 <p>${event.description}</p>
-                                <div class="event-location">📍 Lieu: ${event.location || 'Zoo Central'}</div>
+                                <div class="event-location">Location : ${event.location || 'Zoo Central'}</div>
                             </div>
                             <div class="event-footer">
-                                <a href="/images/zoo-map.jpg" target="_blank" class="map-link">🗺️ Voir Plan</a>
-                                <button class="btn btn-primary" onclick="handleBooking('${event._id}')">Réserver</button>
+                                <a href="/images/zoo-map.jpg" target="_blank" class="map-link">🗺️ See the map</a>
+                                <button class="btn btn-primary" onclick="handleBooking('${event._id}')">Book</button>
                             </div>
                         </article>
                     `;
                 }).join('');
             } catch (err) {
-                container.innerHTML = "<p style='color:red'>Erreur lors du chargement des données.</p>";
+                container.innerHTML = "<p style='color:red'>Error loading data.</p>";
             }
         }
 
@@ -117,7 +117,7 @@
             const token = localStorage.getItem('token');
 
             if (!token) {
-                showAlert("Vous devez être connecté pour réserver !", "error");
+                showAlert("You must be logged in to book!", "error");
                 setTimeout(() => window.location.href = "login.html", 2000);
                 return;
             }
@@ -135,13 +135,13 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    showAlert("Réservation confirmée !", "success");
+                    showAlert("Reservation confirmed !", "success");
                     setTimeout(() => window.location.href = "bookings.html", 1500);
                 } else {
-                    showAlert(data.message || "Erreur lors de la réservation", "error");
+                    showAlert(data.message || "Error during booking", "error");
                 }
             } catch (err) {
-                showAlert("Erreur réseau.", "error");
+                showAlert("Network error.", "error");
             }
         }
 

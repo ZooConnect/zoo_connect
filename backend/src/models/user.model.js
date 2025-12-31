@@ -7,8 +7,13 @@ const userSchema = new mongoose.Schema(
         email: { type: String, required: true, unique: true },
         passwordHash: { type: String, required: [function () { return this.isNew; }, 'Password is required on creation'] },
         role: { 
+<<<<<<< HEAD
         type: String, 
             enum: ['admin', 'staff', 'visitor'], 
+=======
+            type: String, 
+            enum: ['visitor', 'staff', 'admin'], 
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
             default: 'visitor' 
         },
         membershipType: {

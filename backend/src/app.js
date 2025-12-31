@@ -49,6 +49,7 @@ await loadRoutes(autoDir);
 
 // --- 4. Servir frontend (Fichiers statiques) ---
 app.use(express.static(path.join(process.cwd(), '../frontend/src')));
+<<<<<<< HEAD
 
 // --- 5. Catch-all (POUR LE FRONTEND UNIQUEMENT) ---
 // Changement crucial : on exclut les chemins commençant par /api
@@ -60,3 +61,16 @@ app.get(/^(?!\/api).+/, (req, res) => {
 app.use(errorHandler);
 
 export default app;
+=======
+app.get('*', (req, res) => {
+  res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
+});
+<<<<<<< HEAD
+export default app;
+=======
+
+app.use(errorHandler);
+export default app;
+
+>>>>>>> 553d819c20bf6e85e4719b572d17c46dc69fae04
+>>>>>>> d4059f5331c357aae44f5f72a7d7fa299d13b663
