@@ -15,7 +15,6 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(errorHandler);
 
 connectDB();
 console.log("Base de données bien chargée")
@@ -43,5 +42,7 @@ app.use(express.static(path.join(process.cwd(), '../frontend/src')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
 });
+
+app.use(errorHandler);
 export default app;
 

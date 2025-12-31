@@ -14,4 +14,8 @@ export default {
         NOT_FOUND: { message: 'User not found.', status: 404 },
         VALID_MODIFICATION: { message: 'User updated sucessfully!', status: 200 }
     },
+
+    EVENT: {
+        LOAD_ALL_EVENTS_SUCCESS: { message: "Successfully events loaded!", status: 200 }
+    }
 };
