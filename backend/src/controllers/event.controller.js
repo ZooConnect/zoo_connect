@@ -1,172 +1,74 @@
-import Event from "../models/event.model.js";
-import { buildEventFilter, validateEventQueryParams, validateEventData } from "../utils/event.helper.js";
+import * as eventService from "../services/event.service.js";
 
-export async function listEvents(req, res, next) {
+import { respond } from "../utils/response.helper.js";
+
+import MESSAGES from "../constants/messages.js";
+
+export const getEvents = async (req, res, next) => {
   try {
-    // Validate query parameters
-    const validation = validateEventQueryParams(req.query);
-    if (!validation.valid) {
-      return res.status(400).json({
-        error: true,
-        message: validation.message
-      });
-    }
-
-    const filter = buildEventFilter(req.query);
-    const events = await Event.find(filter).sort({ start_date: 1 }).lean();
-
-    return res.status(200).json(events);
-  } catch (err) {
-    console.error('Error in listEvents:', err);
-    return next(err);
+    const ongoingEvents = await eventService.findOngoingEvents();
+    const upcomingEvents = await eventService.findUpcomingEvents();
+    const events = { ...ongoingEvents, ...upcomingEvents };
+    respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, events);
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function getEventById(req, res, next) {
-  try {
-    const { id } = req.params;
-
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid event ID format'
-      });
-    }
-
-    const event = await Event.findById(id).lean();
-
-    if (!event) {
-      return res.status(404).json({
-        error: true,
-        message: 'Event not found'
-      });
-    }
-
-    return res.status(200).json(event);
-  } catch (err) {
-    console.error('Error in getEventById:', err);
-    return next(err);
-  }
+export const getEventById = async (req, res, next) => {
+  const eventId = req.body.id;
 }
 
-export async function createEvent(req, res, next) {
-  try {
-    const { title, description, start_date, end_date, type, status } = req.body;
+export const createEvent = async (req, res, next) => {
 
-    // Validate required fields and data
-    const validation = validateEventData({ title, start_date, end_date, type });
-    if (!validation.valid) {
-      return res.status(400).json({
-        error: true,
-        message: validation.message
-      });
-    }
-
-    // Normalize type to lowercase before saving
-    const normalizedType = type ? String(type).toLowerCase() : undefined;
-
-    // Create event with Mongoose
-    const event = await Event.create({
-      title,
-      description,
-      start_date,
-      end_date,
-      type: normalizedType,
-      status: status || 'active'
-    });
-
-    return res.status(201).json(event);
-  } catch (err) {
-    // Handle Mongoose validation errors
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        error: true,
-        message: err.message
-      });
-    }
-    console.error('Error in createEvent:', err);
-    return next(err);
-  }
 }
 
-export async function updateEvent(req, res, next) {
-  try {
-    const { id } = req.params;
+export const updateEvent = async (req, res, next) => {
 
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid event ID format'
-      });
-    }
-
-    // Find the event first
-    const event = await Event.findById(id);
-
-    if (!event) {
-      return res.status(404).json({
-        error: true,
-        message: 'Event not found'
-      });
-    }
-
-    // Update fields if provided
-    const allowedFields = ['title', 'description', 'start_date', 'end_date', 'type', 'status'];
-    allowedFields.forEach(field => {
-      if (req.body[field] !== undefined) {
-        // Normalize type to lowercase
-        if (field === 'type' && req.body[field]) {
-          event[field] = String(req.body[field]).toLowerCase();
-        } else {
-          event[field] = req.body[field];
-        }
-      }
-    });
-
-    // Save (triggers pre-save middleware)
-    await event.save();
-
-    return res.status(200).json(event);
-  } catch (err) {
-    // Handle Mongoose validation errors
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        error: true,
-        message: err.message
-      });
-    }
-    console.error('Error in updateEvent:', err);
-    return next(err);
-  }
 }
 
-export async function deleteEvent(req, res, next) {
-  try {
-    const { id } = req.params;
+export const deleteEvent = async (req, res, next) => {
 
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid event ID format'
-      });
-    }
-
-    const event = await Event.findByIdAndDelete(id);
-
-    if (!event) {
-      return res.status(404).json({
-        error: true,
-        message: 'Event not found'
-      });
-    }
-
-    // 204 No Content - successful deletion
-    return res.status(204).end();
-  } catch (err) {
-    console.error('Error in deleteEvent:', err);
-    return next(err);
-  }
 }
+
+/**
+ * Validates query parameters for event filtering
+ * @param {Object} query - Query parameters from request
+ * @returns {Object} Validation result with valid flag and message
+ */
+/*
+export function validateEventQueryParams(query) {
+  const { date, type } = query;
+
+  // Validate date format if provided
+  if (date) {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return {
+        valid: false,
+        message: 'Invalid date format. Use YYYY-MM-DD format.'
+      };
+    }
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return {
+        valid: false,
+        message: 'Invalid date value.'
+      };
+    }
+  }
+
+  // Validate event type if provided
+  if (type) {
+    const validTypes = ['feeding', 'show', 'workshop', 'tour', 'special', 'conservation'];
+    if (!validTypes.includes(type.toLowerCase())) {
+      return {
+        valid: false,
+        message: `Invalid event type. Valid types: ${validTypes.join(', ')}`
+      };
+    }
+  }
+
+  return { valid: true };
+}
+*/

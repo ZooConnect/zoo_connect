@@ -55,22 +55,30 @@ export const login = async (req, res, next) => {
     }
 };
 
-export const logout = (req, res) => {
-    clearCookie(res);
-    respond(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
+export const logout = (req, res, next) => {
+    try {
+        clearCookie(res);
+        respond(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
+    } catch (err) {
+        next(err);
+    }
 }
 
-export const getUser = async (req, res) => {
-    // req.user est injecté par authMiddleware
-    respond(res, MESSAGES.USER.FOUND, {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        membershipType: req.user.membershipType,
-        membershipExpirationDate: req.user.membershipExpirationDate,
-        membershipStatus: req.user.membershipStatus,
-        isOneMonthAway: isOneMonthAway(req.user.membershipExpirationDate)
-    });
+export const getUser = async (req, res, next) => {
+    try {
+        // req.user est injecté par authMiddleware
+        respond(res, MESSAGES.USER.FOUND, {
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            membershipType: req.user.membershipType,
+            membershipExpirationDate: req.user.membershipExpirationDate,
+            membershipStatus: req.user.membershipStatus,
+            isOneMonthAway: isOneMonthAway(req.user.membershipExpirationDate)
+        });
+    } catch (err) {
+        next(err);
+    }
 }
 
 export const updateUser = async (req, res, next) => {
