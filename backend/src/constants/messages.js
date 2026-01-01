@@ -33,7 +33,8 @@ export default {
         CANCELLED_SUCCES: { message: 'Booking cancelled successfully', status: 200 },
         REPROGRAM_REQUIRES_DATA: { message: 'newDate is required', status: 400 },
         REPROGRAM_SUCCES: { message: 'Booking reprogrammed successfully', status: 200 },
-        CANCELLATION_DEADLINE_PASSED: { message: 'Booking can no longer be cancelled.', status: 403 }
+        CANCELLATION_DEADLINE_PASSED: { message: 'Booking can no longer be cancelled.', status: 403 },
+        CREATED_SUCCESS: { message: 'Booking created successfully!', status: 201 },
     },
     DATE: {
         INVALID_FORMAT: { message: 'Invalid date format. Expected YYYY-MM-DD.', status: 400 },

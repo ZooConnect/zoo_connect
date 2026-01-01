@@ -24,6 +24,22 @@ export async function listUserBookings(req, res, next) {
   }
 }
 
+export async function createBooking(req, res, next) {
+  try {
+    const booking = await bookingService.registerBooking(
+      {
+        userId: req.user._id,
+        eventId: req.event._id,
+        quantity: req.body.quantity,
+        bookingDate: req.body.date || req.body.bookingDate
+      }
+    );
+    return respond(res, MESSAGES.BOOKING.CREATED_SUCCESS, booking);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function cancelBooking(req, res, next) {
   try {
     const userId = req.user._id;
