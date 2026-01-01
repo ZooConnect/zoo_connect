@@ -1,6 +1,8 @@
 import Event from "../models/event.model.js";
 
-const createEvent = async (event, data = {}) => {
+// le repo = accès bdd, point
+
+const createEvent = async (event, metadata = {}) => {
     const { title, description, startDate, endDate, location } = event;
     return Event.create(
         {
@@ -9,7 +11,7 @@ const createEvent = async (event, data = {}) => {
             startDate,
             endDate,
             location,
-            ...data
+            ...metadata
         }
     )
 }

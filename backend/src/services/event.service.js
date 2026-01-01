@@ -1,5 +1,7 @@
 import eventRepo from "../repositories/event.repository.js";
 
+// le service = logique métier
+
 export const findEventById = async (id) => eventRepo.readEventById(id);
 
 export const findEvents = async () => eventRepo.readEvents();
@@ -10,7 +12,11 @@ export const findPastEvents = async (now = new Date()) => eventRepo.readPastEven
 
 export const findUpcomingEvents = async (now = new Date()) => eventRepo.readUpcomingEvents(now);
 
+export const isEventActive = (event) => event.isActive();
+
 export const isEventExisting = async (id) => eventRepo.fastReadEventById(id);
+
+export const isEventPast = (event) => event.isPast();
 
 export const modifyEvent = async (id, updates) => eventRepo.updateEvent(id, updates);
 

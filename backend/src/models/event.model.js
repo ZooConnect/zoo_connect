@@ -60,8 +60,13 @@ eventSchema.query.past = function (now = new Date()) {
   return this.where({ endDate: { $lt: now } });
 };
 
-
 // Instance Methods: Methods available on individual documents
+// ces méthodes sont utilisées dans le service et non dans le repo
+// elles s'appliquent directement aux documents déjà chargé
+eventSchema.methods.isActive = function () {
+  return this.status === "active";
+};
+
 eventSchema.methods.isOngoing = function () {
   const now = new Date();
   return now >= this.startDate && now <= this.endDate;

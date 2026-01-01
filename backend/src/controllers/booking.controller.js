@@ -1,25 +1,21 @@
-import Booking from '../models/booking.model.js';
-import Event from '../models/event.model.js';
+import * as bookingService from "../services/booking.service.js";
+import * as eventService from "../services/event.service.js";
+
+import { respond } from "../utils/response.helper.js";
+import { parseDate, dateIsPastFrom } from '../utils/date.helper.js';
+
+import MESSAGES from "../constants/messages.js";
+
 
 export async function listUserBookings(req, res, next) {
   try {
-    const userId = req.user?.id; // Assumes authentication middleware sets req.user
-    if (!userId) {
-      return res.status(401).json({
-        error: true,
-        message: 'User not authenticated'
-      });
-    }
-
-    const bookings = await Booking.find({
-      userId,
-      status: 'active'
-    })
-      .populate('eventId', 'title start_date end_date type description')
-      .sort({ bookingDate: -1 })
-      .lean();
-
-    return res.status(200).json(bookings);
+    const userId = req.user._id;
+    const bookings = await bookingService.findBookingsByUserId(userId,
+      {
+        status: 'active'
+      }
+    );
+    return respond(res, MESSAGES.BOOKING.LOAD_ALL_BOOKINGS_FOR_USER_SUCCESS, bookings);
   } catch (err) {
     console.error('Error in listUserBookings:', err);
     return next(err);
@@ -28,58 +24,21 @@ export async function listUserBookings(req, res, next) {
 
 export async function cancelBooking(req, res, next) {
   try {
-    const { id } = req.params;
-    const userId = req.user?.id;
+    const userId = req.user._id;
+    const booking = req.booking;
 
-    if (!userId) {
-      return res.status(401).json({
-        error: true,
-        message: 'User not authenticated'
-      });
-    }
+    if (booking.userId.toString() !== userId) return respond(res, MESSAGES.BOOKING.PERMISSION_DENIED_TO_CANCEL);
+    if (booking.status === 'cancelled') return respond(res, MESSAGES.BOOKING.ALREADY_CANCELLED);
 
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid booking ID format'
-      });
-    }
+    const updatedBooking = await bookingService.modifyBooking(booking._id,
+      {
+        status: 'cancelled',
+        cancelledAt: new Date(),
+        cancelReason: req.body?.reason || 'User requested cancellation'
+      }
+    );
 
-    // Find booking and verify ownership
-    const booking = await Booking.findById(id);
-    if (!booking) {
-      return res.status(404).json({
-        error: true,
-        message: 'Booking not found'
-      });
-    }
-
-    if (booking.userId.toString() !== userId) {
-      return res.status(403).json({
-        error: true,
-        message: 'You do not have permission to cancel this booking'
-      });
-    }
-
-    if (booking.status === 'cancelled') {
-      return res.status(400).json({
-        error: true,
-        message: 'Booking is already cancelled'
-      });
-    }
-
-    // Cancel the booking
-    booking.status = 'cancelled';
-    booking.cancelledAt = new Date();
-    booking.cancelReason = req.body?.reason || 'User requested cancellation';
-    await booking.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'Booking cancelled successfully',
-      booking
-    });
+    return respond(res, MESSAGES.BOOKING.CANCELLED_SUCCES, updatedBooking);
   } catch (err) {
     console.error('Error in cancelBooking:', err);
     return next(err);
@@ -88,121 +47,30 @@ export async function cancelBooking(req, res, next) {
 
 export async function reprogramBooking(req, res, next) {
   try {
-    const { id } = req.params;
-    const { eventId, newDate } = req.body;
-    const userId = req.user?.id;
+    const booking = req.booking;
+    const event = req.booking.event;
+    const userId = req.user._id;
+    const newDate = req.body;
 
-    if (!userId) {
-      return res.status(401).json({
-        error: true,
-        message: 'User not authenticated'
-      });
-    }
+    if (!newDate) return respond(res, MESSAGES.BOOKING.REPROGRAM_REQUIRES_DATA);
+    if (booking.userId.toString() !== userId) return respond(res, MESSAGES.BOOKING.PERMISSION_DENIED_TO_REPROGRAM);
+    if (bookingService.isBookingCancelled(booking)) return respond(res, MESSAGES.BOOKING.ALREADY_CANCELLED);
+    if (eventService.isEventActive(event)) return respond(res, MESSAGES.EVENT.NOT_ACTIVE);
+    if (eventService.isEventPast(event)) return respond(res, MESSAGES.EVENT.IS_FINISHED);
 
-    // Validate request body
-    if (!eventId && !newDate) {
-      return res.status(400).json({
-        error: true,
-        message: 'Either eventId or newDate is required'
-      });
-    }
+    const { ok, date } = parseDate(req.body.startDate);
 
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid booking ID format'
-      });
-    }
+    if (!ok) return respond(res, MESSAGES.DATE.INVALID_FORMAT);
+    if (dateIsPastFrom(date)) return respond(res, MESSAGES.DATE.END_BEFORE_START);
 
-    // Find booking and verify ownership
-    const booking = await Booking.findById(id);
-    if (!booking) {
-      return res.status(404).json({
-        error: true,
-        message: 'Booking not found'
-      });
-    }
-
-    if (booking.userId.toString() !== userId) {
-      return res.status(403).json({
-        error: true,
-        message: 'You do not have permission to reprogram this booking'
-      });
-    }
-
-    if (booking.status === 'cancelled') {
-      return res.status(400).json({
-        error: true,
-        message: 'Cannot reprogram a cancelled booking'
-      });
-    }
-
-    // If changing event, verify new event exists and is available
-    let newEvent = null;
-    if (eventId) {
-      if (!eventId.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).json({
-          error: true,
-          message: 'Invalid event ID format'
-        });
+    const newBooking = await bookingService.modifyBooking(booking._id,
+      {
+        reprogrammedFrom: booking.bookingDate,
+        reprogrammedTo: date
       }
+    );
 
-      newEvent = await Event.findById(eventId);
-      if (!newEvent) {
-        return res.status(404).json({
-          error: true,
-          message: 'Event not found'
-        });
-      }
-
-      // Verify event is active and in future
-      if (newEvent.status !== 'active') {
-        return res.status(400).json({
-          error: true,
-          message: 'Target event is not active'
-        });
-      }
-
-      if (newEvent.end_date < new Date()) {
-        return res.status(400).json({
-          error: true,
-          message: 'Target event is in the past'
-        });
-      }
-
-      // Store old event for audit
-      booking.reprogrammedFrom = booking.eventId;
-      booking.eventId = eventId;
-    }
-
-    // If changing date
-    if (newDate) {
-      const parsedDate = new Date(newDate);
-      if (isNaN(parsedDate.getTime())) {
-        return res.status(400).json({
-          error: true,
-          message: 'Invalid date format'
-        });
-      }
-
-      if (parsedDate < new Date()) {
-        return res.status(400).json({
-          error: true,
-          message: 'Cannot reprogram to a past date'
-        });
-      }
-
-      booking.reprogrammedTo = parsedDate;
-    }
-
-    await booking.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'Booking reprogrammed successfully',
-      booking: await booking.populate('eventId', 'title start_date end_date type')
-    });
+    return respond(res, MESSAGES.BOOKING.REPROGRAM_SUCCES, newBooking);
   } catch (err) {
     console.error('Error in reprogramBooking:', err);
     return next(err);
@@ -211,41 +79,13 @@ export async function reprogramBooking(req, res, next) {
 
 export async function getBookingById(req, res, next) {
   try {
-    const { id } = req.params;
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({
-        error: true,
-        message: 'User not authenticated'
-      });
-    }
-
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        error: true,
-        message: 'Invalid booking ID format'
-      });
-    }
-
-    const booking = await Booking.findById(id).populate('eventId');
-    if (!booking) {
-      return res.status(404).json({
-        error: true,
-        message: 'Booking not found'
-      });
-    }
+    const booking = req.booking;
+    const userId = req.user._id;
 
     // Verify ownership
-    if (booking.userId.toString() !== userId) {
-      return res.status(403).json({
-        error: true,
-        message: 'You do not have permission to view this booking'
-      });
-    }
+    if (booking.userId.toString() !== userId) return respond(res, MESSAGES.BOOKING.PERMISSION_DENIED_TO_VIEW);
 
-    return res.status(200).json(booking);
+    return respond(res, MESSAGES.BOOKING.FOUND, booking);
   } catch (err) {
     console.error('Error in getBookingById:', err);
     return next(err);
