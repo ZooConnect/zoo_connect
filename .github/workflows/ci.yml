@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-and-test:
@@ -21,25 +21,34 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: backend/package-lock.json
 
-      # 3) Install dependencies
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      # 3) Install dependencies in backend
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci --legacy-peer-deps
 
-      # 4) Lint
-      - name: Lint
-        run: npm run lint
+      # 4) Lint backend
+      - name: Lint backend
+        run: |
+          cd backend
+          npm run lint
 
-      # 5) Test with coverage
-      - name: Test (with coverage)
+      # 5) Run backend tests with coverage
+      - name: Test backend (with coverage)
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: npm test
+          PORT: ${{secrets.PORT}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
+        run: |
+          cd backend
+          npm test -- --coverage
 
-      # 6) Upload coverage folder as an artifact (viewable in Actions UI)
+      # 6) Upload coverage artifact
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-report
-          path: coverage
+          name: backend-coverage-report
+          path: backend/coverage

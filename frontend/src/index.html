@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoo Connect - Accueil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="js/controllers/index.js" defer></script>
+</head>
+
+<body>
+    <header class="top-bar">
+        <div class="logo">Zoo Connect 🌿</div>
+        <nav class="auth-links">
+            <a href="login.html" class="login-link" id="login-link">Login</a>
+            <a href="signup.html" class="signup-link" id="signup-link">Sign Up</a>
+            <button type="button" class="btn" id="logoutBtn" style="display:none">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-overlay">
+                <h1>Discover Our Zoo</h1>
+                <p>Join our team and dive into the heart of nature.</p>
+                <a href="explore.html" class="btn-explore">Explore Now</a>
+            </div>
+        </section>
+
+        <section id="explore" class="services-container">
+            <div class="services-grid">
+                <a href="events.html" class="service-card">
+                    <span class="card-icon">📅</span>
+                    <h3>Events</h3>
+                    <p>Daily feedings and live animal shows schedule.</p>
+                </a>
+
+                <a href="bookings.html" class="service-card">
+                    <span class="card-icon">🎟️</span>
+                    <h3>Ticketing</h3>
+                    <p>Quick booking to skip the lines at the entrance.</p>
+                </a>
+
+                <a href="profile.html" class="service-card" id="profile-link" style="display:none">
+                    <span class="card-icon">👤</span>
+                    <h3>My Profile</h3>
+                    <p>Your badges, rewards and personal settings.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

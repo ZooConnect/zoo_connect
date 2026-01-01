@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Our Animals - Zoo Connect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Styles rapides pour s'assurer que la grille est jolie */
+        .animal-grid-large {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        .animal-detailed-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .animal-detailed-card:hover { transform: translateY(-5px); }
+        .animal-detailed-card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 15px; }
+        .region-section { margin-bottom: 40px; border-bottom: 1px solid #eee; }
+        .loading-text { text-align: center; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <a href="index.html" class="logo">Zoo Connect 🌿</a>
+        <nav class="auth-links">
+            <a href="events.html">Events</a>
+            <a href="bookings.html">Bookings</a>
+            <a href="login.html" class="login-link">Login</a>
+            <a href="signup.html" class="signup-link">Sign Up</a>
+        </nav>
+    </header>
+
+    <main class="explore-page">
+        <header class="explore-header" style="text-align: center; padding: 40px 20px;">
+            <h1>Our Wildlife Family</h1>
+            <p>Select a region to discover our residents</p>
+            
+            <nav class="region-nav" style="margin-top: 20px;">
+                <a href="#savanna" class="region-link">🦁 Savanna</a>
+                <a href="#forest" class="region-link">🌲 Forest & Mountains</a>
+                <a href="#jungle" class="region-link">🦜 Jungle</a>
+                <a href="#aquatic" class="region-link">❄️ Aquatic & Rivers</a>
+            </nav>
+        </header>
+
+        <section id="savanna" class="region-section">
+            <h2 class="region-title">African Savanna</h2>
+            <div class="animal-grid-large"><p class="loading-text">Loading savanna animals...</p></div>
+        </section>
+
+        <section id="forest" class="region-section">
+            <h2 class="region-title">Forest & Mountains</h2>
+            <div class="animal-grid-large"><p class="loading-text">Loading forest animals...</p></div>
+        </section>
+
+        <section id="jungle" class="region-section">
+            <h2 class="region-title">Tropical Jungle</h2>
+            <div class="animal-grid-large"><p class="loading-text">Loading jungle animals...</p></div>
+        </section>
+
+        <section id="aquatic" class="region-section">
+            <h2 class="region-title">Aquatic & Rivers</h2>
+            <div class="animal-grid-large"><p class="loading-text">Loading aquatic animals...</p></div>
+        </section>
+
+        <div class="back-home" style="text-align: center; padding: 40px;">
+            <a href="index.html" class="btn-secondary">← Back to Home</a>
+        </div>
+    </main>
+
+    <script>
+        async function loadAnimals() {
+            try {
+                // On récupère les animaux via l'API
+                const response = await fetch('/api/animals');
+                if (!response.ok) throw new Error('Erreur réseau');
+                
+                const animals = await response.json();
+
+                // Liste des habitats correspondant aux IDs des sections HTML
+                const habitats = ['savanna', 'forest', 'jungle', 'aquatic'];
+
+                habitats.forEach(habitat => {
+                    const container = document.querySelector(`#${habitat} .animal-grid-large`);
+                    
+                    // On filtre les animaux actifs pour cet habitat précis
+                    const filteredAnimals = animals.filter(a => a.habitat.toLowerCase() === habitat);
+
+                    if (filteredAnimals.length === 0) {
+                        container.innerHTML = '<p>No animals currently visible in this area.</p>';
+                    } else {
+                        container.innerHTML = filteredAnimals.map(animal => `
+                            <div class="animal-detailed-card">
+                                <img src="images/${animal.species.toLowerCase()}.jpg" alt="${animal.name}" onerror="this.src='images/default.jpg'">
+                                <div class="card-content">
+                                    <h3>${escapeHtml(animal.name)}</h3>
+                                    <p style="color: #667eea; font-weight: bold; margin-bottom: 5px;">
+                                        ${escapeHtml(animal.species)} | ${animal.age} years old</p>
+                                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">
+                                    <b>Habitat :</b> ${escapeHtml(animal.habitat.charAt(0).toUpperCase() + animal.habitat.slice(1))}</p>
+                                    <p class="description">${escapeHtml(animal.description || 'A wonderful resident of our zoo.')}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                });
+            } catch (error) {
+                console.error("Erreur:", error);
+                document.querySelectorAll('.animal-grid-large').forEach(el => {
+                    el.innerHTML = '<p style="color: red;">Error loading animals. Please try again later.</p>';
+                });
+            }
+        }
+
+        // Sécurité pour éviter l'injection de code (XSS)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Lancer le chargement
+        window.onload = loadAnimals;
+    </script>
+</body>
+</html>
