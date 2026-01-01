@@ -28,7 +28,7 @@ export default {
         NOT_FOUND: { message: 'Booking not found.', status: 404 },
         PERMISSION_DENIED_TO_CANCEL: { message: 'You do not have permission to cancel this booking', status: 403 },
         PERMISSION_DENIED_TO_VIEW: { message: 'You do not have permission to view this booking', status: 403 },
-        PERMISSION_DENIED_TO_REPROGRAM: { message: 'You do not have permission to view this booking', status: 403 },
+        PERMISSION_DENIED_TO_REPROGRAM: { message: 'You do not have permission to reprogram this booking', status: 403 },
         ALREADY_CANCELLED: { message: 'Booking is already cancelled', status: 400 },
         CANCELLED_SUCCES: { message: 'Booking cancelled successfully', status: 200 },
         REPROGRAM_REQUIRES_DATA: { message: 'newDate is required', status: 400 },
