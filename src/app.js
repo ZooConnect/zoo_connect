@@ -1,26 +1,42 @@
 import express from "express";
-import userRoutes from "./routes/user.routes.js";
 import fs from "fs";
+
+// 1. Feature Imports
+import userRoutes from "./routes/user.routes.js";
+// import animalRoutes from "./routes/animal.routes.js";   // <--- COMMENTED OUT (Missing in this branch)
+import bookingRoutes from "./routes/booking.routes.js"; 
 
 // Skeleton Imports
 import versionRoute from "./routes/auto/version.route.js";
 import infoRoute from "./routes/auto/info.route.js";
-// We don't need the file import for boom if we define it manually below
 
 const app = express();
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
 
 app.use(express.json());
 
-// 1. Your Feature
+// ---------------------------------------------------
+// 1. REAL FEATURES
+// ---------------------------------------------------
+
+// Users
 app.use("/api/users", userRoutes);
 
-// 2. MOCK: Version
+// Animals (Temporarily disabled until merged)
+// app.use("/api/animals", animalRoutes); // <--- COMMENTED OUT
+
+// Bookings (SCRUM-28)
+app.use("/api/bookings", bookingRoutes);
+
+
+// ---------------------------------------------------
+// 2. MOCKS & UTILS
+// ---------------------------------------------------
+
 app.get("/version", (req, res) => {
   res.status(200).json({ version: packageJson.version });
 });
 
-// 3. MOCK: Info
 app.get("/info", (req, res) => {
   res.status(200).json({
     name: packageJson.name,
@@ -30,20 +46,19 @@ app.get("/info", (req, res) => {
   });
 });
 
-// 4. MOCK: Boom (Force an error for testing)
 app.get("/boom", (req, res, next) => {
-  // Pass a fake error to the global handler
   next(new Error("Simulated Crash for Testing"));
 });
 
-// 5. Health Check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// 6. Global Error Handler
 app.use((err, req, res, next) => {
   console.error("Error caught:", err.message);
+  if (res.headersSent) {
+    return next(err);
+  }
   res.status(500).json({ error: "Internal Server Error", message: err.message });
 });
 
