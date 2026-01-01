@@ -7,21 +7,23 @@ import { isOneMonthAway } from "../utils/date.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 
+import { CustomError } from "../middlewares/errorHandler.js";
+
 
 export const signup = async (req, res, next) => {
     try {
         const { name, email, password, passwordConfirmation } = req.body;
 
         if (!name || !email || !password || !passwordConfirmation)
-            return respond(res, MESSAGES.AUTH.MISSING_FIELDS);
+            return next(new CustomError(MESSAGES.AUTH.MISSING_FIELDS));
         if (password !== passwordConfirmation)
-            return respond(res, MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
+            return next(new CustomError(MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH));
 
         const passwordIsValidate = validatePassword(password);
-        if (!passwordIsValidate) return respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
+        if (!passwordIsValidate) return next(new CustomError(MESSAGES.AUTH.PASSWORD_INVALID));
 
         const isUserExisting = await userService.isUserExisting(email);
-        if (isUserExisting) return respond(res, MESSAGES.AUTH.EMAIL_ALREADY_USED);
+        if (isUserExisting) return next(new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED));
 
         const user = await userService.registerUser({ name, email, password });
         respond(res, MESSAGES.AUTH.ACCOUNT_CREATED_SUCCESS, { user: { id: user._id, name: user.name, email: user.email } });
@@ -33,13 +35,13 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        if (!email || !password) return respond(res, MESSAGES.AUTH.MISSING_FIELDS);
+        if (!email || !password) return next(new CustomError(MESSAGES.AUTH.MISSING_FIELDS));
 
         const user = await userService.findUserByEmail(email);
-        if (!user) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
+        if (!user) return next(new CustomError(MESSAGES.AUTH.INVALID_CREDENTIALS));
 
         const valid = await comparePassword(password, user.passwordHash);
-        if (!valid) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
+        if (!valid) return next(new CustomError(MESSAGES.AUTH.INVALID_CREDENTIALS));
 
         const payload = user.toObject();
         delete payload.passwordHash;
@@ -88,21 +90,21 @@ export const updateUser = async (req, res, next) => {
 
         if (updates.email) {
             const isUserExisting = await userService.isUserExisting(updates.email);
-            if (isUserExisting) return respond(res, MESSAGES.AUTH.EMAIL_ALREADY_USED);
+            if (isUserExisting) return next(new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED));
         }
 
         if (updates.newPassword && updates.newPasswordConfirmation) {
             if (updates.newPassword !== updates.newPasswordConfirmation)
-                return respond(res, MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
+                return next(new CustomError(MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH));
 
             const passwordIsValidate = validatePassword(updates.newPassword);
-            if (!passwordIsValidate) return respond(res, MESSAGES.AUTH.PASSWORD_INVALID);
+            if (!passwordIsValidate) return next(new CustomError(MESSAGES.AUTH.PASSWORD_INVALID));
             updates.passwordHash = hashPassword(updates.newPassword);
         }
 
         const updatedUser = await userService.modifyUser(userId, updates);
         if (!updatedUser) {
-            return respond(res, MESSAGES.USER.NOT_FOUND);
+            return next(new CustomError(MESSAGES.USER.NOT_FOUND));
         }
         const payload = updatedUser.toObject();
         const token = createToken(payload);

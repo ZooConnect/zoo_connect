@@ -6,7 +6,7 @@ import { parseDate, dateIsPastFrom } from '../utils/date.helper.js';
 
 import MESSAGES from "../constants/messages.js";
 
-import { CustomError } from "./errorHandler.js";
+import { CustomError } from "../middlewares/errorHandler.js";
 
 
 export async function listUserBookings(req, res, next) {

@@ -1,6 +1,6 @@
 import express from "express";
 
-import auth from "../middlewares/auth.js";
+import auth from "../middlewares/auth.middleware.js";
 
 import { getAnimals } from "../controllers/animal.controller.js";
 
