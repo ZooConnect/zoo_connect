@@ -8,7 +8,15 @@ import User from "../../src/models/user.model.js";
 
 const userName = "test";
 const userEmail = "test@gmail.com";
-const userPassword = "Password123";
+const userPassword = "Password123!";
+
+beforeAll(async () => {
+    await connectDB();
+});
+
+afterAll(async () => {
+    await mongoose.connection.close();
+});
 
 describe("POST /api/auth/signup", () => {
     afterEach(async () => {
@@ -83,8 +91,6 @@ describe("POST /api/auth/login", () => {
 
     afterAll(async () => {
         await User.deleteOne({ email: userEmail });
-
-        await mongoose.connection.close();
     });
 
     it("password is correctly hashed", async () => {
@@ -112,8 +118,6 @@ describe("GET /api/auth/me", () => {
     let cookie;
 
     beforeAll(async () => {
-        await connectDB();
-
         // on créer un seul utilisateur pour tous les tests
         await request(app)
             .post("/api/auth/signup")
@@ -138,7 +142,6 @@ describe("GET /api/auth/me", () => {
             .put("/api/auth/logout")
             .send({});
         await User.deleteOne({ email: userEmail });
-        await mongoose.connection.close();
     });
 
     it("should get user's informations successfully", async () => {
@@ -157,10 +160,6 @@ describe("GET /api/auth/me", () => {
 
 describe("PUT /api/auth/me", () => {
     let cookie;
-
-    beforeAll(async () => {
-        await connectDB();
-    });
 
     beforeEach(async () => {
         // on créer un seul utilisateur pour tous les tests
@@ -188,10 +187,6 @@ describe("PUT /api/auth/me", () => {
             .set("Cookie", cookie);
         await User.deleteOne({ email: userEmail });
     })
-
-    afterAll(async () => {
-        await mongoose.connection.close();
-    });
 
     it("should update the user profile successfully", async () => {
         const res = await request(app)

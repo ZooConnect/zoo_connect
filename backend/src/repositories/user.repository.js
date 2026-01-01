@@ -1,10 +1,23 @@
 import User from "../models/user.model.js";
 
-const createUser = async ({ name, email, passwordHash }) => User.create({ name, email, passwordHash });
+const createUser = async (user, metadata = {}) => {
+    const { name, email, passwordHash } = user;
+    return User.create(
+        {
+            name,
+            email,
+            passwordHash,
+            ...metadata
+        }
+    );
+}
 
 const fastReadUserByEmail = async (email) => User.exists({ email });
 
-const readUserByEmail = async (email) => User.findOne({ email });
+const readUserByEmail = async (email) => {
+    return User.findOne({ email })
+        .lean();
+}
 
 const updateUserProfile = async (id, updates) => {
     return User.findByIdAndUpdate(id, updates, {

@@ -21,7 +21,8 @@ export const signup = async (userInput) => {
     const isUserExisting = await userRepo.fastReadUserByEmail(email);
     if (isUserExisting) throw new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED);
 
-    return userRepo.createUser({ name, email, password });
+    const passwordHash = await hashPassword(password);
+    return userRepo.createUser({ name, email, passwordHash });
 }
 
 export const login = async (credentials) => {
