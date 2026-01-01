@@ -11,15 +11,6 @@ const userEmail = "test@gmail.com";
 const userPassword = "Password123";
 
 describe("POST /api/auth/signup", () => {
-    beforeAll(async () => {
-        await
-            await connectDB();
-    });
-
-    afterAll(async () => {
-        await mongoose.connection.close();
-    });
-
     afterEach(async () => {
         await User.deleteOne({ email: userEmail });
     });
@@ -79,8 +70,6 @@ describe("POST /api/auth/signup", () => {
 
 describe("POST /api/auth/login", () => {
     beforeAll(async () => {
-        await connectDB();
-
         // on créer un seul utilisateur pour tous les tests
         await request(app)
             .post("/api/auth/signup")

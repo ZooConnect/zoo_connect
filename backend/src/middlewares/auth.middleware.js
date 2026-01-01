@@ -1,17 +1,13 @@
-import { verifyToken } from "../utils/jwt.helper.js";
-import { respond } from "../utils/response.helper.js";
+import { authUser } from "../services/user.service.js";
 
-import MESSAGES from "../constants/messages.js";
-
-export default async (req, res, next) => {
-    const token = req.cookies.token;
-    if (!token) return respond(res, MESSAGES.AUTH.INVALID_CREDENTIALS);
-
+export default (req, res, next) => {
     try {
-        const payload = verifyToken(token);
+        const token = req.cookies.token;
+
+        const payload = authUser(token);
         req.user = payload;
         next();
     } catch (error) {
-        return res.status(401).json({ error });
+        next(error);
     }
 };
