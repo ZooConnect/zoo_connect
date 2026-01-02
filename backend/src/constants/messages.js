@@ -41,4 +41,7 @@ export default {
         INVALID_VALUE: { message: 'Invalid date value.', status: 400 },
         END_BEFORE_START: { message: 'End date must be after start date.', status: 400 }
     },
+    ANIMAL: {
+        ANIMALS_FOUND: { message: "Animals found.", status: 200 }
+    }
 };

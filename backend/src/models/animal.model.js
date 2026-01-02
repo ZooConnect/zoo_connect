@@ -7,13 +7,14 @@ const animalSchema = new mongoose.Schema(
     age: { type: Number, required: true },
     habitat: { type: String, required: true },
     description: { type: String },
-    status: { 
-      type: String, 
-      enum: ['active', 'inactive', 'maintenance'], 
-      default: 'active' 
+    status: {
+      type: String,
+      enum: ['active', 'inactive', 'maintenance'],
+      default: 'active'
     }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Animal", animalSchema);
+const Animal = mongoose.model("Animal", animalSchema);
+export default Animal;
