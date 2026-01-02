@@ -1,5 +1,6 @@
 import app from './app.js';
 import http from "http";
+import { connectDB } from './db/mongoDB.js';
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -44,4 +45,6 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
+connectDB();
+console.log("Base de données bien chargée");
 server.listen(port);

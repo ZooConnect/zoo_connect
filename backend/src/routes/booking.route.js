@@ -1,19 +1,17 @@
 import express from 'express';
 
-import auth from "../middlewares/auth.js";
+import auth from "../middlewares/auth.middleware.js";
 
-import {
-  listUserBookings,
-  getBookingById,
-  cancelBooking,
-  reprogramBooking
-} from '../controllers/booking.controller.js';
+import { findBooking, canCancelBooking, canManageBooking, canViewBooking } from '../middlewares/booking.middleware.js';
+
+import { listUserBookings, getBooking, cancelBooking, reprogramBooking, createBooking } from '../controllers/booking.controller.js';
 
 const router = express.Router();
 
 router.get('/', auth, listUserBookings);
-router.get('/:id', auth, getBookingById);
-router.delete('/:id', auth, cancelBooking);
-router.put('/:id', auth, reprogramBooking);
+router.post('/', auth, createBooking);
+router.get('/:id', auth, findBooking, canViewBooking, getBooking);
+router.delete('/:id', auth, findBooking, canCancelBooking, cancelBooking);
+router.put('/:id', auth, findBooking, canManageBooking, reprogramBooking);
 
-export default router;
+export default { router, prefix: "/api/bookings" };

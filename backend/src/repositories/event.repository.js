@@ -9,7 +9,7 @@ const createEvent = async (event, data = {}) => {
             start_date,
             end_date,
             location,
-            ...data
+            ...metadata
         }
     )
 }

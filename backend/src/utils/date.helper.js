@@ -9,6 +9,16 @@ export const isOneMonthAway = (date) => {
     const diffMonths = expirationDate.diff(now, "months").months; // peut être 0.98, 1.02 etc.
     return Math.floor(diffMonths) === 1;
 }
+
+export function parseDate(dateStr) {
+    const date = DateTime.fromFormat(dateStr, 'yyyy-MM-dd', { zone: 'utc' });
+    return { ok: date.isValid, date };
+}
+
+export function dateIsPastFrom(date, today = DateTime.now().startOf('day')) {
+    return date >= today;
+}
+
 /*
 // Date d'un événement
 const eventDate = DateTime.fromISO("2026-01-30T20:00:00", { zone: "Europe/Paris" });

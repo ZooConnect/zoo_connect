@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import { fileURLToPath, pathToFileURL } from "url";
 import dotenv from 'dotenv';
 
-import { connectDB } from "./db/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
