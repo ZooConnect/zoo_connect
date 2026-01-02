@@ -1,4 +1,4 @@
-import * as usersService from "../../services/admin/users.services.js";
+import * as usersService from "../../services/admin/users.service.js";
 
 import { buildUserForCreation, buildUserFilter } from "../../utils/admin/users.helper.js";
 
