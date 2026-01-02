@@ -49,5 +49,11 @@ export default {
     ADMIN: {
         PERMISSION_DENIED: { message: "Acces denied. It's only for administrator!", status: 403 },
         CREATED_SUCCESS: { message: 'Successfully created user!', status: 200 },
+    },
+    FEEDING_SCHEDULE: {
+        FEEDING_SCHEDULES_FOUND: { message: "Feeding schedules found.", status: 200 },
+        UPDATED: { message: "Feeding schedules updated.", status: 200 },
+        PERMISSION_DENIED: { message: "Acced denied! Admin or staff only.", status: 403 },
+        CREATED_SUCCESS: { message: 'feeding schedule created successfully!', status: 201 },
     }
 };
