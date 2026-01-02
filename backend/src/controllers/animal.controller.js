@@ -1,18 +1,18 @@
-import Animal from "../models/animal.model.js";
+import * as animalService from "../services/animal.service.js";
+
+import { respond } from "../utils/response.helper.js";
+import { buildAnimalFilter } from "../utils/animal.helper.js";
+
+import MESSAGES from "../constants/messages.js";
+
 
 
 
 export const getAnimals = async (req, res, next) => {
   try {
-    const { species, habitat, age } = req.query;
-    const filter = { status: 'active' };
-
-    if (species) filter.species = species;
-    if (habitat) filter.habitat = habitat;
-    if (age) filter.age = age;
-
-    const animals = await Animal.find(filter);
-    res.status(200).json(animals);
+    const filter = buildAnimalFilter(req.query);
+    const animals = await animalService.getAnimals(filter);
+    respond(res, MESSAGES.ANIMAL.ANIMALS_FOUND, animals);
   } catch (error) {
     next(error);
   }

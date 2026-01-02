@@ -35,7 +35,7 @@ export const login = async (credentials) => {
     const valid = await comparePassword(password, user.passwordHash);
     if (!valid) throw new CustomError(MESSAGES.AUTH.INVALID_CREDENTIALS);
 
-    const payload = user.toObject();
+    const payload = user;
     delete payload.passwordHash;
     const token = createToken(payload);
     return { user, token };

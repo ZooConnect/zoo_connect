@@ -11,51 +11,34 @@ dotenv.config();
 
 const app = express();
 
-// --- 1. Middlewares de base ---
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 
-// --- 2. Connexion Base de données ---
-connectDB();
-console.log("Base de données bien chargée");
 
+// Routes
+/*
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));*/
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// --- 3. Chargement AUTOMATIQUE des Routes ---
 const autoDir = path.join(__dirname, "routes");
-
-const loadRoutes = async (dir) => {
-    if (!fs.existsSync(dir)) return;
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-    for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-            await loadRoutes(fullPath); // Explore les sous-dossiers (admin, etc.)
-        } else if (entry.name.endsWith(".route.js")) {
-            const mod = await import(pathToFileURL(fullPath).href);
-            if (mod.default?.router && mod.default?.prefix) {
-                app.use(mod.default.prefix, mod.default.router);
-                console.log(`Route chargée : ${mod.default.prefix}`);
-            }
+if (fs.existsSync(autoDir)) {
+    const files = fs.readdirSync(autoDir).filter(f => f.endsWith(".route.js"));
+    for (const f of files) {
+        const full = path.join(autoDir, f);
+        const mod = await import(pathToFileURL(full).href);
+        if (mod.default?.router && mod.default?.prefix) {
+            app.use(mod.default.prefix, mod.default.router);
         }
     }
-};
+}
 
-// Exécution du chargement des routes
-await loadRoutes(autoDir);
-
-// --- 4. Fichiers Statiques (Frontend) ---
+// Servir frontend
 app.use(express.static(path.join(process.cwd(), '../frontend/src')));
-
-// --- 5. Catch-all (SPA Routing) ---
-// Cette règle envoie index.html pour toutes les routes SAUF celles commençant par /api
-app.get(/^(?!\/api).+/, (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(process.cwd(), '../frontend/src/index.html'));
 });
 
-// --- 6. Gestionnaire d'erreurs ---
 app.use(errorHandler);
-
 export default app;
