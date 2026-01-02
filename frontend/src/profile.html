@@ -1,19 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - Zoo Connect</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .profile-wrapper { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        .info-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .info-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .info-line strong { color: #2d6a4f; }
-        .error-message { color: #d32f2f; font-size: 0.9rem; margin-top: 10px; }
-        .success-message { color: #2d6a4f; font-size: 0.9rem; margin-top: 10px; }
+        .profile-wrapper {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-line strong {
+            color: #2d6a4f;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: #2d6a4f;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
 
     <header class="top-bar">
@@ -55,7 +87,8 @@
                 </div>
                 <div id="errorMessage" class="error-message"></div>
                 <div id="message" class="success-message"></div>
-                <button type="submit" id="submitButton" class="signup-link" style="border:none; cursor:pointer; margin-top: 10px;">Update Information</button>
+                <button type="submit" id="submitButton" class="signup-link"
+                    style="border:none; cursor:pointer; margin-top: 10px;">Update Information</button>
             </form>
         </section>
     </main>
@@ -71,7 +104,7 @@
 
         async function fetchProfile() {
             const token = getCookie('token');
-            
+
             // Si le cookie est absent, on redirige
             if (!token) {
                 window.location.href = 'login.html';
@@ -81,12 +114,12 @@
             try {
                 // On n'envoie PAS de header Authorization car ton backend regarde les cookies automatiquement
                 const res = await fetch('/api/users/profile');
-                
+
                 if (!res.ok) {
-                    if(res.status === 401) window.location.href = 'login.html';
+                    if (res.status === 401) window.location.href = 'login.html';
                     throw new Error("Failed to fetch profile");
                 }
-                
+
                 const user = await res.json();
                 document.getElementById('displayName').textContent = user.name;
                 document.getElementById('displayEmail').textContent = user.email;
@@ -133,4 +166,5 @@
         window.onload = fetchProfile;
     </script>
 </body>
+
 </html>

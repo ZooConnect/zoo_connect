@@ -14,8 +14,20 @@ const createUser = async (user, metadata = {}) => {
 
 const fastReadUserByEmail = async (email) => User.exists({ email });
 
+const fastReadUserById = async (id) => User.exists({ id });
+
 const readUserByEmail = async (email) => {
     return User.findOne({ email })
+        .lean();
+}
+
+const readUserById = async (userId) => {
+    return User.findById(userId)
+        .lean();
+}
+
+const readUsers = async (filter) => {
+    return User.find(filter)
         .lean();
 }
 
@@ -33,7 +45,10 @@ export const deleteUser = async (userId) => User.findByIdAndDelete(userId);
 export default {
     createUser,
     fastReadUserByEmail,
+    fastReadUserById,
     readUserByEmail,
+    readUserById,
+    readUsers,
     updateUserProfile,
     deleteUser
 }
