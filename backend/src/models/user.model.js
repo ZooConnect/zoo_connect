@@ -6,10 +6,10 @@ const userSchema = new mongoose.Schema(
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         passwordHash: { type: String, required: [function () { return this.isNew; }, 'Password is required on creation'] },
-        role: { 
-        type: String, 
-            enum: ['admin', 'staff', 'visitor'], 
-            default: 'visitor' 
+        role: {
+            type: String,
+            enum: ['admin', 'staff', 'visitor'],
+            default: 'visitor'
         },
         membershipType: {
             type: String,

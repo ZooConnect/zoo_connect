@@ -12,7 +12,9 @@ export default {
     USER: {
         FOUND: { message: 'User found.', status: 200 },
         NOT_FOUND: { message: 'User not found.', status: 404 },
-        VALID_MODIFICATION: { message: 'User updated sucessfully!', status: 200 }
+        VALID_MODIFICATION: { message: 'User updated sucessfully!', status: 200 },
+        USERS_FOUND: { message: "Users found.", status: 200 },
+        DELETE_SUCCESS: { message: 'Successfully deleted!', status: 200 }
     },
     EVENT: {
         FOUND: { message: 'Event found.', status: 200 },
@@ -43,5 +45,9 @@ export default {
     },
     ANIMAL: {
         ANIMALS_FOUND: { message: "Animals found.", status: 200 }
+    },
+    ADMIN: {
+        PERMISSION_DENIED: { message: "Acces denied. It's only for administrator!", status: 403 },
+        CREATED_SUCCESS: { message: 'Successfully created user!', status: 200 },
     }
 };
