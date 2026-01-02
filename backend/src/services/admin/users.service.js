@@ -6,10 +6,6 @@ import MESSAGES from "../../constants/messages.js";
 
 import { CustomError } from "../../middlewares/errorHandler.js";
 
-export const requireAdmin = (user) => {
-    if (user.role !== 'admin') throw new CustomError(MESSAGES.ADMIN.PERMISSION_DENIED);
-    return true;
-}
 
 export const getAllUsers = async (filter = {}) => {
     return userRepo.readUsers(filter);

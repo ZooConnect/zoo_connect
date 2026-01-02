@@ -14,7 +14,8 @@ export default {
         NOT_FOUND: { message: 'User not found.', status: 404 },
         VALID_MODIFICATION: { message: 'User updated sucessfully!', status: 200 },
         USERS_FOUND: { message: "Users found.", status: 200 },
-        DELETE_SUCCESS: { message: 'Successfully deleted!', status: 200 }
+        DELETE_SUCCESS: { message: 'Successfully deleted!', status: 200 },
+        ACCES_DENIED: { message: "Acced denied! Admin or staff only.", status: 403 }
     },
     EVENT: {
         FOUND: { message: 'Event found.', status: 200 },
@@ -55,5 +56,11 @@ export default {
         UPDATED: { message: "Feeding schedules updated.", status: 200 },
         PERMISSION_DENIED: { message: "Acced denied! Admin or staff only.", status: 403 },
         CREATED_SUCCESS: { message: 'feeding schedule created successfully!', status: 201 },
+    },
+    STAFF_AVAILABILITY: {
+        CREATED_SUCCESS: { message: 'staff availibility created successfully!', status: 201 },
+        UPDATED_SUCCES: { message: 'Staff availability updated sucessfully!', status: 200 },
+        DELETED_SUCCES: { message: 'Staff availability deleted sucessfully!', status: 200 },
+        NOT_FOUND: { message: 'Staff availability not found.', status: 404 },
     }
 };
