@@ -19,8 +19,8 @@ export const modifyEvent = async (id, updates) => eventRepo.updateEvent(id, upda
  * @param {Object} event
  * @param {string} event.title
  * @param {string} event.description
- * @param {Date} event.startDate
- * @param {Date} event.endDate
+ * @param {Date} event.start_date
+ * @param {Date} event.end_date
  * @param {string} event.location
  * @param {Object} [data]
  */
