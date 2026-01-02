@@ -8,7 +8,11 @@ export const getEvents = async (req, res, next) => {
   try {
     const ongoingEvents = await eventService.findOngoingEvents();
     const upcomingEvents = await eventService.findUpcomingEvents();
-    const events = { ...ongoingEvents, ...upcomingEvents };
+    const events = [...ongoingEvents, ...upcomingEvents];
+    if (events.length === 0) {
+        const all = await eventService.findEvents();
+        return respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, all);
+    }
     respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, events);
   } catch (error) {
     next(error);

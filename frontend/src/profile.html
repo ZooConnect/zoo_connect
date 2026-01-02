@@ -1,62 +1,136 @@
 <!DOCTYPE html>
-<html lang="fr">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - Zoo Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <script type="module" src="js/controllers/profile.js" defer></script>
+    <style>
+        .profile-wrapper { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .info-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .info-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .info-line strong { color: #2d6a4f; }
+        .error-message { color: #d32f2f; font-size: 0.9rem; margin-top: 10px; }
+        .success-message { color: #2d6a4f; font-size: 0.9rem; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
-    <header>
-        <h1>My profile</h1>
-        <nav>
-            <a href="index.html" class="logo">Zoo Connect 🌿</a>
-            <a href="logout.html" id="logoutBtn">Logout</a>
+
+    <header class="top-bar">
+        <a href="index.html" class="logo">Zoo Connect 🌿</a>
+        <nav class="auth-links">
+            <a href="index.html">Home</a>
+            <button onclick="logout()" class="login-link" style="border:none; cursor:pointer;">Logout</button>
         </nav>
     </header>
 
-    <main>
-        <section class="profile-display">
-            <h2>Personnals informations</h2>
-            <p><strong>Name :</strong> <span id="displayName"></span></p>
-            <p><strong>Email :</strong> <span id="displayEmail"></span></p>
-            <p><strong>Membership type :</strong> <span id="displayMembershipType"></span></p>
-            <p><strong>Membership expiration date :</strong> <span id="displayMembershipExpirationDate"></span></p>
-            <p><strong>Membership status :</strong> <span id="displayMembershipStatus"></span></p>
-            <button type="button" class="btn" id="reniewSubscriptionBtn" style="display:none">Renew
-                subscription</button>
+    <main class="profile-wrapper">
+        <header class="explore-header" style="padding: 20px 0;">
+            <h1>My Profile</h1>
+            <p>View and update your personal information</p>
+        </header>
+
+        <section class="info-card">
+            <h2 style="color: #2d6a4f; margin-bottom: 20px;">Personal Information</h2>
+            <div class="info-line"><strong>Name:</strong> <span id="displayName">Loading...</span></div>
+            <div class="info-line"><strong>Email:</strong> <span id="displayEmail">Loading...</span></div>
+            <div class="info-line"><strong>Membership:</strong> <span id="displayMembershipType">-</span></div>
+            <div class="info-line"><strong>Status:</strong> <span id="displayMembershipStatus">-</span></div>
         </section>
 
-        <section class="profile-edit">
-            <h2>Update my informations</h2>
+        <section class="auth-container" style="max-width: 100%;">
+            <h2 style="color: #2d6a4f; margin-bottom: 20px;">Update Profile</h2>
             <form id="profileForm">
                 <div class="input-group">
-                    <label for="name">Nom</label>
-                    <input type="text" id="name" name="name">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-
                 <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
-
                 <div class="input-group">
-                    <label for="newPassword">Nouveau mot de passe</label>
-                    <input type="password" id="newPassword" name="newPassword">
-                    <label for="newPasswordConfirmation">Confirmation du nouveau mot de passe</label>
-                    <input type="password" id="newPasswordConfirmation" name="newPasswordConfirmation">
-                    <p class="hint">Min. 8 caracters, 1 majuscule, 1 chiffre</p>
+                    <label for="newPassword">New Password (optional)</label>
+                    <input type="password" id="newPassword" name="newPassword" minlength="8">
                 </div>
-
                 <div id="errorMessage" class="error-message"></div>
-                <button type="submit" id="submitButton" disabled>Update</button>
-                <div id="message" class="message"></div>
+                <div id="message" class="success-message"></div>
+                <button type="submit" id="submitButton" class="signup-link" style="border:none; cursor:pointer; margin-top: 10px;">Update Information</button>
             </form>
         </section>
     </main>
-</body>
 
+    <script>
+        // Fonction pour lire le token depuis les cookies (nécessaire pour ton auth.js)
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        async function fetchProfile() {
+            const token = getCookie('token');
+            
+            // Si le cookie est absent, on redirige
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // On n'envoie PAS de header Authorization car ton backend regarde les cookies automatiquement
+                const res = await fetch('/api/users/profile');
+                
+                if (!res.ok) {
+                    if(res.status === 401) window.location.href = 'login.html';
+                    throw new Error("Failed to fetch profile");
+                }
+                
+                const user = await res.json();
+                document.getElementById('displayName').textContent = user.name;
+                document.getElementById('displayEmail').textContent = user.email;
+                document.getElementById('name').value = user.name;
+                document.getElementById('email').value = user.email;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value
+            };
+            const pwd = document.getElementById('newPassword').value;
+            if (pwd) payload.password = pwd;
+
+            try {
+                const res = await fetch('/api/users/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    document.getElementById('message').textContent = "Profile updated!";
+                    fetchProfile();
+                } else {
+                    document.getElementById('errorMessage').textContent = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('errorMessage').textContent = "Network error.";
+            }
+        });
+
+        function logout() {
+            // Pour déconnecter, on supprime le cookie en le faisant expirer
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = 'login.html';
+        }
+
+        window.onload = fetchProfile;
+    </script>
+</body>
 </html>

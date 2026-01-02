@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema(
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         passwordHash: { type: String, required: [function () { return this.isNew; }, 'Password is required on creation'] },
+        role: { 
+        type: String, 
+            enum: ['admin', 'staff', 'visitor'], 
+            default: 'visitor' 
+        },
         membershipType: {
             type: String,
             enum: ['Basic', 'Premium'],
@@ -22,7 +27,7 @@ const userSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true //created_at and updated_at
+        timestamps: true
 
     }
 );
