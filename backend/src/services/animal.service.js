@@ -22,5 +22,6 @@ export const updateAnimal = async (animalId, updates) => {
 }
 
 export const deleteAnimal = async (animalId) => {
-    await animalRepo.deleteAnimal(animalId);
+    const animal = await animalRepo.deleteAnimal(animalId);
+    return animal;
 }

@@ -18,7 +18,8 @@ const fastReadBookingById = async (id) => Booking.exists(id);
 const readBookingById = async (id) => {
     return Booking.findById(id)
         .populate("userId")
-        .populate("eventId");
+        .populate("eventId")
+        .lean();
 }
 
 const readBookings = async () => {
