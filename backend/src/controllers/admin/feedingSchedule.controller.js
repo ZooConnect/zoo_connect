@@ -1,10 +1,36 @@
 import * as feedingScheduleService from "../../services/admin/feedingSchedule.service.js";
 
-import { buildFeedingScheduleForCreation } from "../../utils/admin/feedingSchedule.helper.js";
-
 import { respond } from "../../utils/response.helper.js";
 
 import MESSAGES from "../../constants/messages.js";
+
+const buildFeedingScheduleForCreation = (query) => {
+    const feedingScheduleInput = {
+        animalId: query.animalId,
+        staffId: query.staffId,
+        feedingTime: query.feedingTime,
+        foodType: query.foodType
+    };
+    const metadata = {};
+    const propsToVerify = ["frequency", "notes"];
+
+    for (const key of propsToVerify) {
+        if (query[key]) metadata[key] = query[key];
+    }
+    return { feedingScheduleInput, metadata };
+};
+
+const buildFeedingScheduleFilter = (query) => {
+    const filter = {};
+    const propsToVerify = ["feedingTime", "foodType", "frequency", "notes"];
+
+    for (const key of propsToVerify) {
+        if (query[key]) filter[key] = query[key];
+    }
+    return filter;
+};
+
+
 
 export const getFeedingSchedules = async (req, res, next) => {
     try {
