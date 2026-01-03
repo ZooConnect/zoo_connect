@@ -87,7 +87,7 @@
 
                 // On transforme l'objet {"0":{...}, "1":{...}} en tableau [...]
                 // Et on filtre pour ne garder que les objets qui ont un _id (pour ignorer le champ "message")
-                const events = Object.values(responseData).filter(val => val && typeof val === 'object' && val._id);
+                const events = Object.values(responseData).filter(val => val && typeof val === 'object' && (val._id || val.id));
 
                 if (events.length === 0) {
                     container.innerHTML = "<p style='color:white; text-align:center; grid-column: 1/-1; padding: 50px;'>No events found for this selection.</p>";
@@ -113,7 +113,7 @@
                             </div>
                             <div class="event-footer">
                                 <a href="/images/zoo-map.jpg" target="_blank" class="map-link">🗺️ View Map</a>
-                                <button class="btn btn-primary" onclick="handleBooking('${event._id}')">Book</button>
+                                <button class="btn btn-primary" onclick="handleBooking('${(event && (event._id ?? event.id)) || ''}')">Book</button>
                             </div>
                         </article>
                     `;
@@ -125,23 +125,32 @@
         }
 
         async function handleBooking(eventId) {
-            const token = getCookie('token') || localStorage.getItem('token');
-
-            if (!token) {
-                showAlert("You must be logged in to book!", "error");
-                setTimeout(() => window.location.href = "login.html", 2000);
+            console.log('handleBooking called with eventId:', eventId);
+            if (!eventId) {
+                showAlert("Invalid event id. Cannot book.", "error");
                 return;
             }
+
+            // Ask user for quantity (default 1)
+            const qtyStr = prompt('How many tickets would you like to book?', '1');
+            if (qtyStr === null) return; // user cancelled
+            const quantity = Math.max(1, Math.min(100, parseInt(qtyStr || '1', 10) || 1));
 
             try {
                 const res = await fetch('/api/bookings', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ eventId: eventId, quantity: 1 })
+                    body: JSON.stringify({ eventId: eventId, quantity })
                 });
+
+                if (res.status === 401) {
+                    showAlert("You must be logged in to book!", "error");
+                    setTimeout(() => window.location.href = "login.html", 1200);
+                    return;
+                }
 
                 const data = await res.json();
 
