@@ -51,10 +51,10 @@ export const parseUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
     try {
-        const userId = req.user._id;
+        const user = req.user;
         const updates = req.body;
 
-        const { updatedUser, token } = await userService.updateUser({ userId, updates });
+        const { updatedUser, token } = await userService.updateUser({ user, updates });
         createCookie(res, token);
         respond(res, MESSAGES.USER.VALID_MODIFICATION, updatedUser);
     } catch (error) {
