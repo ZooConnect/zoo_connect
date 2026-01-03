@@ -50,7 +50,15 @@ export const cancelBooking = async (booking, reason = "") => {
     )
 }
 
-export const createBooking = async (booking, metadata = {}) => bookingRepo.createBooking(booking, metadata);
+export const createBooking = async (booking, metadata = {}) => {
+    const { eventId } = booking;
+    if (!eventId) throw new CustomError(MESSAGES.EVENT.NOT_FOUND);
+
+    const event = await eventService.findEventById(eventId);
+    if (!event) throw new CustomError(MESSAGES.EVENT.NOT_FOUND);
+
+    return bookingRepo.createBooking(booking, metadata);
+}
 
 export const findBooking = async (bookingId) => {
     const booking = await bookingRepo.readBookingById(bookingId);

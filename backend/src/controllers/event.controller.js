@@ -10,8 +10,8 @@ export const getEvents = async (req, res, next) => {
     const upcomingEvents = await eventService.findUpcomingEvents();
     const events = [...ongoingEvents, ...upcomingEvents];
     if (events.length === 0) {
-        const all = await eventService.findEvents();
-        return respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, all);
+      const all = await eventService.findEvents();
+      return respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, all);
     }
     respond(res, MESSAGES.EVENT.LOAD_ALL_EVENTS_SUCCESS, events);
   } catch (error) {
@@ -57,45 +57,3 @@ export const deleteEvent = async (req, res, next) => {
     next(error);
   }
 }
-
-/**
- * Validates query parameters for event filtering
- * @param {Object} query - Query parameters from request
- * @returns {Object} Validation result with valid flag and message
- */
-/*
-export function validateEventQueryParams(query) {
-  const { date, type } = query;
-
-  // Validate date format if provided
-  if (date) {
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(date)) {
-      return {
-        valid: false,
-        message: 'Invalid date format. Use YYYY-MM-DD format.'
-      };
-    }
-    const parsedDate = new Date(date);
-    if (isNaN(parsedDate.getTime())) {
-      return {
-        valid: false,
-        message: 'Invalid date value.'
-      };
-    }
-  }
-
-  // Validate event type if provided
-  if (type) {
-    const validTypes = ['feeding', 'show', 'workshop', 'tour', 'special', 'conservation'];
-    if (!validTypes.includes(type.toLowerCase())) {
-      return {
-        valid: false,
-        message: `Invalid event type. Valid types: ${validTypes.join(', ')}`
-      };
-    }
-  }
-
-  return { valid: true };
-}
-*/
