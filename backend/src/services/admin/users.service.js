@@ -24,7 +24,7 @@ export const createUser = async (userInput, metadata) => {
     if (isUserExisting) throw new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED);
 
     const passwordHash = await hashPassword(password);
-    return userRepo.createUser({ name, email, passwordHash }, metadata);
+    return userRepo.createUser({ name, email, passwordHash, ...metadata });
 }
 
 export const getUser = async (userId) => {

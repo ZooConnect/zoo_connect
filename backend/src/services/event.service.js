@@ -30,6 +30,6 @@ export const modifyEvent = async (id, updates) => eventRepo.updateEvent(id, upda
  * @param {string} event.location
  * @param {Object} [data]
  */
-export const registerEvent = async (event, metadata = {}) => eventRepo.createEvent(event, metadata);
+export const registerEvent = async (event, metadata = {}) => eventRepo.createEvent({ ...event, ...metadata });
 
 export const removeEvent = async (id) => eventRepo.deleteEvent(id);

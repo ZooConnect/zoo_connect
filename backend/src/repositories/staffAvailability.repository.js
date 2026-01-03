@@ -1,15 +1,6 @@
 import StaffAvailability from "../models/staffAvailability.model.js";
 
-const createStaffAvailability = async (staffAvailability) => {
-    const { staffId, startTime, endTime } = staffAvailability;
-    return StaffAvailability.create(
-        {
-            staffId,
-            startTime,
-            endTime
-        }
-    )
-}
+const createStaffAvailability = async (dto) => StaffAvailability.create(dto);
 
 const fastReadStaffAvailabilityById = async (staffAvailabilityId) => StaffAvailability.exists(staffAvailabilityId);
 

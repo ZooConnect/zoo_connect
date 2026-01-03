@@ -1,17 +1,6 @@
 import Booking from "../models/booking.model.js";
 
-const createBooking = async (booking, metadata = {}) => {
-    const { userId, eventId, quantity, bookingDate } = booking;
-    return Booking.create(
-        {
-            userId,
-            eventId,
-            quantity,
-            bookingDate,
-            ...metadata
-        }
-    )
-}
+const createBooking = async (dto) => Booking.create(dto);
 
 const fastReadBookingById = async (id) => Booking.exists(id);
 

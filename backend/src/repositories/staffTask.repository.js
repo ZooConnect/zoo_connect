@@ -1,6 +1,6 @@
 import StaffTask from "../models/staffTask.model.js";
 
-const createStaffTask = async (staffTask) => StaffTask.create({ staffTask });
+const createStaffTask = async (dto) => StaffTask.create(dto);
 
 const fastReadStaffTaskById = async (staffTaskId) => StaffTask.exists(staffTaskId);
 

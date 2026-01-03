@@ -10,7 +10,7 @@ export const getFeedingSchedules = async () => {
 };
 
 export const createFeedingSchedule = async (feedingScheduleInput, metadata = {}) => {
-    return feedingScheduleRepo.createFeedingSchedule(feedingScheduleInput, metadata);
+    return feedingScheduleRepo.createFeedingSchedule({ ...feedingScheduleInput, ...metadata });
 };
 
 export const updateFeedingSchedule = async (feedingScheduleId, updates) => {

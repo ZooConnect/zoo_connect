@@ -57,7 +57,7 @@ export const createBooking = async (booking, metadata = {}) => {
     const event = await eventService.findEventById(eventId);
     if (!event) throw new CustomError(MESSAGES.EVENT.NOT_FOUND);
 
-    return bookingRepo.createBooking(booking, metadata);
+    return bookingRepo.createBooking({ ...booking, ...metadata });
 }
 
 export const findBooking = async (bookingId) => {
