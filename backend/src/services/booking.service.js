@@ -1,7 +1,7 @@
 import { CustomError } from "../middlewares/errorHandler.js";
 
 import * as eventService from "../services/event.service.js";
-import * as invoiceService from "../../services/admin/invoice.service.js";
+import * as invoiceService from "../services/system/invoice.service.js";
 
 import bookingRepo from "../repositories/booking.repository.js";
 
