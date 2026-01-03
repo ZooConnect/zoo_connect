@@ -30,12 +30,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         const [response, data] = await isLogged();
         // utilisateur authentifié
         if (response.ok) {
-            // on affiche et cache les éléments
+            // hide auth buttons
             loginLink.style.display = "none";
             signupLink.style.display = "none";
-            profileLink.style.display = "inline-block";
 
             logoutBtn.style.display = "inline-block";
+
+            // show profile always when logged
+            profileLink.style.display = "inline-block";
+
+            // role-based visibility
+            const eventsCard = document.getElementById('events-card');
+            const bookingsCard = document.getElementById('bookings-card');
+            const feedingCard = document.getElementById('feeding-planning-link');
+
+            if (data && data.role === 'admin') {
+                // admin: show events and feeding planning, hide bookings
+                if (eventsCard) eventsCard.style.display = 'inline-block';
+                if (bookingsCard) bookingsCard.style.display = 'none';
+                if (feedingCard) feedingCard.style.display = 'inline-block';
+            } else if (data && data.role === 'staff') {
+                // staff: show feeding planning, hide events and bookings
+                if (eventsCard) eventsCard.style.display = 'none';
+                if (bookingsCard) bookingsCard.style.display = 'none';
+                if (feedingCard) feedingCard.style.display = 'inline-block';
+            } else {
+                // visitor: show events and bookings, hide feeding planning
+                if (eventsCard) eventsCard.style.display = 'inline-block';
+                if (bookingsCard) bookingsCard.style.display = 'inline-block';
+                if (feedingCard) feedingCard.style.display = 'none';
+            }
 
             if (welcomeMessage) {
                 welcomeMessage.textContent = `You are logged in ${data.name}!`;

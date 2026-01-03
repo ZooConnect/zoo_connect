@@ -17,3 +17,32 @@ export const getAnimals = async (req, res, next) => {
     next(error);
   }
 };
+
+export const createAnimal = async (req, res, next) => {
+  try {
+    const animal = await animalService.createAnimal(req.body);
+    respond(res, MESSAGES.ANIMAL.CREATED_SUCCESS, animal);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAnimal = async (req, res, next) => {
+  try {
+    const animalId = req.params.id;
+    const animal = await animalService.updateAnimal(animalId, req.body);
+    respond(res, MESSAGES.ANIMAL.UPDATE_SUCCESS, animal);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAnimal = async (req, res, next) => {
+  try {
+    const animalId = req.params.id;
+    await animalService.deleteAnimal(animalId);
+    respond(res, MESSAGES.ANIMAL.DELETE_SUCCESS);
+  } catch (error) {
+    next(error);
+  }
+};

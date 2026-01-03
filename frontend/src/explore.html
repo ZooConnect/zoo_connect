@@ -79,11 +79,29 @@
     <script>
         async function loadAnimals() {
             try {
-                // On récupère les animaux via l'API
-                const response = await fetch('/api/animals');
+                // On récupère les animaux via l'API (en envoyant le cookie http-only)
+                const response = await fetch('/api/animals', { credentials: 'include' });
                 if (!response.ok) throw new Error('Erreur réseau');
+
+                const responseData = await response.json();
+                console.log('[explore] Response data:', responseData);
                 
-                const animals = await response.json();
+                // Normaliser la réponse: selon la helper `respond()` la data peut être
+                // étalée en propriétés (message + 0,1,2...). On extrait donc soit
+                // l'array direct, soit on regroupe les valeurs en ignorant 'message'.
+                let animals;
+                if (Array.isArray(responseData)) {
+                    animals = responseData;
+                } else if (responseData && typeof responseData === 'object') {
+                    animals = Object.keys(responseData)
+                        .filter(k => k !== 'message')
+                        .map(k => responseData[k])
+                        .filter(v => v && typeof v === 'object' && (v._id || v.id));
+                } else {
+                    animals = [];
+                }
+
+                console.log('[explore] Parsed animals:', animals);
 
                 // Liste des habitats correspondant aux IDs des sections HTML
                 const habitats = ['savanna', 'forest', 'jungle', 'aquatic'];
@@ -92,7 +110,9 @@
                     const container = document.querySelector(`#${habitat} .animal-grid-large`);
                     
                     // On filtre les animaux actifs pour cet habitat précis
-                    const filteredAnimals = animals.filter(a => a.habitat.toLowerCase() === habitat);
+                    const filteredAnimals = animals.filter(a => 
+                        a.habitat && a.habitat.toLowerCase() === habitat
+                    );
 
                     if (filteredAnimals.length === 0) {
                         container.innerHTML = '<p>No animals currently visible in this area.</p>';
@@ -113,7 +133,7 @@
                     }
                 });
             } catch (error) {
-                console.error("Erreur:", error);
+                console.error("[explore] Error:", error);
                 document.querySelectorAll('.animal-grid-large').forEach(el => {
                     el.innerHTML = '<p style="color: red;">Error loading animals. Please try again later.</p>';
                 });

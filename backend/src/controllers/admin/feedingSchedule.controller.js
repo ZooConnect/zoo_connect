@@ -17,7 +17,7 @@ export const getFeedingSchedules = async (req, res, next) => {
 
 export const createFeedingSchedule = async (req, res, next) => {
     try {
-        const { feedingScheduleInput, metadata } = buildFeedingScheduleForCreation(req.query);
+        const { feedingScheduleInput, metadata } = buildFeedingScheduleForCreation(req.body);
         const feedingSchedule = await feedingScheduleService.createFeedingSchedule(feedingScheduleInput, metadata);
         respond(res, MESSAGES.FEEDING_SCHEDULE.CREATED_SUCCESS, feedingSchedule);
     } catch (error) {

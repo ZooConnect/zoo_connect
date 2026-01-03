@@ -20,19 +20,42 @@ export const getEvents = async (req, res, next) => {
 }
 
 export const getEventById = async (req, res, next) => {
-  const eventId = req.body.id;
+  try {
+    const eventId = req.params.id;
+    const event = await eventService.findEventById(eventId);
+    respond(res, MESSAGES.EVENT.FOUND, event);
+  } catch (error) {
+    next(error);
+  }
 }
 
 export const createEvent = async (req, res, next) => {
-
+  try {
+    const event = await eventService.registerEvent(req.body);
+    respond(res, MESSAGES.EVENT.CREATED_SUCCESS, event);
+  } catch (error) {
+    next(error);
+  }
 }
 
 export const updateEvent = async (req, res, next) => {
-
+  try {
+    const eventId = req.params.id;
+    const event = await eventService.modifyEvent(eventId, req.body);
+    respond(res, MESSAGES.EVENT.UPDATE_SUCCESS, event);
+  } catch (error) {
+    next(error);
+  }
 }
 
 export const deleteEvent = async (req, res, next) => {
-
+  try {
+    const eventId = req.params.id;
+    await eventService.removeEvent(eventId);
+    respond(res, MESSAGES.EVENT.DELETE_SUCCESS);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**

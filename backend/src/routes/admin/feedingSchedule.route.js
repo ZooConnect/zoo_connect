@@ -12,4 +12,4 @@ router.get("/", auth, requireRole('staff'), getFeedingSchedules);
 router.post("/", auth, requireRole('staff'), createFeedingSchedule);
 router.put("/:id", auth, requireRole('staff'), updateFeedingSchedule);
 
-export default { router, prefix: "/api/staff/feeding-schedules" };
+export default { router, prefix: "/api/admin/feeding-schedules" };

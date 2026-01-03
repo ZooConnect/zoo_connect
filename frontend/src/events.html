@@ -1,185 +1,299 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoo Events - Planifiez votre visite</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%); min-height: 100vh; padding: 20px; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        header { text-align: center; color: white; margin-bottom: 30px; }
-        header h1 { font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoo Events - Planifiez votre visite</title>
 
-        .filters-section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 200px; }
-        .filter-group label { font-weight: bold; font-size: 0.9rem; color: #2d6a4f; }
-        .filter-group input, .filter-group select { padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
 
-        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        .event-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; }
-        .event-card:hover { transform: translateY(-5px); }
-        
-        .event-header { padding: 15px; background: #2d6a4f; color: white; position: relative; }
-        .event-type { font-size: 0.7rem; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-weight: bold; }
-        
-        .event-body { padding: 20px; flex-grow: 1; }
-        .event-date { color: #2d6a4f; font-weight: bold; margin-bottom: 10px; font-size: 0.95rem; }
-        .event-location { font-size: 0.9rem; font-weight: bold; margin-top: 10px; color: #444; }
-        
-        .event-footer { padding: 15px; background: #f9f9f9; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .map-link { color: #2d6a4f; text-decoration: none; font-weight: bold; font-size: 0.85rem; }
-        
-        .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-primary { background: #4CAF50; color: white; }
-        .btn-primary:hover { background: #388E3C; }
-        
-        #alert { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 8px; color: white; display: none; z-index: 2000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .alert-success { background: #4CAF50; }
-        .alert-error { background: #f44336; }
-    </style>
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .filters-section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-group label {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #2d6a4f;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-card:hover { transform: translateY(-5px); }
+
+    .event-header {
+      padding: 15px;
+      background: #2d6a4f;
+      color: white;
+    }
+
+    .event-type {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .event-body {
+      padding: 20px;
+      flex-grow: 1;
+    }
+
+    .event-date {
+      color: #2d6a4f;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .event-location {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #444;
+    }
+
+    .event-footer {
+      padding: 15px;
+      background: #f9f9f9;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .map-link {
+      color: #2d6a4f;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #388E3C;
+    }
+
+    #alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      display: none;
+      z-index: 2000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .alert-success { background: #4CAF50; }
+    .alert-error { background: #f44336; }
+  </style>
 </head>
+
 <body>
-    <div id="alert"></div>
+  <div id="alert"></div>
 
-    <div class="container">
-        <header>
-            <h1>Discover the Zoo differently 🦁</h1>
-            <p>Activities of the day and events to come</p>
-        </header>
+  <div class="container">
+    <header>
+      <h1>Discover the Zoo differently 🦁</h1>
+      <p>Activities of the day and events to come</p>
+    </header>
 
-        <div class="filters-section">
-            <div class="filter-group">
-                <label>Date</label>
-                <input type="date" id="dateFilter">
-            </div>
-            <div class="filter-group">
-                <label>Type</label>
-                <select id="typeFilter">
-                    <option value="">All activities</option>
-                    <option value="feeding">Feeding</option>
-                    <option value="show">Show</option>
-                    <option value="tour">Guided Tour</option>
-                </select>
-            </div>
-            <button class="btn" style="background: #1b4332; color: white;" onclick="loadEventsFromUI()">Filter</button>
-        </div>
+    <div class="filters-section">
+      <div class="filter-group">
+        <label>Date</label>
+        <input type="date" id="dateFilter">
+      </div>
 
-        <div id="eventsContainer" class="events-grid">
-            </div>
+      <div class="filter-group">
+        <label>Type</label>
+        <select id="typeFilter">
+          <option value="">All activities</option>
+          <option value="feeding">Feeding</option>
+          <option value="show">Show</option>
+          <option value="tour">Guided Tour</option>
+        </select>
+      </div>
+
+      <button class="btn" style="background:#1b4332;color:white;" onclick="loadEventsFromUI()">
+        Filter
+      </button>
     </div>
 
-    <script>
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
+    <div id="eventsContainer" class="events-grid"></div>
+  </div>
+
+  <script>
+    async function loadEvents(filters = {}) {
+      const container = document.getElementById('eventsContainer');
+
+      try {
+        const params = new URLSearchParams(filters).toString();
+        const res = await fetch(`/api/events${params ? '?' + params : ''}`);
+        const data = await res.json();
+
+        const events = Object.values(data).filter(e => e && (e._id || e.id));
+
+        if (!events.length) {
+          container.innerHTML =
+            "<p style='color:white;text-align:center;grid-column:1/-1;padding:50px;'>No events found.</p>";
+          return;
         }
 
-        async function loadEvents(filters = {}) {
-            const container = document.getElementById('eventsContainer');
-            try {
-                const params = new URLSearchParams(filters).toString();
-                const res = await fetch(`/api/events${params ? '?' + params : ''}`);
-                const responseData = await res.json();
+        container.innerHTML = events.map(event => {
+          const d = new Date(event.start_date);
+          const time = isNaN(d) ? "--:--" : d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+          const date = isNaN(d) ? "Unknown date" : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 
-                // On transforme l'objet {"0":{...}, "1":{...}} en tableau [...]
-                // Et on filtre pour ne garder que les objets qui ont un _id (pour ignorer le champ "message")
-                const events = Object.values(responseData).filter(val => val && typeof val === 'object' && (val._id || val.id));
+          return `
+            <article class="event-card">
+              <div class="event-header">
+                <span class="event-type">${event.type || 'Event'}</span>
+                <h3>${event.title}</h3>
+              </div>
 
-                if (events.length === 0) {
-                    container.innerHTML = "<p style='color:white; text-align:center; grid-column: 1/-1; padding: 50px;'>No events found for this selection.</p>";
-                    return;
-                }
+              <div class="event-body">
+                <div class="event-date">🕒 ${time} | 📅 ${date}</div>
+                <p>${event.description}</p>
+                <div class="event-location">📍 ${event.location || 'Zoo Central'}</div>
+              </div>
 
-                container.innerHTML = events.map(event => {
-                    // On utilise start_date (avec underscore) car c'est ce que renvoie ton JSON
-                    const d = new Date(event.start_date);
-                    const time = isNaN(d) ? "--:--" : d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-                    const date = isNaN(d) ? "Date inconnue" : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+              <div class="event-footer">
+                <a href="/images/zoo-map.jpg" target="_blank" class="map-link">🗺️ View map</a>
+                <button class="btn btn-primary"
+                  onclick="handleBooking('${event._id || event.id}')">Book</button>
+              </div>
+            </article>
+          `;
+        }).join('');
 
-                    return `
-                        <article class="event-card">
-                            <div class="event-header">
-                                <span class="event-type">${event.type || 'Événement'}</span>
-                                <h3 style="margin-top: 5px;">${event.title}</h3>
-                            </div>
-                            <div class="event-body">
-                                <div class="event-date">🕒 ${time} | 📅 ${date}</div>
-                                <p style="font-size: 0.9rem; color: #666; line-height: 1.4;">${event.description}</p>
-                                <div class="event-location">📍 Location : ${event.location || 'Zoo Central'}</div>
-                            </div>
-                            <div class="event-footer">
-                                <a href="/images/zoo-map.jpg" target="_blank" class="map-link">🗺️ View Map</a>
-                                <button class="btn btn-primary" onclick="handleBooking('${(event && (event._id ?? event.id)) || ''}')">Book</button>
-                            </div>
-                        </article>
-                    `;
-                }).join('');
-            } catch (err) {
-                console.error("Erreur chargement événements:", err);
-                container.innerHTML = "<p style='color:#ffcccb; text-align:center; grid-column: 1/-1;'>Error loading data. Please try again later.</p>";
-            }
+      } catch (err) {
+        container.innerHTML =
+          "<p style='color:#ffcccb;text-align:center;grid-column:1/-1;'>Error loading events.</p>";
+      }
+    }
+
+    async function handleBooking(eventId) {
+      const qtyStr = prompt('How many tickets?', '1');
+      if (qtyStr === null) return;
+
+      const quantity = Math.max(1, parseInt(qtyStr, 10) || 1);
+
+      try {
+        const res = await fetch('/api/bookings', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ eventId, quantity })
+        });
+
+        if (res.status === 401) {
+          showAlert("You must be logged in.", "error");
+          setTimeout(() => location.href = "login.html", 1200);
+          return;
         }
 
-        async function handleBooking(eventId) {
-            console.log('handleBooking called with eventId:', eventId);
-            if (!eventId) {
-                showAlert("Invalid event id. Cannot book.", "error");
-                return;
-            }
-
-            // Ask user for quantity (default 1)
-            const qtyStr = prompt('How many tickets would you like to book?', '1');
-            if (qtyStr === null) return; // user cancelled
-            const quantity = Math.max(1, Math.min(100, parseInt(qtyStr || '1', 10) || 1));
-
-            try {
-                const res = await fetch('/api/bookings', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ eventId: eventId, quantity })
-                });
-
-                if (res.status === 401) {
-                    showAlert("You must be logged in to book!", "error");
-                    setTimeout(() => window.location.href = "login.html", 1200);
-                    return;
-                }
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    showAlert("Reservation confirmed !", "success");
-                    setTimeout(() => window.location.href = "bookings.html", 1500);
-                } else {
-                    showAlert(data.message || "Error during booking", "error");
-                }
-            } catch (err) {
-                showAlert("Network error.", "error");
-            }
+        if (res.ok) {
+          showAlert("Reservation confirmed!", "success");
+          setTimeout(() => location.href = "bookings.html", 1500);
+        } else {
+          const data = await res.json();
+          showAlert(data.message || "Booking error", "error");
         }
+      } catch {
+        showAlert("Network error.", "error");
+      }
+    }
 
-        function loadEventsFromUI() {
-            const date = document.getElementById('dateFilter').value;
-            const type = document.getElementById('typeFilter').value;
-            loadEvents({ date, type });
-        }
+    function loadEventsFromUI() {
+      loadEvents({
+        date: document.getElementById('dateFilter').value,
+        type: document.getElementById('typeFilter').value
+      });
+    }
 
-        function showAlert(msg, type) {
-            const alert = document.getElementById('alert');
-            alert.textContent = msg;
-            alert.className = `alert-${type}`;
-            alert.style.display = 'block';
-            setTimeout(() => alert.style.display = 'none', 4000);
-        }
+    function showAlert(msg, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = msg;
+      alert.className = `alert-${type}`;
+      alert.style.display = 'block';
+      setTimeout(() => alert.style.display = 'none', 4000);
+    }
 
-        window.onload = () => loadEvents();
-    </script>
+    window.onload = () => loadEvents();
+  </script>
 </body>
 </html>
