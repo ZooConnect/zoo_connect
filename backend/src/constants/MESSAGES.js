@@ -67,5 +67,11 @@ export default {
         UPDATED_SUCCES: { message: 'Staff availability updated sucessfully!', status: 200 },
         DELETED_SUCCES: { message: 'Staff availability deleted sucessfully!', status: 200 },
         NOT_FOUND: { message: 'Staff availability not found.', status: 404 },
+    },
+    STAFF_TASK: {
+        CREATED_SUCCESS: { message: 'staff task created successfully!', status: 201 },
+        UPDATED_SUCCES: { message: 'Staff task updated sucessfully!', status: 200 },
+        DELETED_SUCCES: { message: 'Staff task deleted sucessfully!', status: 200 },
+        NOT_FOUND: { message: 'Staff task not found.', status: 404 },
     }
 };
