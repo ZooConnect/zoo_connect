@@ -57,8 +57,9 @@ export const authUser = (token) => {
 }
 
 export const updateUser = async (userData) => {
-    const { userId, updates } = userData;
-    if (updates.email) {
+    const { user, updates } = userData;
+
+    if (updates.email && updates.email !== user.email) {
         const isUserExisting = await userRepo.fastReadUserByEmail(updates.email);
         if (isUserExisting) throw new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED);
     }
@@ -72,7 +73,7 @@ export const updateUser = async (userData) => {
         updates.passwordHash = hashPassword(updates.newPassword);
     }
 
-    const updatedUser = await userRepo.updateUserProfile(userId, updates);
+    const updatedUser = await userRepo.updateUserProfile(user._id, updates);
     if (!updatedUser) {
         throw new CustomError(MESSAGES.USER.NOT_FOUND);
     }
