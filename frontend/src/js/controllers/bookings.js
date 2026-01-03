@@ -33,9 +33,9 @@ async function loadBookings() {
   try {
     const response = await fetch('/api/bookings', {
       method: 'GET',
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`
+        'Content-Type': 'application/json'
       }
     });
 
@@ -173,9 +173,9 @@ async function submitReprogramForm() {
 
     const response = await fetch(`/api/bookings/${currentBookingId}`, {
       method: 'PUT',
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
     });
@@ -201,9 +201,9 @@ async function submitCancelForm() {
   try {
     const response = await fetch(`/api/bookings/${currentBookingId}`, {
       method: 'DELETE',
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         reason: reason || 'User requested cancellation'

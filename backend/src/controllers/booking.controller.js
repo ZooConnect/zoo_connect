@@ -1,4 +1,5 @@
 import * as bookingService from "../services/booking.service.js";
+import * as eventService from "../services/event.service.js";
 
 import { respond } from "../utils/response.helper.js";
 
@@ -17,10 +18,17 @@ export async function listUserBookings(req, res, next) {
 
 export async function createBooking(req, res, next) {
   try {
+    const eventId = req.body?.eventId || (req.event && req.event._id);
+    if (!eventId) return respond(res, MESSAGES.EVENT.NOT_FOUND);
+
+    // ensure event exists
+    const event = await eventService.findEventById(eventId);
+    if (!event) return respond(res, MESSAGES.EVENT.NOT_FOUND);
+
     const bookingData = {
       userId: req.user._id,
-      eventId: req.event._id,
-      quantity: req.body.quantity,
+      eventId: event._id,
+      quantity: req.body.quantity || 1,
       bookingDate: req.body.date || req.body.bookingDate
     };
 

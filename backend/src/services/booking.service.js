@@ -10,11 +10,14 @@ import MESSAGES from "../constants/messages.js";
 
 
 const canCancelBooking = (booking) => {
-    return !booking.isCancelled() && !booking.isPast();
+    const event = booking.eventId || booking.event;
+    const notCancelled = !booking.isCancelled();
+    const notPast = !(event && event.end_date && (new Date() > new Date(event.end_date)));
+    return notCancelled && notPast;
 }
 
 export const reprogramBooking = async (booking, newDate) => {
-    const event = booking.event;
+    const event = booking.eventId || booking.event;
 
     if (!newDate) throw new CustomError(MESSAGES.BOOKING.REPROGRAM_REQUIRES_DATA);
     if (!canCancelBooking(booking)) throw new CustomError(MESSAGES.BOOKING.ALREADY_CANCELLED);
@@ -56,7 +59,9 @@ export const findBooking = async (bookingId) => {
 }
 
 export const requireBookingOwnerOrAdmin = (booking, user) => {
-    if (booking.userId.toString() !== user.id/* && user.role !== 'admin'*/) {
+    const userIdFromToken = (user && (user.id || user._id || (user._id && user._id.toString()))) || null;
+    const bookingUserId = booking.userId && booking.userId._id ? booking.userId._id.toString() : booking.userId.toString();
+    if (!userIdFromToken || bookingUserId !== userIdFromToken.toString()) {
         throw new CustomError(MESSAGES.BOOKING.PERMISSION_DENIED_TO_VIEW);
     }
     return true;
