@@ -1,17 +1,6 @@
 import Animal from "../models/animal.model.js";
 
-const createAnimal = async (animal, metadata = {}) => {
-    const { name, species, age, habitat } = animal;
-    return Animal.create(
-        {
-            name,
-            species,
-            age,
-            habitat,
-            ...metadata
-        }
-    )
-}
+const createAnimal = async (dto) => Animal.create(dto)
 
 const fastReadAnimalById = async (id) => Animal.exists(id);
 

@@ -1,18 +1,6 @@
 import Event from "../models/event.model.js";
 
-const createEvent = async (event, data = {}) => {
-    const { title, description, start_date, end_date, location } = event;
-    return Event.create(
-        {
-            title,
-            description,
-            start_date,
-            end_date,
-            location,
-            ...data
-        }
-    )
-}
+const createEvent = async (dto) => Event.create(dto);
 
 const fastReadEventById = async (id) => Event.exists(id);
 

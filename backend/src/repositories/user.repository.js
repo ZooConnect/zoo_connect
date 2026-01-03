@@ -1,16 +1,6 @@
 import User from "../models/user.model.js";
 
-const createUser = async (user, metadata = {}) => {
-    const { name, email, passwordHash } = user;
-    return User.create(
-        {
-            name,
-            email,
-            passwordHash,
-            ...metadata
-        }
-    );
-}
+const createUser = async (dto) => User.create(dto);
 
 const fastReadUserByEmail = async (email) => User.exists({ email });
 

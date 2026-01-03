@@ -1,17 +1,6 @@
 import FeedingSchedule from "../models/feedingSchedule.model.js";
 
-const createFeedingSchedule = async (feedingSchedule, metadata = {}) => {
-    const { animalId, staffId, feedingTime, foodType } = feedingSchedule;
-    return FeedingSchedule.create(
-        {
-            animalId,
-            staffId,
-            feedingTime,
-            foodType,
-            ...metadata
-        }
-    )
-}
+const createFeedingSchedule = async (dto) => FeedingSchedule.create(dto);
 
 const fastReadFeedingScheduleById = async (id) => FeedingSchedule.exists(id);
 
