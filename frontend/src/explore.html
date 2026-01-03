@@ -1,32 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Our Animals - Zoo Connect</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Styles rapides pour s'assurer que la grille est jolie */
-        .animal-grid-large {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-        .animal-detailed-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        .animal-detailed-card:hover { transform: translateY(-5px); }
-        .animal-detailed-card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-content { padding: 15px; }
-        .region-section { margin-bottom: 40px; border-bottom: 1px solid #eee; }
-        .loading-text { text-align: center; color: #666; font-style: italic; }
-    </style>
+    <link rel="stylesheet" href="css/explore.css">
+
 </head>
+
 <body>
     <header class="top-bar">
         <a href="index.html" class="logo">Zoo Connect 🌿</a>
@@ -42,7 +25,7 @@
         <header class="explore-header" style="text-align: center; padding: 40px 20px;">
             <h1>Our Wildlife Family</h1>
             <p>Select a region to discover our residents</p>
-            
+
             <nav class="region-nav" style="margin-top: 20px;">
                 <a href="#savanna" class="region-link">🦁 Savanna</a>
                 <a href="#forest" class="region-link">🌲 Forest & Mountains</a>
@@ -53,22 +36,30 @@
 
         <section id="savanna" class="region-section">
             <h2 class="region-title">African Savanna</h2>
-            <div class="animal-grid-large"><p class="loading-text">Loading savanna animals...</p></div>
+            <div class="animal-grid-large">
+                <p class="loading-text">Loading savanna animals...</p>
+            </div>
         </section>
 
         <section id="forest" class="region-section">
             <h2 class="region-title">Forest & Mountains</h2>
-            <div class="animal-grid-large"><p class="loading-text">Loading forest animals...</p></div>
+            <div class="animal-grid-large">
+                <p class="loading-text">Loading forest animals...</p>
+            </div>
         </section>
 
         <section id="jungle" class="region-section">
             <h2 class="region-title">Tropical Jungle</h2>
-            <div class="animal-grid-large"><p class="loading-text">Loading jungle animals...</p></div>
+            <div class="animal-grid-large">
+                <p class="loading-text">Loading jungle animals...</p>
+            </div>
         </section>
 
         <section id="aquatic" class="region-section">
             <h2 class="region-title">Aquatic & Rivers</h2>
-            <div class="animal-grid-large"><p class="loading-text">Loading aquatic animals...</p></div>
+            <div class="animal-grid-large">
+                <p class="loading-text">Loading aquatic animals...</p>
+            </div>
         </section>
 
         <div class="back-home" style="text-align: center; padding: 40px;">
@@ -85,7 +76,7 @@
 
                 const responseData = await response.json();
                 console.log('[explore] Response data:', responseData);
-                
+
                 // Normaliser la réponse: selon la helper `respond()` la data peut être
                 // étalée en propriétés (message + 0,1,2...). On extrait donc soit
                 // l'array direct, soit on regroupe les valeurs en ignorant 'message'.
@@ -108,9 +99,9 @@
 
                 habitats.forEach(habitat => {
                     const container = document.querySelector(`#${habitat} .animal-grid-large`);
-                    
+
                     // On filtre les animaux actifs pour cet habitat précis
-                    const filteredAnimals = animals.filter(a => 
+                    const filteredAnimals = animals.filter(a =>
                         a.habitat && a.habitat.toLowerCase() === habitat
                     );
 
@@ -151,4 +142,5 @@
         window.onload = loadAnimals;
     </script>
 </body>
+
 </html>
