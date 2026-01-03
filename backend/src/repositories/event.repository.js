@@ -12,7 +12,7 @@ const readOngoingEvents = async (now = new Date()) => {
     return Event.find()
         .active()
         .upcomingFrom(now)
-        .sort({ start_date: 1 });
+        .sort({ startDate: 1 });
 };
 
 const readPastEvents = async (now = new Date()) => {
@@ -23,7 +23,7 @@ const readUpcomingEvents = async (now = new Date()) => {
     return Event.find()
         .active()
         .upcomingFrom(now)
-        .sort({ start_date: 1 });
+        .sort({ startDate: 1 });
 };
 
 const updateEvent = async (id, updates) => {
