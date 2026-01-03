@@ -141,11 +141,28 @@
     <script>
         async function loadPlanning() {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('/api/feeding-schedules', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await res.json();
+                const res = await fetch('/api/admin/feeding-schedules', { credentials: 'include' });
+                if (!res.ok) {
+                    console.error('Failed to load feeding schedules', res.status);
+                    document.getElementById('tasksContainer').innerHTML = '<p style="color:#d32f2f;">Unable to load feeding schedules.</p>';
+                    return;
+                }
+
+                const responseData = await res.json();
+                
+                // Extract data from response - it could be array or object with message
+                let data;
+                if (Array.isArray(responseData)) {
+                    data = responseData;
+                } else if (responseData && typeof responseData === 'object') {
+                    // Filter out the message key and collect all objects with _id or id
+                    data = Object.keys(responseData)
+                        .filter(key => key !== 'message')
+                        .map(key => responseData[key])
+                        .filter(v => v && typeof v === 'object' && (v._id || v.id));
+                    if (data.length === 0) data = []; // if no valid items found
+                }
+
                 const container = document.getElementById('tasksContainer');
 
                 if (!data || data.length === 0) {
@@ -155,37 +172,73 @@
 
                 container.innerHTML = data.map(item => `
                     <div class="task-card">
-                        <h3 class="animal-name">${item.animal_id?.name || 'Unknown'}</h3>
-                        <p>Time: ${item.feeding_time}</p>
-                        <p>Staff: ${item.staff_id?.name || 'Unassigned'}</p>
+                        <h3 class="animal-name">${item.animalId?.name || 'Unknown'}</h3>
+                        <p>Time: ${item.feedingTime || 'TBD'}</p>
+                        <p>Staff: ${item.staffId?.name || 'Unassigned'}</p>
                     </div>
                 `).join('');
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('tasksContainer').innerHTML = '<p style="color:#d32f2f;">Error loading feeding schedules.</p>';
+            }
         }
 
         async function openModal() {
             document.getElementById('addScheduleModal').classList.add('modal-active');
             try {
-                const token = localStorage.getItem('token');
-
                 // Fetch Animals
-                const resAnimals = await fetch('/api/animals');
-                const animals = await resAnimals.json();
-                document.getElementById('animalSelect').innerHTML = animals.map(a =>
-                    `<option value="${a._id}">${a.name} (${a.species})</option>`).join('');
-
-                // Fetch Staff
-                const resStaff = await fetch('/api/admin/users', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const staff = await resStaff.json();
-
-                const staffSelect = document.getElementById('staffSelect');
-                if (staff && staff.length > 0) {
-                    staffSelect.innerHTML = staff.map(s =>
-                        `<option value="${s._id}">${s.name}</option>`).join('');
+                const resAnimals = await fetch('/api/animals', { credentials: 'include' });
+                const animalsSelect = document.getElementById('animalSelect');
+                if (!resAnimals.ok) {
+                    console.error('Failed to load animals', resAnimals.status, resAnimals.statusText);
+                    animalsSelect.innerHTML = '<option value="">Error loading animals</option>';
                 } else {
-                    staffSelect.innerHTML = '<option value="">No staff found</option>';
+                    const animalsData = await resAnimals.json();
+                    console.log('Animals data received:', animalsData);
+                    let animals;
+                    if (Array.isArray(animalsData)) {
+                        animals = animalsData;
+                    } else if (animalsData && typeof animalsData === 'object') {
+                        animals = Object.keys(animalsData)
+                            .filter(key => key !== 'message')
+                            .map(key => animalsData[key])
+                            .filter(v => v && typeof v === 'object' && (v._id || v.id));
+                    }
+                    console.log('Parsed animals:', animals);
+                    if (animals && animals.length === 0) {
+                        animalsSelect.innerHTML = '<option value="">No animals found</option>';
+                    } else if (animals) {
+                        animalsSelect.innerHTML = animals.map(a =>
+                            `<option value="${a._id || a.id}">${a.name} (${a.species || ''})</option>`).join('');
+                    }
+                }
+
+                // Fetch Staff from admin endpoint with role=staff filter
+                const resStaff = await fetch('/api/admin/users?role=staff', { credentials: 'include' });
+                const staffSelect = document.getElementById('staffSelect');
+                if (!resStaff.ok) {
+                    console.error('Failed to load staff', resStaff.status, resStaff.statusText);
+                    staffSelect.innerHTML = '<option value="">Error loading staff</option>';
+                } else {
+                    const staffData = await resStaff.json();
+                    console.log('Staff data received:', staffData);
+                    let staff;
+                    if (Array.isArray(staffData)) {
+                        staff = staffData;
+                    } else if (staffData && typeof staffData === 'object') {
+                        staff = Object.keys(staffData)
+                            .filter(key => key !== 'message')
+                            .map(key => staffData[key])
+                            .filter(v => v && typeof v === 'object' && (v._id || v.id));
+                    }
+                    console.log('Parsed staff:', staff);
+
+                    if (staff && staff.length > 0) {
+                        staffSelect.innerHTML = staff.map(s =>
+                            `<option value="${s._id || s.id}">${s.name}</option>`).join('');
+                    } else {
+                        staffSelect.innerHTML = '<option value="">No staff found</option>';
+                    }
                 }
             } catch (err) {
                 console.error(err);
@@ -199,6 +252,37 @@
             localStorage.removeItem('token');
             window.location.href = 'login.html';
         }
+
+        document.getElementById('scheduleForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const formData = {
+                    animalId: document.getElementById('animalSelect').value,
+                    staffId: document.getElementById('staffSelect').value,
+                    feedingTime: document.getElementById('feedingTime').value,
+                    foodType: document.getElementById('foodType').value
+                };
+
+                const res = await fetch('/api/admin/feeding-schedules', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                if (!res.ok) {
+                    alert('Error creating feeding schedule');
+                    return;
+                }
+
+                closeModal();
+                document.getElementById('scheduleForm').reset();
+                loadPlanning();
+            } catch (err) {
+                console.error(err);
+                alert('Error creating feeding schedule');
+            }
+        });
 
         window.onload = loadPlanning;
     </script>

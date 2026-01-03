@@ -1,183 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings - Zoo Connect</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        .bookings-wrapper {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - Zoo Connect</title>
+  <link rel="stylesheet" href="css/style.css">
 
-        .booking-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
+  <style>
+    .bookings-wrapper {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        .booking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-        }
+    .booking-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
 
-        .booking-header h2 {
-            color: #2d6a4f;
-            font-size: 1.4rem;
-        }
+    .booking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
 
-        .info-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
+    .booking-header h2 {
+      color: #2d6a4f;
+      font-size: 1.4rem;
+    }
 
-        .info-line strong {
-            color: #2d6a4f;
-        }
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-        .status-active { color: #2d6a4f; font-weight: bold; }
-        .status-cancelled { color: #d32f2f; font-weight: bold; }
+    .info-line strong {
+      color: #2d6a4f;
+    }
 
-        .btn-cancel {
-            background-color: #d32f2f;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 20px;
-            width: 100%;
-            transition: 0.3s;
-        }
+    .status-active { color: #2d6a4f; font-weight: bold; }
+    .status-cancelled { color: #d32f2f; font-weight: bold; }
 
-        .btn-cancel:hover {
-            background-color: #b71c1c;
-        }
-    </style>
+    .btn-cancel {
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .btn-cancel:hover {
+      background-color: #b71c1c;
+    }
+  </style>
 </head>
-<body>
 
-    <header class="top-bar">
-        <a href="index.html" class="logo">Zoo Connect 🌿</a>
-        <nav class="auth-links">
-            <a href="index.html">Home</a>
-            <a href="profile.html">Profile</a>
-            <button onclick="logout()" class="login-link" style="border:none; cursor:pointer; background:none; color:white;">Logout</button>
-        </nav>
+<body>
+  <header class="top-bar">
+    <a href="index.html" class="logo">Zoo Connect 🌿</a>
+    <nav class="auth-links">
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <button onclick="logout()" class="login-link" style="background:none;border:none;color:white;cursor:pointer;">
+        Logout
+      </button>
+    </nav>
+  </header>
+
+  <main class="bookings-wrapper">
+    <header class="explore-header">
+      <h1>My Bookings</h1>
+      <p>Review and manage your upcoming event tickets</p>
     </header>
 
-    <main class="bookings-wrapper">
-        <header class="explore-header" style="padding: 20px 0;">
-            <h1>My Bookings</h1>
-            <p>Review and manage your upcoming event tickets</p>
-        </header>
+    <div id="bookingsList">
+      <div class="booking-card">
+        <p>Loading your tickets...</p>
+      </div>
+    </div>
+  </main>
 
-        <div id="bookingsList">
+  <script>
+    async function fetchBookings() {
+      try {
+        const res = await fetch('/api/bookings', { credentials: 'include' });
+
+        if (res.status === 401) {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const responseData = await res.json();
+        console.log('[bookings] Response data:', responseData);
+
+        // Parse response: handle both array format and spread-object format
+        let bookings = [];
+        if (Array.isArray(responseData)) {
+          bookings = responseData;
+        } else if (responseData && typeof responseData === 'object') {
+          // Backend spreads data as { message: '...', 0: {...}, 1: {...}, ... }
+          bookings = Object.keys(responseData)
+            .filter(k => k !== 'message')
+            .map(k => responseData[k])
+            .filter(v => v && typeof v === 'object' && v._id);
+        }
+
+        console.log('[bookings] Parsed bookings:', bookings);
+        const container = document.getElementById('bookingsList');
+
+        if (!bookings || bookings.length === 0) {
+          container.innerHTML = `
             <div class="booking-card">
-                <p>Loading your tickets...</p>
+              <p>No bookings found.
+                <a href="events.html" style="color:#2d6a4f;font-weight:bold;">
+                  Book an event now!
+                </a>
+              </p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = bookings.map(b => {
+          const event = b.eventId || {};
+          const status = (b.status || 'unknown').toLowerCase();
+
+          let eventDateStr = 'TBD';
+          if (event.start_date) {
+            const d = new Date(event.start_date);
+            if (!isNaN(d)) eventDateStr = d.toLocaleDateString();
+          }
+
+          let bookingDateStr = 'TBD';
+          if (b.bookingDate) {
+            const bd = new Date(b.bookingDate);
+            if (!isNaN(bd)) bookingDateStr = bd.toLocaleDateString();
+          }
+
+          const isActive = status === 'active';
+          const statusClass = isActive ? 'status-active' : 'status-cancelled';
+
+          return `
+          <div class="booking-card">
+            <div class="booking-header">
+              <h2>${event.title || 'Event'}</h2>
+              <span class="${statusClass}">
+                ${status.toUpperCase()}
+              </span>
             </div>
-        </div>
-    </main>
 
-    <script>
-        async function fetchBookings() {
-            try {
-                const res = await fetch('/api/bookings', { credentials: 'include' });
-                if (res.status === 401) {
-                    window.location.href = 'login.html';
-                    return;
-                }
+            <div class="info-line">
+              <strong>Date</strong>
+              <span>${eventDateStr}</span>
+            </div>
 
-                const responseData = await res.json();
-                const bookings = Array.isArray(responseData)
-                    ? responseData
-                    : Object.values(responseData).filter(v => v && typeof v === 'object' && (v._id || v.id));
-                const container = document.getElementById('bookingsList');
+            <div class="info-line">
+              <strong>Location</strong>
+              <span>${event.location || 'Zoo Main Entrance'}</span>
+            </div>
 
-                if (!bookings || bookings.length === 0) {
-                    container.innerHTML = `
-                        <div class="booking-card">
-                            <p>No bookings found. <a href="events.html" style="color: #2d6a4f; font-weight: bold;">Book an event now!</a></p>
-                        </div>`;
-                    return;
-                }
+            <div class="info-line">
+              <strong>Tickets</strong>
+              <span>${b.quantity || 0} person(s)</span>
+            </div>
 
-                container.innerHTML = bookings.map(b => `
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <h2>${b.eventId?.title || 'Event Title'}</h2>
-                            <span class="${b.status === 'active' ? 'status-active' : 'status-cancelled'}">
-                                ${b.status.toUpperCase()}
-                            </span>
-                        </div>
-                        <div class="info-line">
-                            <strong>Date</strong>
-                            <span>${b.eventId?.start_date ? new Date(b.eventId.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'TBD'}</span>
-                        </div>
-                        <div class="info-line">
-                            <strong>Location</strong>
-                            <span>${b.eventId?.location || 'Zoo Main Entrance'}</span>
-                        </div>
-                        <div class="info-line">
-                            <strong>Tickets</strong>
-                            <span>${b.quantity} person(s)</span>
-                        </div>
-                        <div class="info-line">
-                            <strong>Booking Date</strong>
-                            <span>${new Date(b.bookingDate).toLocaleDateString()}</span>
-                        </div>
-                        
-                        ${b.status === 'active' ? `
-                            <button onclick="cancelBooking('${b._id}')" class="btn-cancel">Cancel Reservation</button>
-                        ` : ''}
-                    </div>
-                `).join('');
+            <div class="info-line">
+              <strong>Booking Date</strong>
+              <span>${bookingDateStr}</span>
+            </div>
 
-            } catch (err) {
-                console.error(err);
-                document.getElementById('bookingsList').innerHTML = '<div class="booking-card"><p style="color:red;">Error connecting to server.</p></div>';
-            }
-        }
+            ${isActive ? `<button onclick="cancelBooking('${b._id}')" class="btn-cancel">Cancel Reservation</button>` : ''}
+          </div>
+        `; }).join('');
+      } catch (err) {
+        console.error('[bookings] Error:', err);
+        document.getElementById('bookingsList').innerHTML =
+          '<div class="booking-card"><p style="color:red;">Server error.</p></div>';
+      }
+    }
 
-        async function cancelBooking(id) {
-            if (!confirm("Are you sure you want to cancel this booking?")) return;
+    async function cancelBooking(id) {
+      if (!confirm('Are you sure you want to cancel this booking?')) return;
 
-            try {
-                const res = await fetch(`/api/bookings/${id}`, { 
-                    method: 'DELETE', 
-                    credentials: 'include' 
-                });
-                if (res.ok) {
-                    fetchBookings();
-                } else {
-                    alert("Cancellation failed. Please try again.");
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
 
-        async function logout() {
-            try {
-                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-            } catch (err) {
-                console.error(err);
-            }
-            window.location.href = 'login.html';
-        }
+      if (res.ok) fetchBookings();
+      else alert('Cancellation failed');
+    }
 
-        window.onload = fetchBookings;
-    </script>
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.href = 'login.html';
+    }
+
+    window.onload = fetchBookings;
+  </script>
 </body>
 </html>

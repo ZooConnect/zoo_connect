@@ -23,7 +23,9 @@ export default {
         LOAD_ALL_EVENTS_SUCCESS: { message: "Successfully events loaded!", status: 200 },
         NOT_ACTIVE: { message: 'Target event is not active', status: 400 },
         IS_FINISHED: { message: 'Target event is in the past', status: 400 },
-
+        CREATED_SUCCESS: { message: 'Event created successfully!', status: 201 },
+        UPDATE_SUCCESS: { message: 'Event updated successfully!', status: 200 },
+        DELETE_SUCCESS: { message: 'Event deleted successfully!', status: 200 }
     },
     BOOKING: {
         LOAD_ALL_BOOKINGS_FOR_USER_SUCCESS: { message: "Successfully bookings loaded for user!", status: 200 },
@@ -45,7 +47,10 @@ export default {
         END_BEFORE_START: { message: 'End date must be after start date.', status: 400 }
     },
     ANIMAL: {
-        ANIMALS_FOUND: { message: "Animals found.", status: 200 }
+        ANIMALS_FOUND: { message: "Animals found.", status: 200 },
+        CREATED_SUCCESS: { message: 'Animal created successfully!', status: 201 },
+        UPDATE_SUCCESS: { message: 'Animal updated successfully!', status: 200 },
+        DELETE_SUCCESS: { message: 'Animal deleted successfully!', status: 200 }
     },
     ADMIN: {
         PERMISSION_DENIED: { message: "Acces denied. It's only for administrator!", status: 403 },

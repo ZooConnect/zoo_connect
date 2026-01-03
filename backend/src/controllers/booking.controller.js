@@ -10,6 +10,7 @@ export async function listUserBookings(req, res, next) {
     const userId = req.user._id;
 
     const bookings = await bookingService.listUserBookings(userId);
+    console.log('[DEBUG] /api/bookings list for user', userId, Array.isArray(bookings) ? `${bookings.length} items` : typeof bookings);
     return respond(res, MESSAGES.BOOKING.LOAD_ALL_BOOKINGS_FOR_USER_SUCCESS, bookings);
   } catch (err) {
     next(err);
