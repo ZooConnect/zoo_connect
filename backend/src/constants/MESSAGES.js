@@ -73,5 +73,11 @@ export default {
         UPDATED_SUCCES: { message: 'Staff task updated sucessfully!', status: 200 },
         DELETED_SUCCES: { message: 'Staff task deleted sucessfully!', status: 200 },
         NOT_FOUND: { message: 'Staff task not found.', status: 404 },
+    },
+    INVOICE: {
+        CREATED_SUCCESS: { message: 'invoice created successfully!', status: 201 },
+        UPDATED_SUCCES: { message: 'invoice task updated sucessfully!', status: 200 },
+        DELETED_SUCCES: { message: 'invoice task deleted sucessfully!', status: 200 },
+        NOT_FOUND: { message: 'invoice task not found.', status: 404 },
     }
 };

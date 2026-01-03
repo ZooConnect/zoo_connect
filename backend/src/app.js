@@ -32,16 +32,19 @@ if (fs.existsSync(autoDir)) {
             app.use(mod.default.prefix, mod.default.router);
         }
     }
-    
-    // Load admin sub-routes
-    const adminDir = path.join(autoDir, "admin");
-    if (fs.existsSync(adminDir)) {
-        const adminFiles = fs.readdirSync(adminDir).filter(f => f.endsWith(".route.js"));
-        for (const f of adminFiles) {
-            const full = path.join(adminDir, f);
-            const mod = await import(pathToFileURL(full).href);
-            if (mod.default?.router && mod.default?.prefix) {
-                app.use(mod.default.prefix, mod.default.router);
+
+    // Load sub-routes
+    const sub_routes = ['admin', 'system'];
+    for (const sub_route of sub_routes) {
+        const dir = path.join(autoDir, sub_route);
+        if (fs.existsSync(dir)) {
+            const adminFiles = fs.readdirSync(dir).filter(f => f.endsWith(".route.js"));
+            for (const f of adminFiles) {
+                const full = path.join(dir, f);
+                const mod = await import(pathToFileURL(full).href);
+                if (mod.default?.router && mod.default?.prefix) {
+                    app.use(mod.default.prefix, mod.default.router);
+                }
             }
         }
     }

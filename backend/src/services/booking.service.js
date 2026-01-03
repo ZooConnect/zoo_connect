@@ -1,6 +1,7 @@
 import { CustomError } from "../middlewares/errorHandler.js";
 
 import * as eventService from "../services/event.service.js";
+import * as invoiceService from "../../services/admin/invoice.service.js";
 
 import bookingRepo from "../repositories/booking.repository.js";
 
@@ -50,14 +51,22 @@ export const cancelBooking = async (booking, reason = "") => {
     )
 }
 
-export const createBooking = async (booking, metadata = {}) => {
-    const { eventId } = booking;
+export const createBooking = async (params) => {
+    const { userId, eventId } = params;
     if (!eventId) throw new CustomError(MESSAGES.EVENT.NOT_FOUND);
 
     const event = await eventService.findEventById(eventId);
     if (!event) throw new CustomError(MESSAGES.EVENT.NOT_FOUND);
 
-    return bookingRepo.createBooking({ ...booking, ...metadata });
+    const booking = await bookingRepo.createBooking(params);
+
+    await invoiceService.createInvoice({
+        userId,
+        eventId,
+        bookingId: booking._id,
+        ...booking
+    });
+    return booking;
 }
 
 export const findBooking = async (bookingId) => {
