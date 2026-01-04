@@ -1,8 +1,8 @@
 import userRepo from "../repositories/user.repository.js";
 
-import { comparePassword, hashPassword, validatePassword } from "../utils/password.helper.js";
-import { createToken, verifyToken } from "../utils/jwt.helper.js";
-import { isOneMonthAway } from "../utils/date.helper.js";
+import { comparePassword, hashPassword, validatePassword } from "../helpers/password.helper.js";
+import { createToken, verifyToken } from "../helpers/jwt.helper.js";
+import { isOneMonthAway } from "../helpers/date.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 

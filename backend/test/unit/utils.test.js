@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { getPackageInfo, getRuntimeInfo, formatStatus } from "../../src/utils/file.helper.js";
+import { getPackageInfo, getRuntimeInfo, formatStatus } from "../../src/helpers/file.helper.js";
 
 describe("getPackageInfo", () => {
   it("returns name and version", () => {

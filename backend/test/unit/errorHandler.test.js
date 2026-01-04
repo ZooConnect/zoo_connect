@@ -1,5 +1,5 @@
 /**
- * Unit tests for src/utils/errorHandler.js.
+ * Unit tests for src/helpers/errorHandler.js.
  * We stub a minimal `res` object to capture status and body.
  */
 import { describe, it, expect } from "vitest";

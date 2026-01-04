@@ -1,6 +1,6 @@
 import * as bookingService from "../services/booking.service.js";
 
-import { respond } from "../utils/response.helper.js";
+import { respond } from "../helpers/response.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 

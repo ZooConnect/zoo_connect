@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getPackageInfo, getRuntimeInfo } from "../utils/file.helper.js";
+import { getPackageInfo, getRuntimeInfo } from "../helpers/file.helper.js";
 
 const router = Router();
 
