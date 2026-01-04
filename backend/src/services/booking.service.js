@@ -5,7 +5,7 @@ import * as invoiceService from "../services/system/invoice.service.js";
 
 import bookingRepo from "../repositories/booking.repository.js";
 
-import { parseDate, dateIsPastFrom } from '../utils/date.helper.js';
+import { parseDate, dateIsPastFrom } from '../helpers/date.helper.js';
 
 import MESSAGES from "../constants/messages.js";
 

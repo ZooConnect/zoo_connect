@@ -15,7 +15,7 @@ Express fait exactement ceci :
 👉 C’est garanti par le design d’Express, pas une convention.
 */
 
-import { respond } from "../utils/response.helper.js";
+import { respond } from "../helpers/response.helper.js";
 
 export class CustomError extends Error {
   constructor({ status, message }) {

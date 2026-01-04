@@ -1,7 +1,7 @@
 import * as userService from "../services/user.service.js";
 
-import { respond } from "../utils/response.helper.js";
-import { createCookie, clearCookie } from "../utils/response.helper.js";
+import { respond } from "../helpers/response.helper.js";
+import { createCookie, clearCookie } from "../helpers/response.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 

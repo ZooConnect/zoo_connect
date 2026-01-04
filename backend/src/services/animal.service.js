@@ -2,7 +2,7 @@ import { CustomError } from "../middlewares/errorHandler.js";
 
 import animalRepo from "../repositories/animal.repository.js";
 
-import { parseDate, dateIsPastFrom } from '../utils/date.helper.js';
+import { parseDate, dateIsPastFrom } from '../helpers/date.helper.js';
 
 import MESSAGES from "../constants/messages.js";
 
