@@ -167,8 +167,8 @@ Voir les README spécifiques :
 
 **MONTARON Léa**  
 **NAISSANS Clément**  
-**Harreshh Mourougan**  
-**Arjuna Santhoosh**
+**MOUROUGAN Harreshh**  
+**SANTHOOSH Arjuna**
 
 Projet académique et technique — ZooConnect  
 Architecture MERN & principes de clean code
