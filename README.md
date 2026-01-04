@@ -1,100 +1,175 @@
-# DevOps Lab – Student Project (Node.js + Jira/GitHub + CI/CD)
+# 🦁 ZooConnect — Zoo Management System (ZMS)
 
-This repository is a **teaching template** for a 4-student DevOps mini-project.
-It demonstrates a realistic workflow: **PLAN (Jira) → CODE (Git/VS Code) → BUILD/TEST (GitHub Actions) → REVIEW (PRs) → DEPLOY (optional)**.
+ZooConnect est une application web **full-stack MERN** conçue pour centraliser et structurer la gestion d’un zoo moderne : animaux, utilisateurs, événements et réservations.
 
-**The Git repo is available at https://github.com/ZooConnect/zoo_connect.git**
-
-> **What you get here**
-> - Minimal **Express** API with auto-mounted routes
-> - **Vitest + Supertest** for integration & unit tests
-> - Coverage thresholds enforced in CI
-> - **GitHub Actions** workflow for lint + tests + coverage artifact
-> - Clear file layout for a team of 4
+Le projet répond aux besoins opérationnels et métiers d’un zoo en proposant une plateforme sécurisée, modulaire et évolutive, exposée via une API web.
 
 ---
 
-## Quickstart
+## 🎯 Objectifs du projet
 
-```bash
-npm ci
-npm run dev          # http://localhost:3000
-npm test -- --coverage
+- Centraliser la gestion des animaux, du personnel et des visiteurs
+- Structurer les règles métier liées aux événements et aux réservations
+- Sécuriser l’accès aux fonctionnalités via un contrôle des rôles
+- Réduire les tâches manuelles et les erreurs administratives
+- Fournir une base technique propre pour des évolutions futures
+
+---
+
+## 🧩 Périmètre fonctionnel
+
+### 🐾 Animal Management
+- Création et mise à jour des profils animaux
+- Suivi des espèces, habitats et âges
+- Gestion des statuts (actif / inactif)
+- Filtrage et recherche des animaux
+
+### 👥 User & Staff Management
+- Authentification sécurisée (JWT)
+- Rôles et permissions (RBAC)
+  - Visitor
+  - Staff
+  - Admin
+- Gestion des utilisateurs par les administrateurs
+
+### 🎟️ Booking
+- Consultation des événements
+- Création de réservations
+- Annulation et reprogrammation
+- Vérification des règles métier (dates, statut, ownership)
+
+### 📅 Events
+- Création et gestion d’événements
+- Gestion des dates, capacités et statuts
+- Association événements ↔ réservations
+
+### 📊 Administration
+- Gestion des utilisateurs
+- Supervision des données principales
+- Base préparée pour des fonctionnalités de reporting
+
+---
+
+## 🏗️ Architecture générale
+
+ZooConnect suit une **architecture en couches**, orientée **séparation des responsabilités** :
+
+#### Client HTTP (REST / JSON)
+```
+frontend/
+├── src/
+│   ├── css/                        # Feuilles de style pour les pages
+│   ├── images/                     # Images et icônes utilisées dans l'UI
+│   ├── js/
+│   │   ├── controllers/            # Gestion des interactions utilisateur / DOM
+│   │   ├── services/               # Appels API / logique métier côté client
+│   │   └── utils/                  # Fonctions utilitaires réutilisables
+│   ├── bookings.html               # Page de gestion des réservations
+│   ├── events.html                 # Page des événements
+│   ├── explore.html                # Page de recherche / exploration des animaux
+│   ├── feeding-planning.html       # Page de planification des nourrissages
+│   ├── index.html                  # Page d'accueil
+│   ├── login.html                  # Page de connexion
+│   ├── profile.html                # Page profil utilisateur
+│   └── signup.html                 # Page d'inscription
 ```
 
-Open `coverage/index.html` for a visual coverage report (locally).
-
----
-
-## Routes
-
-- `GET /` – basic JSON greeting
-- `GET /health` – health check (200 OK)
-- `GET /version` – returns `{ version }` from `package.json`
-- `GET /info` – returns `{ name, version, node, uptime }`
-- `GET /boom` – triggers an error to test the global error handler
-
-Routes are **auto-mounted** from `src/routes/auto/*.route.js` so each student can add a file without touching `src/app.js` (fewer merge conflicts).
-
----
-
-## Tests
-
-- **Integration tests** (Supertest) target HTTP endpoints in `test/*.test.js`.
-- **Unit tests** target internal logic in `test/unit/*.test.js`.
-
-Coverage thresholds (Lines/Functions/Statements ≥ 80%, Branches ≥ 70%) are set in `package.json`.  
-If coverage drops below thresholds, CI fails and blocks the merge (quality gate).
-
----
-
-## Branch & Commit Convention (Jira-friendly)
-
-- Branch: `feature/<ISSUE-KEY>-<short-desc>` → e.g., `feature/SHMS-12-info-endpoint`
-- Commit: `feat(<ISSUE-KEY>): <what>` → e.g., `feat(SHMS-12): implement /info endpoint`
-- PR title: `<ISSUE-KEY> | <title>` → e.g., `SHMS-12 | Add /info endpoint`
-
-If you install **GitHub for Jira**, issues will link automatically when the key appears in branch/commit/PR.
-
----
-
-## CI (GitHub Actions)
-
-A workflow is included at `.github/workflows/ci.yml` that runs on pushes and PRs to `main`:
-
-- Install Node and deps
-- `npm run lint`
-- `npm test -- --coverage`
-- Upload `coverage/` as an artifact
-
-> Badge (enable after first run):
->
-> ```md
-> ![CI](https://github.com/<org>/<repo>/actions/workflows/ci.yml/badge.svg)
-> ```
-
----
-
-## Project layout
-
+#### Backend API (Node.js / Express)
 ```
-src/
-  app.js          # Express app (auto-mount + global error handler)
-  index.js        # server entry (not used by tests)
-  routes/auto/    # students add *.route.js files here
-  utils/          # small testable helpers
-test/
-  *.test.js       # integration (HTTP) tests
-  unit/*.test.js  # pure unit tests
+src
+├── Controllers (gestion HTTP)
+├── Services (logique métier)
+├── Repositories (accès base de données)
+├── Middlewares (authentification, permissions, validation)
+└── Models (Mongoose / MongoDB)
 ```
 
+### Pourquoi cette architecture ?
+- Testabilité accrue
+- Lisibilité et maintenabilité du code
+- Découplage de la logique métier et de l’accès aux données
+- Préparation à un éventuel changement de base de données ou de framework
+
 ---
 
-## Useful scripts
+## ⚙️ Stack technique
 
-- `npm run dev` – start dev server with nodemon
-- `npm test` – run all tests (Vitest)
-- `npm test -- --coverage` – with coverage
-- `npm run lint` – ESLint check
+### Backend
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- JWT (authentification)
+- RBAC (Role-Based Access Control)
+- Luxon (gestion et validation des dates)
 
-Enjoy the lab!
+### Frontend
+- Client web consommant une API REST
+- Gestion des rôles et des permissions côté interface
+- Communication HTTP structurée (JSON)
+
+---
+
+## 🔐 Sécurité
+
+- Authentification basée sur JWT
+- Hashage des mots de passe
+- Contrôle d’accès par rôles et permissions
+- Middlewares de sécurité dédiés
+- Validation des données entrantes
+- Gestion centralisée des erreurs
+
+---
+
+## 📐 Exigences non fonctionnelles
+
+- Performance : ≤ 2s par requête
+- Scalabilité : architecture modulaire
+- Disponibilité : API stateless
+- Maintenabilité : services découplés
+- Sécurité : RBAC, validation, audit futur
+
+---
+
+## 📁 Structure du dépôt
+
+```
+zoo_connect/
+├── backend/ # API Node.js / Express
+│ └── README.md
+├── frontend/ # Client web
+│ └── README.md
+└── README.md # Documentation globale
+```
+
+
+---
+
+## 🚀 Lancer le projet
+
+Voir les README spécifiques :
+- 👉 [`/backend/README.md`](./backend/README.md)
+- 👉 [`/frontend/README.md`](./frontend/README.md)
+
+---
+
+## 🛣️ Évolutions prévues
+
+- Paiement en ligne
+- Notifications (email / SMS)
+- Reporting avancé
+- Gestion avancée de la santé animale
+- Internationalisation (FR / EN)
+
+---
+
+## 👤 Auteurs
+
+**MONTARON Léa**  
+**NAISSANS Clément**  
+**Harreshh Mourougan**  
+**Arjuna Santhoosh**
+
+Projet académique et technique — ZooConnect  
+Architecture MERN & principes de clean code
+
