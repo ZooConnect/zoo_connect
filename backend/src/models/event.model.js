@@ -12,6 +12,12 @@ const eventSchema = new mongoose.Schema(
       enum: ['feeding', 'show', 'workshop', 'tour', 'special', 'conservation'],
       lowercase: true
     },
+    price: {
+      type: Number,
+      required: false,
+      default: 0,
+      min: 0
+    },
     status: { type: String, enum: ["active", "inactive"], default: "active" }
   },
   { timestamps: true }

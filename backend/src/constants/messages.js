@@ -80,4 +80,8 @@ export default {
         DELETED_SUCCES: { message: 'invoice task deleted sucessfully!', status: 200 },
         NOT_FOUND: { message: 'invoice task not found.', status: 404 },
     }
+    ,
+    REPORTS: {
+        GENERATED: { message: 'Reports generated.', status: 200 }
+    }
 };
