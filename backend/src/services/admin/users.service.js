@@ -11,6 +11,23 @@ export const getAllUsers = async (filter = {}) => {
     return userRepo.readUsers(filter);
 }
 
+export const requireRole = (user, minRole) => {
+    if (!user || !user.role) throw new CustomError(MESSAGES.ADMIN.PERMISSION_DENIED);
+
+    const roles = ['visitor', 'staff', 'admin'];
+    const userIndex = roles.indexOf(user.role);
+    const minIndex = roles.indexOf(minRole);
+
+    if (userIndex === -1) throw new CustomError(MESSAGES.ADMIN.PERMISSION_DENIED);
+    if (minIndex === -1) throw new CustomError(MESSAGES.ADMIN.PERMISSION_DENIED);
+
+    if (userIndex < minIndex) {
+        throw new CustomError(MESSAGES.ADMIN.PERMISSION_DENIED);
+    }
+
+    return true;
+}
+
 export const createUser = async (userInput, metadata) => {
     const { name, email, password, passwordConfirmation } = userInput;
 

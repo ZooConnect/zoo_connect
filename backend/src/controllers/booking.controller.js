@@ -5,7 +5,7 @@ import { respond } from "../helpers/response.helper.js";
 import MESSAGES from "../constants/messages.js";
 
 export async function listUserBookings(req, res, next) {
-  try {
+    try {
     const userId = req.user._id;
 
     const bookings = await bookingService.listUserBookings(userId);

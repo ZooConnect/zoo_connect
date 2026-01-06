@@ -43,22 +43,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             const eventsCard = document.getElementById('events-card');
             const bookingsCard = document.getElementById('bookings-card');
             const feedingCard = document.getElementById('feeding-planning-link');
+            const managerCard = document.getElementById('manager-link');
 
             if (data && data.role === 'admin') {
-                // admin: show events and feeding planning, hide bookings
+                // admin: show events, feeding planning and user management, hide bookings
                 if (eventsCard) eventsCard.style.display = 'inline-block';
                 if (bookingsCard) bookingsCard.style.display = 'none';
                 if (feedingCard) feedingCard.style.display = 'inline-block';
+                if (managerCard) managerCard.style.display = 'inline-block';
             } else if (data && data.role === 'staff') {
                 // staff: show feeding planning, hide events and bookings
                 if (eventsCard) eventsCard.style.display = 'none';
                 if (bookingsCard) bookingsCard.style.display = 'none';
                 if (feedingCard) feedingCard.style.display = 'inline-block';
+                if (managerCard) managerCard.style.display = 'none';
             } else {
-                // visitor: show events and bookings, hide feeding planning
+                // visitor: show events and bookings, hide feeding planning and user management
                 if (eventsCard) eventsCard.style.display = 'inline-block';
                 if (bookingsCard) bookingsCard.style.display = 'inline-block';
                 if (feedingCard) feedingCard.style.display = 'none';
+                if (managerCard) managerCard.style.display = 'none';
             }
 
             if (welcomeMessage) {

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des Utilisateurs - Zoo Connect</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/manager.css">
+  <script type="module" src="js/controllers/manager.js" defer></script>
+</head>
+
+<body>
+  <header class="top-bar">
+    <div class="logo">Zoo Connect 🌿</div>
+    <nav class="auth-links">
+      <span id="user-greeting"></span>
+      <button type="button" class="btn" id="logoutBtn">Logout</button>
+    </nav>
+  </header>
+
+  <main class="manager-container">
+    <div class="manager-header">
+      <h1>Gestion des Utilisateurs</h1>
+      <button id="addUserBtn" class="btn btn-primary">+ Ajouter un utilisateur</button>
+    </div>
+
+    <!-- Modal pour ajouter/éditer un utilisateur -->
+    <div id="userModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Ajouter un utilisateur</h2>
+          <span class="close">&times;</span>
+        </div>
+        <form id="userForm" class="user-form">
+          <div class="form-group">
+            <label for="userName">Nom *</label>
+            <input type="text" id="userName" name="name" placeholder="Entrez le nom" required>
+            <span class="error-message" id="nameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="userEmail">E-mail *</label>
+            <input type="email" id="userEmail" name="email" placeholder="Entrez l'adresse e-mail" required>
+            <span class="error-message" id="emailError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="userRole">Rôle *</label>
+            <select id="userRole" name="role" required>
+              <option value="">Sélectionnez un rôle</option>
+              <option value="visitor">Visiteur</option>
+              <option value="staff">Personnel</option>
+              <option value="admin">Administrateur</option>
+            </select>
+            <span class="error-message" id="roleError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="userPassword">Mot de passe *</label>
+            <input type="password" id="userPassword" name="password" placeholder="Entrez le mot de passe" required>
+            <span class="error-message" id="passwordError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="userPasswordConfirm">Confirmer le mot de passe *</label>
+            <input type="password" id="userPasswordConfirm" name="passwordConfirmation" placeholder="Confirmez le mot de passe" required>
+            <span class="error-message" id="passwordConfirmError"></span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div id="deleteConfirmModal" class="modal">
+      <div class="modal-content modal-confirm">
+        <div class="modal-header">
+          <h2>Confirmer la suppression</h2>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+          <p id="deleteUserName" style="font-weight: bold;"></p>
+          <p class="warning">Cette action est irréversible.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+          <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification toast -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Tableau des utilisateurs -->
+    <div class="users-section">
+      <div class="section-header">
+        <h2>Liste des utilisateurs</h2>
+        <div class="filters">
+          <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par nom ou email...">
+          <select id="roleFilter" class="role-filter">
+            <option value="">Tous les rôles</option>
+            <option value="visitor">Visiteur</option>
+            <option value="staff">Personnel</option>
+            <option value="admin">Administrateur</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="users-table-wrapper">
+        <table id="usersTable" class="users-table">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>E-mail</th>
+              <th>Rôle</th>
+              <th>Date de création</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Les données seront remplies par JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <p>Aucun utilisateur trouvé.</p>
+      </div>
+
+      <div id="loadingState" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des utilisateurs...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Zoo Connect. Tous droits réservés.</p>
+  </footer>
+</body>
+</html>
