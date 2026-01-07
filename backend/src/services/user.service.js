@@ -3,6 +3,7 @@ import userRepo from "../repositories/user.repository.js";
 import { comparePassword, hashPassword, validatePassword } from "../helpers/password.helper.js";
 import { createToken, verifyToken } from "../helpers/jwt.helper.js";
 import { isOneMonthAway } from "../helpers/date.helper.js";
+import { sendEmail } from "../helpers/email.helper.js";
 
 import MESSAGES from "../constants/messages.js";
 
@@ -22,7 +23,20 @@ export const signup = async (userInput) => {
     if (isUserExisting) throw new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED);
 
     const passwordHash = await hashPassword(password);
-    return userRepo.createUser({ name, email, passwordHash });
+    const created = await userRepo.createUser({ name, email, passwordHash });
+
+    // send welcome email (best-effort)
+    try {
+        await sendEmail({
+            to: email,
+            subject: 'Welcome to Zoo Connect',
+            text: `Hi ${name},\n\nWelcome to Zoo Connect! Your account has been created successfully.`
+        });
+    } catch (err) {
+        console.error('Failed to send signup email:', err);
+    }
+
+    return created;
 }
 
 export const login = async (credentials) => {
@@ -64,20 +78,40 @@ export const updateUser = async (userData) => {
         if (isUserExisting) throw new CustomError(MESSAGES.AUTH.EMAIL_ALREADY_USED);
     }
 
+    let passwordChanged = false;
     if (updates.newPassword && updates.newPasswordConfirmation) {
         if (updates.newPassword !== updates.newPasswordConfirmation)
             throw new CustomError(MESSAGES.AUTH.PASSWORDS_DO_NOT_MATCH);
 
         const passwordIsValidate = validatePassword(updates.newPassword);
         if (!passwordIsValidate) throw new CustomError(MESSAGES.AUTH.PASSWORD_INVALID);
-        updates.passwordHash = hashPassword(updates.newPassword);
+        updates.passwordHash = await hashPassword(updates.newPassword);
+        // remove temporary fields
+        delete updates.newPassword;
+        delete updates.newPasswordConfirmation;
+        passwordChanged = true;
     }
 
     const updatedUser = await userRepo.updateUserProfile(user._id, updates);
     if (!updatedUser) {
         throw new CustomError(MESSAGES.USER.NOT_FOUND);
     }
-    const payload = updatedUser.toObject();
+
+    const payload = { ...updatedUser.toObject(), id: updatedUser._id };
     const token = createToken(payload);
-    return { updateUser, token };
+
+    // If password changed, send notification email
+    if (passwordChanged) {
+        try {
+            await sendEmail({
+                to: updatedUser.email,
+                subject: 'Your password was changed',
+                text: `Hello ${updatedUser.name},\n\nThis is a confirmation that your account password was changed. If you did not perform this action, please contact support immediately.`
+            });
+        } catch (err) {
+            console.error('Failed to send password change email:', err);
+        }
+    }
+
+    return { updatedUser, token };
 }
